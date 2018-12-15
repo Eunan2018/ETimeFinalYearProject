@@ -1,5 +1,7 @@
 package com.eunan.tracey.etimefinalyearproject;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     // Create Login Button
     Button mButtonLogin;
 
+    // Create ProgressDialog Reference
+    ProgressDialog mProgressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: starts");
@@ -32,8 +37,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Trigger Login when button is clicked
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick: starts");
+
+                // Initialise ProgressDialog
+                mProgressDialog = new ProgressDialog(MainActivity.this);
+                mProgressDialog.setMessage("Loading...");
+                mProgressDialog.setTitle("Login");
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                mProgressDialog.show();
+                mProgressDialog.setCancelable(false);
 
                 // Get credentials from EditTexts
                 String email = mEmail.getEditText().getText().toString();
@@ -47,11 +62,12 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     mEmail.setErrorEnabled(false);
                     mPassword.setErrorEnabled(false);
-                    Toast.makeText(getApplicationContext(),"Successfully logged in",Toast.LENGTH_LONG).show();
+                    mProgressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_LONG).show();
                 }
+                mProgressDialog.dismiss();
             }
         });
-
         Log.d(TAG, "onCreate: ends");
     }
 
@@ -59,5 +75,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean validatePassword(String password) {
         Log.d(TAG, "validatePassword: starts" + password);
         return password.length() > 5;
+    }
+
+    // Move to Register Activity if not already registered
+    public void signUp(View view) {
+        Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
+        startActivity(registerIntent);
     }
 }
