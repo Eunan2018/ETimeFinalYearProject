@@ -21,9 +21,6 @@ public class MainActivity extends AppCompatActivity {
     // Create Login Button
     Button mButtonLogin;
 
-    // Create ProgressDialog Reference
-    ProgressDialog mProgressDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: starts");
@@ -42,14 +39,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: starts");
 
-                // Initialise ProgressDialog
-                mProgressDialog = new ProgressDialog(MainActivity.this);
-                mProgressDialog.setMessage("Loading...");
-                mProgressDialog.setTitle("Login");
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                mProgressDialog.show();
-                mProgressDialog.setCancelable(false);
-
                 // Get credentials from EditTexts
                 String email = mEmail.getEditText().getText().toString();
                 String password = mPassword.getEditText().getText().toString();
@@ -62,10 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     mEmail.setErrorEnabled(false);
                     mPassword.setErrorEnabled(false);
-                    mProgressDialog.dismiss();
                     Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_LONG).show();
                 }
-                mProgressDialog.dismiss();
             }
         });
         Log.d(TAG, "onCreate: ends");
