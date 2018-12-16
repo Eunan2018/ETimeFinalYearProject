@@ -1,6 +1,5 @@
 package com.eunan.tracey.etimefinalyearproject;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 String password = mPassword.getEditText().getText().toString();
 
                 // Validate credentials
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                if (!validateEmail(email)) {
                     mEmail.setError("Not a valid email address!");
                 } else if (!validatePassword(password)) {
                     mPassword.setError("Not a valid password!");
@@ -62,6 +61,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean validatePassword(String password) {
         Log.d(TAG, "validatePassword: starts" + password);
         return password.length() > 5;
+    }
+
+    // Check email format
+    public boolean validateEmail(String email) {
+        Log.d(TAG, "validateEmail: starts" + email);
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+            return false;
+        else
+            return true;
     }
 
     // Move to Register Activity if not already registered
