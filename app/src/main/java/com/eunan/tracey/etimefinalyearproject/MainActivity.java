@@ -66,10 +66,7 @@ public class MainActivity extends AppCompatActivity {
     // Check email format
     public boolean validateEmail(String email) {
         Log.d(TAG, "validateEmail: starts" + email);
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
-            return false;
-        else
-            return true;
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     // Move to Register Activity if not already registered

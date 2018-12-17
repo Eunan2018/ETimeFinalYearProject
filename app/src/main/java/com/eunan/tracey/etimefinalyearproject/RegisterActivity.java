@@ -46,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String confirmPassword = mConfirmPassword.getEditText().getText().toString();
 
                 // Validate credentials
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                if (!validateEmail(email)) {
                     mEmail.setError("Not a valid email address!");
                 } else if (!validatePassword(password)) {
                     mPassword.setError("Not a valid password!");
@@ -70,6 +70,12 @@ public class RegisterActivity extends AppCompatActivity {
     public boolean validatePassword(String password) {
         Log.d(TAG, "validatePassword: starts " + password);
         return password.length() > 5;
+    }
+
+    // Check email format
+    public boolean validateEmail(String email) {
+        Log.d(TAG, "validateEmail: starts" + email);
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     // Move to Login Activity if already Registered
