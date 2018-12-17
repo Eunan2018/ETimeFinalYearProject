@@ -34,10 +34,10 @@ public class MainActivityTest {
 
     @Test
     public void testValidatePassword() {
-        String password1 = "12345";
-        String password2 = "123456";
-        assertFalse(mMainActivity.validatePassword(password1));
-        assertTrue(mMainActivity.validatePassword(password2));
+        String invalidPassword = "12345";
+        String validPassword = "123456";
+        assertFalse(mMainActivity.validatePassword(invalidPassword));
+        assertTrue(mMainActivity.validatePassword(validPassword));
     }
 
     @Test
