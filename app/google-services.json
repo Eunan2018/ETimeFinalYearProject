@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1088417356168",
+    "firebase_url": "https://etime-50cb3.firebaseio.com",
+    "project_id": "etime-50cb3",
+    "storage_bucket": "etime-50cb3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088417356168:android:b7c9f74c1194a0d6",
+        "android_client_info": {
+          "package_name": "com.eunan.tracey.etimefinalyearproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1088417356168-aufg1b68blegmk6mnp13dr0d57c6vo9l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eunan.tracey.etimefinalyearproject",
+            "certificate_hash": "ac8d1ed101a64fbeac133c9ae189b3d1b731400f"
+          }
+        },
+        {
+          "client_id": "1088417356168-a0icusg1ioi1qjpgl9se0c10hhbrtm9m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2nci67qHCQiMfd47ppj5lJokSSdEtX_w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1088417356168-a0icusg1ioi1qjpgl9se0c10hhbrtm9m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
