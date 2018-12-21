@@ -37,4 +37,16 @@ dependencies {
     androidTestImplementation 'org.mockito:mockito-core:2.7.22'
     // required if you want to use Mockito for Android tests
     testImplementation 'org.mockito:mockito-android:2.7.22'
+    // requied to use google sign in and Firebase auth
+    implementation 'com.google.firebase:firebase-core:16.0.5'
+    implementation 'com.google.firebase:firebase-auth:16.1.0'
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    // twitter
+    implementation 'com.twitter.sdk.android:twitter:3.1.1'
+    implementation 'com.twitter.sdk.android:twitter-core:2.3.0'
+    implementation 'com.twitter.sdk.android:twitter-mopub:3.0.0'
+    implementation 'com.twitter.sdk.android:tweet-ui:3.1.0'
+    implementation 'com.twitter.sdk.android:tweet-composer:3.1.0'
+
 }
+apply plugin: 'com.google.gms.google-services'

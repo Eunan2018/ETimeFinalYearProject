@@ -1,4 +1,4 @@
-<resources>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">eTime</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
@@ -9,4 +9,6 @@
     <string name="sign_up">Don\'t have an account?\n Register Here.</string>
     <string name="login_title">Login</string>
     <string name="register_title">Register</string>
+    <string name= "com.twitter.sdk.android.CONSUMER_KEY">4QjkYKOY6LwvIc4GO8i9zAa2P</string>
+    <string name= "com.twitter.sdk.android.CONSUMER_SECRET">lf8LcKRvqpTvl215EdZ2Tz26tnw49H4ZJY7Imhd0GtLAmJzZkF </string>
 </resources>
