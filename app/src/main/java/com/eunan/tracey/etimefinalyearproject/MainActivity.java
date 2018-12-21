@@ -196,9 +196,10 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             mProgressDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "Successful Login", Toast.LENGTH_LONG).show();
-                           // FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                           // Intent intent = new Intent(getApplicationContext(), DisplayWeather.class);
-                           // startActivity(intent);//finish();
+                            //FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                            Intent intent = new Intent(MainActivity.this, CreateProfile.class);
+                            startActivity(intent);
+  //                          finish();
                         } else {
                             Toast.makeText(getApplicationContext(), "Error Login", Toast.LENGTH_LONG).show();
                             mProgressDialog.dismiss();
