@@ -23,7 +23,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Callback;
@@ -39,20 +38,20 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
 
     // Create EditText references
-    TextInputLayout mEmail;
-    TextInputLayout mPassword;
+    private TextInputLayout mEmail;
+    private TextInputLayout mPassword;
     // Create Login Button
-    Button mButtonLogin;
+    private Button mButtonLogin;
     // Create GoogleSignInButton
-    SignInButton mSignInButton;
+    private SignInButton mSignInButton;
     // Create ProgressDialog
-    ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressDialog;
     // Create FireBaseAuth reference
-    FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth mFirebaseAuth;
     // Create GoogleSignIn reference
-    GoogleSignInClient mGoogleSignInClient;
+    private GoogleSignInClient mGoogleSignInClient;
     // Create Twitter Login Button
-    TwitterLoginButton mTwitterLoginButton;
+    private TwitterLoginButton mTwitterLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +59,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Twitter.initialize(this);
         setContentView(R.layout.activity_main);
+
+        // Initialise dialog
+        mProgressDialog = new ProgressDialog(MainActivity.this);
+        mProgressDialog.setMessage("Loading...");
+        mProgressDialog.setTitle("Login");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(false);
         // Initialise Login Button
         mButtonLogin = findViewById(R.id.login_button);
         // Initialise Email and Password EditTexts
@@ -98,12 +104,8 @@ public class MainActivity extends AppCompatActivity {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mProgressDialog = new ProgressDialog(MainActivity.this);
-                mProgressDialog.setMessage("Loading...");
-                mProgressDialog.setTitle("Login");
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
                 mProgressDialog.show();
-                mProgressDialog.setCancelable(false);
                 Intent intent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(intent, 101);
             }
@@ -127,11 +129,31 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     mEmail.setErrorEnabled(false);
                     mPassword.setErrorEnabled(false);
-                    Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_LONG).show();
+                    mProgressDialog.show();
+                    loginUser(email, password);
                 }
             }
         });
         Log.d(TAG, "onCreate: ends");
+    }
+
+
+    private void loginUser(String email, String password) {
+        Log.d(TAG, "loginUser: starts");
+        mFirebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    mProgressDialog.dismiss();
+                    Intent intent = new Intent(MainActivity.this, CreateProfile.class);
+                    startActivity(intent);
+                    Toast.makeText(MainActivity.this, "Login Successful, ", Toast.LENGTH_LONG).show();
+                } else {
+                    mProgressDialog.hide();
+                    Toast.makeText(MainActivity.this, "Error, login failed", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 
@@ -150,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (ApiException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             mTwitterLoginButton.onActivityResult(requestCode, resultCode, data);
             Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_LONG).show();
         }
@@ -171,17 +193,17 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                           // updateUI(user);
+                            Intent intent = new Intent(MainActivity.this, CreateProfile.class);
+                            startActivity(intent);
+                            Toast.makeText(getApplicationContext(), "Login Successful, ",
+                                    Toast.LENGTH_LONG).show();
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-//                            Toast.makeText(TwitterLoginActivity.this, "Authentication failed.",
-//                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                        }
+                            Log.d(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
 
-                        // ...
+                        }
                     }
                 });
     }
@@ -199,10 +221,10 @@ public class MainActivity extends AppCompatActivity {
                             //FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             Intent intent = new Intent(MainActivity.this, CreateProfile.class);
                             startActivity(intent);
-  //                          finish();
+                            //                          finish();
                         } else {
+                            mProgressDialog.hide();
                             Toast.makeText(getApplicationContext(), "Error Login", Toast.LENGTH_LONG).show();
-                            mProgressDialog.dismiss();
                         }
                     }
                 });
@@ -210,13 +232,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Check length of password
-    public boolean validatePassword(String password) {
+    private boolean validatePassword(String password) {
         Log.d(TAG, "validatePassword: starts " + password);
         return password.length() > 5;
     }
 
     // Check email format
-    public boolean validateEmail(String email) {
+    private boolean validateEmail(String email) {
         Log.d(TAG, "validateEmail: starts " + email);
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }

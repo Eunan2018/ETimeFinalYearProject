@@ -1,5 +1,6 @@
 package com.eunan.tracey.etimefinalyearproject;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,15 +21,18 @@ public class RegisterActivity extends AppCompatActivity {
     private final String TAG = "RegisterActivity";
 
     // Create EditText references
-    TextInputLayout mEmail;
-    TextInputLayout mPassword;
-    TextInputLayout mConfirmPassword;
+    private TextInputLayout mEmail;
+    private TextInputLayout mPassword;
+    private TextInputLayout mConfirmPassword;
 
     // Create Login Button
-    Button mButtonRegister;
+    private Button mButtonRegister;
 
     // Create FirebaseAuth reference
-    FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth mFirebaseAuth;
+
+    // Create ProgressDialog
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Initialise FirebaseAuth
         mFirebaseAuth = FirebaseAuth.getInstance();
-
+        mProgressDialog = new ProgressDialog(this);
         // Trigger Register button when clicked
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
 
@@ -70,24 +74,31 @@ public class RegisterActivity extends AppCompatActivity {
                     mEmail.setErrorEnabled(false);
                     mPassword.setErrorEnabled(false);
                     mConfirmPassword.setErrorEnabled(false);
-                    mFirebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                /*Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                startActivity(intent);*/
-                                Toast.makeText(getApplicationContext(), "Successfully Registered, ", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Error, could not create user", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                    // Go to Login screen
-                    Intent loginIntent = new Intent(RegisterActivity.this, MainActivity.class);
-                    startActivity(loginIntent);
-                    Toast.makeText(getApplicationContext(), "Successfully Registered", Toast.LENGTH_LONG).show();
+                    mProgressDialog.setTitle("Register User");
+                    mProgressDialog.setMessage("Please wait while we register your account !");
+                    mProgressDialog.setCanceledOnTouchOutside(false);
+                    mProgressDialog.show();
+                    registerUser(email, password);
                 }
                 Log.d(TAG, "onClick: ends");
+            }
+        });
+    }
+
+    private void registerUser(String email, String password) {
+        Log.d(TAG, "registerUser: starts");
+        mFirebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    mProgressDialog.dismiss();
+                                Intent intent = new Intent(RegisterActivity.this, CreateProfile.class);
+                                startActivity(intent);
+                    Toast.makeText(getApplicationContext(), "Successfully Registered, ", Toast.LENGTH_LONG).show();
+                } else {
+                    mProgressDialog.hide();
+                    Toast.makeText(getApplicationContext(), "Error, could not create user", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -103,7 +114,6 @@ public class RegisterActivity extends AppCompatActivity {
         Log.d(TAG, "validateEmail: starts " + email);
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-
 
 
     // Move to Login Activity if already Registered

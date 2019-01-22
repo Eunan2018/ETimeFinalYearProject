@@ -4,8 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.eunan.tracey.etimefinalyearproject"
-        minSdkVersion 23
-        targetSdkVersion 28
+        minSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -47,6 +46,7 @@ dependencies {
     implementation 'com.twitter.sdk.android:twitter-mopub:3.0.0'
     implementation 'com.twitter.sdk.android:tweet-ui:3.1.0'
     implementation 'com.twitter.sdk.android:tweet-composer:3.1.0'
+    implementation 'com.android.support:recyclerview-v7:23.2.1'
 
 }
 apply plugin: 'com.google.gms.google-services'
