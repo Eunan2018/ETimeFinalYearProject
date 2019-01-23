@@ -4,41 +4,61 @@ import java.util.List;
 
 public class Project {
 
-    private String name;
-    private String location;
+    private String projectId;
+    private String projectName;
+    private String projectLocation;
+    private String projectDescription;
+   // private List<User> userList;
 
-    private List<Employee> employeeList;
+    public Project(String projectId,String projectName, String projectLocation, String projectDescription) {
+        this.projectId = projectId;
+        this.projectName = projectName;
+        this.projectLocation = projectLocation;
+        this.projectDescription = projectDescription;
+    }
 
     public Project() {
     }
 
-    public Project(String name, String location, List<Employee> employeeList) {
-        this.name = name;
-        this.location = location;
-        this.employeeList = employeeList;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public String getName() {
-        return name;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getProjectLocation() {
+        return projectLocation;
     }
 
-    public String getLocation() {
-        return location;
+    public void setProjectLocation(String projectLocation) {
+        this.projectLocation = projectLocation;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public String getProjectDescription() {
+        return projectDescription;
     }
 
-    public List<Employee> getEmployeeList() {
-        return employeeList;
+    public void setProjectDescription(String projectDescription) {
+        this.projectDescription = projectDescription;
     }
 
-    public void setEmployeeList(List<Employee> employeeList) {
-        this.employeeList = employeeList;
-    }
+//    public List<User> getUserList() {
+//        return userList;
+//    }
+//
+//    public void setUserList(List<User> userList) {
+//        this.userList = userList;
+//    }
+
+//    @Override
+//    public String toString() {
+//        return "Project{" +
+//                "projectName='" + projectName + '\'' +
+//                ", projectLocation='" + projectLocation + '\'' +
+//                ", projectDescription='" + projectDescription + '\'' +
+//                ", userList=" + userList +
+//                '}';
+//    }
 }

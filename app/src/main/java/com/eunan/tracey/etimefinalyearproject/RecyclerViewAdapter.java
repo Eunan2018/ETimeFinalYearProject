@@ -1,10 +1,7 @@
 package com.eunan.tracey.etimefinalyearproject;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,9 +20,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String TAG = "RecyclerViewAdapter";
 
     private Context context;
-    private  List<RecyclerItem> listItems;
+    private  List<Project> listItems;
 
-    public RecyclerViewAdapter(Context context, List<RecyclerItem> item) {
+    public RecyclerViewAdapter(Context context, List<Project> item) {
         Log.d(TAG, "RecyclerViewAdapter: called");
         this.context = context;
         this.listItems = item;
@@ -43,9 +40,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int i) {
         Log.d(TAG, "onBindViewHolder: called");
-        final RecyclerItem itemList = listItems.get(i);
-        holder.txtTitle.setText(itemList.getTilte());
-        holder.txtDescription.setText(itemList.getDescription());
+        final Project itemList = listItems.get(i);
+        holder.txtTitle.setText(itemList.getProjectName());
+        holder.txtLocation.setText(itemList.getProjectLocation());
+        holder.txtDescription.setText(itemList.getProjectDescription());
+
 
         holder.txtOptionsDigit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +81,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView txtTitle;
+        public TextView txtLocation;
         public TextView txtDescription;
         public TextView txtOptionsDigit;
 
@@ -89,6 +89,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtTitle = itemView.findViewById(R.id.textTitle);
+            txtLocation = itemView.findViewById(R.id.textLocation);
             txtDescription = itemView.findViewById(R.id.textDescription);
             txtOptionsDigit = itemView.findViewById(R.id.textOptionsDigit);
         }

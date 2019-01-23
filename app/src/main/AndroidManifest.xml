@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".EmployerProfile"
-            android:label="@string/login_title">
+            android:icon="@drawable/timesheet"
+            android:label="ETime">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,8 +29,9 @@
             android:name=".CreateProfile"
             android:label="@string/register_title" />
         <activity android:name="com.twitter.sdk.android.core.identity.OAuthActivity" />
-        <activity android:name=".EmployeeProfile"></activity>
-       <!-- <activity android:name=".EmployerProfile"></activity>-->
+        <activity android:name=".EmployeeProfile" />
+        <!-- <activity android:name=".EmployerProfile"></activity> -->
+        <activity android:name=".CreateProject"></activity>
     </application>
 
 </manifest>
