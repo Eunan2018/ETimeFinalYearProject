@@ -18,15 +18,16 @@
             android:paddingLeft="@dimen/activity_horizontal_margin">
 
             <ImageView
+                android:id="@+id/cc"
                 android:layout_width="71dp"
                 android:layout_height="69dp"
                 android:layout_alignStart="@+id/textTitle"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
+                android:contentDescription="TODO"
                 android:src="@drawable/home"
-                android:tint="@android:color/holo_purple"
-                android:contentDescription="TODO" />
+                android:tint="@android:color/holo_red_light" />
 
             <TextView
                 android:id="@+id/textTitle"

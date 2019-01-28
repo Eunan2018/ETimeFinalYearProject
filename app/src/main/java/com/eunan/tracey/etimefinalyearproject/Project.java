@@ -4,20 +4,22 @@ import java.util.List;
 
 public class Project {
 
-    private String projectId;
+    //private String projectId;
     private String projectName;
     private String projectLocation;
     private String projectDescription;
    // private List<User> userList;
 
-    public Project(String projectId,String projectName, String projectLocation, String projectDescription) {
-        this.projectId = projectId;
+    public Project(String projectName, String projectLocation, String projectDescription) {
+
         this.projectName = projectName;
         this.projectLocation = projectLocation;
         this.projectDescription = projectDescription;
     }
 
+
     public Project() {
+
     }
 
     public String getProjectName() {
@@ -52,13 +54,13 @@ public class Project {
 //        this.userList = userList;
 //    }
 
-//    @Override
-//    public String toString() {
-//        return "Project{" +
-//                "projectName='" + projectName + '\'' +
-//                ", projectLocation='" + projectLocation + '\'' +
-//                ", projectDescription='" + projectDescription + '\'' +
-//                ", userList=" + userList +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "Project{" +
+                "projectName='" + projectName + '\'' +
+                ", projectLocation='" + projectLocation + '\'' +
+                ", projectDescription='" + projectDescription + '\'' +
+
+                '}';
+    }
 }

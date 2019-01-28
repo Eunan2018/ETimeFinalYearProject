@@ -60,11 +60,18 @@ public class EmployerProfile extends AppCompatActivity {
         Log.d(TAG, "onOptionsItemSelected: starts");
         super.onOptionsItemSelected(item);
         if(item.getItemId() == R.id.employer_logout_button){
-            FirebaseAuth.getInstance().signOut();
+           // FirebaseAuth.getInstance().signOut();
+            Intent mainIntent = new Intent(EmployerProfile.this,MainActivity.class);
+            startActivity(mainIntent);
+
         }
         if(item.getItemId()== R.id.user_settings_button){
-//            Intent settingsIntent = new Intent(EmployerProfile.this,MainActivity.class);
-//            startActivity(settingsIntent);
+            Intent settingsIntent = new Intent(EmployerProfile.this,SettingsActivity.class);
+            startActivity(settingsIntent);
+        }
+        if(item.getItemId()== R.id.all_users_btn){
+            Intent settingsIntent = new Intent(EmployerProfile.this,UsersActivity.class);
+            startActivity(settingsIntent);
         }
         Log.d(TAG, "onOptionsItemSelected: ends");
         return true;

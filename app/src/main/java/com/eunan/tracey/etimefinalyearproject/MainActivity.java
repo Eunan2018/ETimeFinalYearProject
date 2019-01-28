@@ -4,12 +4,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
 
     // Create EditText references
-    private TextInputLayout mEmail;
-    private TextInputLayout mPassword;
+    private EditText mEmail;
+    private EditText mPassword;
     // Create Login Button
     private Button mButtonLogin;
     // Create GoogleSignInButton
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     // Create Twitter Login Button
     private TwitterLoginButton mTwitterLoginButton;
+
+    private TextView txtRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +70,18 @@ public class MainActivity extends AppCompatActivity {
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressDialog.setCancelable(false);
         // Initialise Login Button
-        mButtonLogin = findViewById(R.id.login_button);
+        mButtonLogin = findViewById(R.id.buttonLogin);
         // Initialise Email and Password EditTexts
         // Initialise GoogleSignInButton
         mSignInButton = findViewById(R.id.google_signin_button);
-        mEmail = findViewById(R.id.login_email);
-        mPassword = findViewById(R.id.login_password);
+        mEmail = findViewById(R.id.editTextLoginEmail);
+        mPassword = findViewById(R.id.editTextLoginPasword);
         // Initialise FireBaseAuth
         mFirebaseAuth = FirebaseAuth.getInstance();
         // Initialise Twitter Kit
         mTwitterLoginButton = findViewById(R.id.twitter_login_button);
+
+        txtRegister = findViewById(R.id.textViewRegister);
         mTwitterLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
@@ -118,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onClick: starts");
 
                 // Get credentials from EditTexts
-                String email = mEmail.getEditText().getText().toString();
-                String password = mPassword.getEditText().getText().toString();
+                String email = mEmail.getText().toString();
+                String password = mPassword.getText().toString();
 
                 // Validate credentials
                 if (!validateEmail(email)) {
@@ -127,11 +132,17 @@ public class MainActivity extends AppCompatActivity {
                 } else if (!validatePassword(password)) {
                     mPassword.setError("Not a valid password!");
                 } else {
-                    mEmail.setErrorEnabled(false);
-                    mPassword.setErrorEnabled(false);
                     mProgressDialog.show();
                     loginUser(email, password);
                 }
+            }
+        });
+
+        txtRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(registerIntent);
             }
         });
         Log.d(TAG, "onCreate: ends");
@@ -145,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     mProgressDialog.dismiss();
-                    Intent intent = new Intent(MainActivity.this, CreateProfile.class);
+                    Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
                     startActivity(intent);
                     Toast.makeText(MainActivity.this, "Login Successful, ", Toast.LENGTH_LONG).show();
                 } else {
@@ -193,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            Intent intent = new Intent(MainActivity.this, CreateProfile.class);
+                            Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
                             startActivity(intent);
                             Toast.makeText(getApplicationContext(), "Login Successful, ",
                                     Toast.LENGTH_LONG).show();
@@ -219,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                             mProgressDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "Successful Login", Toast.LENGTH_LONG).show();
                             //FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                            Intent intent = new Intent(MainActivity.this, CreateProfile.class);
+                            Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
                             startActivity(intent);
                             //                          finish();
                         } else {
@@ -243,9 +254,4 @@ public class MainActivity extends AppCompatActivity {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    // Move to Register Activity if not already registered
-    public void signUp(View view) {
-        Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
-        startActivity(registerIntent);
-    }
 }

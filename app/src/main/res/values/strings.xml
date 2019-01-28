@@ -17,4 +17,8 @@
     <string name="delete">Delete</string>
     <string name="location">Location</string>
     <string name="project">Project</string>
+    <string name="display_name">DISPLAY NAME</string>
+    <string name="change_image">CHANGE IMAGE</string>
+    <string name="change_status">CHANGE STATUS</string>
+    <string name="defaultStatus">Welcome to ETIme!!</string>
 </resources>

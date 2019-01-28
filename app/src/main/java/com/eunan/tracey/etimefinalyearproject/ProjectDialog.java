@@ -41,8 +41,8 @@ public class ProjectDialog extends AppCompatDialogFragment {
                     listener.applyData(project,location);
                     }
                 });
-        editTextProject = view.findViewById(R.id.editTextProjectName);
-        editTextLocation = view.findViewById(R.id.editTextLocation);
+        editTextProject = view.findViewById(R.id.editTextLoginEmail);
+        editTextLocation = view.findViewById(R.id.editTexttLoginPaswordPassword);
 
         return builder.create();
     }
