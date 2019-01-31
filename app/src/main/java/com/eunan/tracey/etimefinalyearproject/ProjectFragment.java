@@ -49,7 +49,7 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
         projectList = new ArrayList<>();
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_project, container, false);
-        recyclerView = view.findViewById(R.id.projectRecyclerView);
+        recyclerView = view.findViewById(R.id.recycler_view_project);
         return view;
     }
 
@@ -61,7 +61,7 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: starts" + dataSnapshot.toString());
+                Log.d(TAG, "onDataChange: starts " + dataSnapshot.toString());
                 projectList.clear();
                 for(DataSnapshot projectSnapshot : dataSnapshot.getChildren()){
                     Project project = projectSnapshot.getValue(Project.class);
@@ -85,11 +85,11 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        fab = getView().findViewById(R.id.fabAdd);
+        fab = getView().findViewById(R.id.fab_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), CreateProject.class);
+                Intent intent = new Intent(getContext(), ProjectActivity.class);
                 startActivity(intent);
             }
         });

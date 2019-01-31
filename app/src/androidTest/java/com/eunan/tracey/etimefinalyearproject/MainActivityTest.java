@@ -28,7 +28,7 @@ public class MainActivityTest {
     // If the button is found the Activity exists
     @Test
     public void testLaunch(){
-        View view =  mMainActivity.findViewById(R.id.buttonLogin);
+        View view =  mMainActivity.findViewById(R.id.button_login);
         assertNotNull(view);
     }
 

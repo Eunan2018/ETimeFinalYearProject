@@ -41,15 +41,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull final ViewHolder holder, int i) {
         Log.d(TAG, "onBindViewHolder: called");
         final Project itemList = listItems.get(i);
-        holder.txtTitle.setText(itemList.getProjectName());
-        holder.txtLocation.setText(itemList.getProjectLocation());
-        holder.txtDescription.setText(itemList.getProjectDescription());
+        holder.title.setText(itemList.getProjectName());
+        holder.location.setText(itemList.getProjectLocation());
+        holder.description.setText(itemList.getProjectDescription());
 
 
-        holder.txtOptionsDigit.setOnClickListener(new View.OnClickListener() {
+        holder.optionsDigit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(context,holder.txtOptionsDigit);
+                PopupMenu popupMenu = new PopupMenu(context,holder.optionsDigit);
                 popupMenu.inflate(R.menu.options_menu);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -80,18 +80,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtTitle;
-        public TextView txtLocation;
-        public TextView txtDescription;
-        public TextView txtOptionsDigit;
+        public TextView title;
+        public TextView location;
+        public TextView description;
+        public TextView optionsDigit;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtTitle = itemView.findViewById(R.id.textTitle);
-            txtLocation = itemView.findViewById(R.id.textLocation);
-            txtDescription = itemView.findViewById(R.id.textDescription);
-            txtOptionsDigit = itemView.findViewById(R.id.textOptionsDigit);
+            title = itemView.findViewById(R.id.textview_title);
+            location = itemView.findViewById(R.id.textview_location);
+            description = itemView.findViewById(R.id.textview_description);
+            optionsDigit = itemView.findViewById(R.id.textview_options_digit);
         }
     }
 }

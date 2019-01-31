@@ -14,12 +14,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.HashMap;
 
@@ -27,22 +30,22 @@ public class RegisterActivity extends AppCompatActivity {
     private final String TAG = "RegisterActivity";
 
     // Create EditText references
-    private EditText mEmail;
-    private EditText mPassword;
-    private EditText mUserName;
+    private EditText email;
+    private EditText password;
+    private EditText userName;
 
-    private TextView mLogin;
+    private TextView login;
 
     // Create Login Button
-    private Button mButtonRegister;
+    private Button register;
 
     // Create FirebaseAuth reference
-    private FirebaseAuth mFirebaseAuth;
-
+    private FirebaseAuth firebaseAuth;
+    String token;
     private DatabaseReference databaseReference;
 
     // Create ProgressDialog
-    private ProgressDialog mProgressDialog;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,45 +54,52 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         // Initialise EditTexts
-        mEmail = findViewById(R.id.editTextRegUserName);
-        mPassword = findViewById(R.id.editTextRegPasword);
-        mUserName = findViewById(R.id.editTextRegUserName);
-        mLogin = findViewById(R.id.textViewLogin);
+        email = findViewById(R.id.edit_text_reg_email);
+        password = findViewById(R.id.edit_text_reg_password);
+        userName = findViewById(R.id.edit_text_reg_user_name);
+        login = findViewById(R.id.text_view_reg_login);
         // Initialise Register Button
-        mButtonRegister = findViewById(R.id.buttonSignUp);
+        register = findViewById(R.id.button_sign_up);
 
         // Initialise FirebaseAuth
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mProgressDialog = new ProgressDialog(this);
+        firebaseAuth = FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(this);
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(RegisterActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                token = instanceIdResult.getToken();
+            }
+        });
         // Trigger Register button when clicked
-        mButtonRegister.setOnClickListener(new View.OnClickListener() {
+        register.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: starts");
 
                 // Get credentials from EditTexts
-                String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
-                String userName = mUserName.getText().toString().trim();
+                String email = RegisterActivity.this.email.getText().toString().trim();
+                String password = RegisterActivity.this.password.getText().toString().trim();
+                String userName = RegisterActivity.this.userName.getText().toString().trim();
 
                 // Validate credentials
                 if (!validateEmail(email)) {
-                    mEmail.setError("Not a valid email address!");
+                    RegisterActivity.this.email.setError("Not a valid email address!");
                 } else if (!validatePassword(password)) {
-                    mPassword.setError("Not a valid password!");
+                    RegisterActivity.this.password.setError("Not a valid password!");
                 } else {
-                    mProgressDialog.setTitle("Register User");
-                    mProgressDialog.setMessage("Please wait while we register your account !");
-                    mProgressDialog.setCanceledOnTouchOutside(false);
-                    mProgressDialog.show();
+                    progressDialog.setTitle("Register User");
+                    progressDialog.setMessage("Please wait while we register your account !");
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.show();
                     registerUser(userName, email, password);
                 }
                 Log.d(TAG, "onClick: ends");
             }
         });
 
-        mLogin.setOnClickListener(new View.OnClickListener() {
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent loginIntent = new Intent(RegisterActivity.this, MainActivity.class);
@@ -100,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser(final String displayName, String email, String password) {
         Log.d(TAG, "registerUser: starts");
-        mFirebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
@@ -110,6 +120,7 @@ public class RegisterActivity extends AppCompatActivity {
                     databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
 
                     HashMap<String, String> userMap = new HashMap<>();
+                    userMap.put("token", token);
                     userMap.put("name", displayName);
                     userMap.put("status", "Hey there!!!");
                     userMap.put("image", "default");
@@ -119,7 +130,7 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                mProgressDialog.dismiss();
+                                progressDialog.dismiss();
                                 Intent intent = new Intent(RegisterActivity.this, UserProfileActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -128,7 +139,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    mProgressDialog.hide();
+                    progressDialog.hide();
                     Toast.makeText(getApplicationContext(), "Error, could not create user", Toast.LENGTH_LONG).show();
                 }
             }

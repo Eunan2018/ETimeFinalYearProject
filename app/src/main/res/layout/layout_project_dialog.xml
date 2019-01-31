@@ -4,7 +4,7 @@
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/editTextLoginEmail"
+        android:id="@+id/edit_text_login_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -19,7 +19,7 @@
         android:id="@+id/editTexttLoginPaswordPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/editTextLoginEmail"
+        android:layout_alignEnd="@+id/edit_text_login_email"
         android:layout_alignParentTop="true"
         android:layout_marginTop="97dp"
         android:layout_marginEnd="-5dp"
@@ -31,8 +31,8 @@
         android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/editTextLoginEmail"
-        android:layout_alignEnd="@+id/editTextLoginEmail"
+        android:layout_alignStart="@+id/edit_text_login_email"
+        android:layout_alignEnd="@+id/edit_text_login_email"
         android:layout_alignParentTop="true"
         android:layout_marginStart="4dp"
         android:layout_marginTop="167dp"

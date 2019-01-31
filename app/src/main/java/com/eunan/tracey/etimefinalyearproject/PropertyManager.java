@@ -11,28 +11,28 @@ import java.util.Properties;
 public class PropertyManager {
 
     private static final String TAG = "PropertyManager";
-    private Context mContext;
-    private Properties mProperties;
+    private Context context;
+    private Properties properties;
 
     public PropertyManager(Context context) {
         Log.d(TAG, "PropertyManager: called");
-        this.mContext = context;
+        this.context = context;
         //creates a new object ‘Properties’
-        mProperties = new Properties();
+        properties = new Properties();
     }
 
     public Properties getProperties(String file) {
         Log.d(TAG, "getProperties: starts" + file);
         try {
             //access to the folder ‘assets’
-            AssetManager am = mContext.getAssets();
+            AssetManager am = context.getAssets();
             //opening the file
             InputStream inputStream = am.open(file);
             //loading of the properties
-            mProperties.load(inputStream);
+            properties.load(inputStream);
         } catch (IOException e) {
             Log.e("PropertiesReader", e.toString());
         }
-        return mProperties;
+        return properties;
     }
 }

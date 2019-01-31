@@ -21,7 +21,7 @@
                 android:id="@+id/cc"
                 android:layout_width="71dp"
                 android:layout_height="69dp"
-                android:layout_alignStart="@+id/textTitle"
+                android:layout_alignStart="@+id/textview_title"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
@@ -30,10 +30,10 @@
                 android:tint="@android:color/holo_red_light" />
 
             <TextView
-                android:id="@+id/textTitle"
+                android:id="@+id/textview_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textOptionsDigit"
+                android:layout_below="@+id/textview_options_digit"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="31dp"
                 android:layout_marginEnd="0dp"
@@ -41,27 +41,27 @@
                 android:textAppearance="?android:textAppearanceLarge" />
 
             <TextView
-                android:id="@+id/textLocation"
+                android:id="@+id/textview_location"
                 android:layout_width="360dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textTitle"
+                android:layout_below="@+id/textview_title"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="0dp"
                 android:hint="Location"
                 android:textAppearance="?android:textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/textDescription"
+                android:id="@+id/textview_description"
                 android:layout_width="360dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textLocation"
+                android:layout_below="@+id/textview_location"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="0dp"
                 android:hint="Description"
                 android:textAppearance="?android:textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/textOptionsDigit"
+                android:id="@+id/textview_options_digit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"

@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/userSingleName"
+        android:id="@+id/user_single_name"
         android:layout_width="124dp"
         android:layout_height="24dp"
         android:layout_alignRight="@+id/user_image"
@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="@+id/user_image" />
 
     <TextView
-        android:id="@+id/userSinglestaus"
+        android:id="@+id/user_single_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"

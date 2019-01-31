@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -36,12 +35,12 @@ public class UsersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_users);
 
         // Layout
-        toolbar = findViewById(R.id.usersAppBar);
+        toolbar = findViewById(R.id.users_app_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("All Users");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        usersRecyclerView = findViewById(R.id.usersRecyclerView);
+        usersRecyclerView = findViewById(R.id.recycler_view_users);
         usersRecyclerView.setHasFixedSize(true);
         usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -80,7 +79,7 @@ public class UsersActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent profileIntent = new Intent(UsersActivity.this,ProfileActivity.class);
-                        profileIntent.putExtra("userId",userId);
+                        profileIntent.putExtra("from_user_id",userId);
                         startActivity(profileIntent);
                     }
                 });
@@ -100,12 +99,12 @@ public class UsersActivity extends AppCompatActivity {
         }
 
         public void setName(String name) {
-            TextView userName = view.findViewById(R.id.userSingleName);
+            TextView userName = view.findViewById(R.id.user_single_name);
             userName.setText(name);
         }
 
         public void setStatus(String status) {
-            TextView userStatus = view.findViewById(R.id.userSinglestaus);
+            TextView userStatus = view.findViewById(R.id.user_single_status);
             userStatus.setText(status);
         }
 

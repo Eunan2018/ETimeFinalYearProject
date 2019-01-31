@@ -1,3 +1,4 @@
+
 package com.eunan.tracey.etimefinalyearproject;
 
 import android.app.ProgressDialog;
@@ -20,12 +21,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -38,23 +44,16 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
 
-    // Create EditText references
-    private EditText mEmail;
-    private EditText mPassword;
-    // Create Login Button
-    private Button mButtonLogin;
-    // Create GoogleSignInButton
-    private SignInButton mSignInButton;
-    // Create ProgressDialog
-    private ProgressDialog mProgressDialog;
-    // Create FireBaseAuth reference
-    private FirebaseAuth mFirebaseAuth;
-    // Create GoogleSignIn reference
-    private GoogleSignInClient mGoogleSignInClient;
-    // Create Twitter Login Button
-    private TwitterLoginButton mTwitterLoginButton;
-
-    private TextView txtRegister;
+    private TextView register;
+    private EditText email;
+    private EditText password;
+    private Button buttonLogin;
+    private SignInButton signInButton;
+    private ProgressDialog progressDialog;
+    private FirebaseAuth firebaseAuth;
+    private GoogleSignInClient googleSignInClient;
+    private TwitterLoginButton twitterLoginButton;
+    private DatabaseReference userDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,25 +63,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Initialise dialog
-        mProgressDialog = new ProgressDialog(MainActivity.this);
-        mProgressDialog.setMessage("Loading...");
-        mProgressDialog.setTitle("Login");
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setCancelable(false);
+        progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setTitle("Login");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
         // Initialise Login Button
-        mButtonLogin = findViewById(R.id.buttonLogin);
+        buttonLogin = findViewById(R.id.button_login);
         // Initialise Email and Password EditTexts
         // Initialise GoogleSignInButton
-        mSignInButton = findViewById(R.id.google_signin_button);
-        mEmail = findViewById(R.id.editTextLoginEmail);
-        mPassword = findViewById(R.id.editTextLoginPasword);
+        signInButton = findViewById(R.id.google_signin_button);
+        email = findViewById(R.id.edit_text_login_email);
+        password = findViewById(R.id.edit_text_login_password);
         // Initialise FireBaseAuth
-        mFirebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
         // Initialise Twitter Kit
-        mTwitterLoginButton = findViewById(R.id.twitter_login_button);
+        twitterLoginButton = findViewById(R.id.twitter_login_button);
 
-        txtRegister = findViewById(R.id.textViewRegister);
-        mTwitterLoginButton.setCallback(new Callback<TwitterSession>() {
+        register = findViewById(R.id.text_view_login_register);
+        twitterLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
                 TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
@@ -104,41 +104,41 @@ public class MainActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         // Initialise GoogleSignInClient
-        mGoogleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
         // Trigger Login when button is clicked
-        mSignInButton.setOnClickListener(new View.OnClickListener() {
+        signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                mProgressDialog.show();
-                Intent intent = mGoogleSignInClient.getSignInIntent();
+                progressDialog.show();
+                Intent intent = googleSignInClient.getSignInIntent();
                 startActivityForResult(intent, 101);
             }
         });
         // Trigger Login when button is clicked
-        mButtonLogin.setOnClickListener(new View.OnClickListener() {
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: starts");
 
                 // Get credentials from EditTexts
-                String email = mEmail.getText().toString();
-                String password = mPassword.getText().toString();
+                String email = MainActivity.this.email.getText().toString();
+                String password = MainActivity.this.password.getText().toString();
 
                 // Validate credentials
                 if (!validateEmail(email)) {
-                    mEmail.setError("Not a valid email address!");
+                    MainActivity.this.email.setError("Not a valid email address!");
                 } else if (!validatePassword(password)) {
-                    mPassword.setError("Not a valid password!");
+                    MainActivity.this.password.setError("Not a valid password!");
                 } else {
-                    mProgressDialog.show();
+                    progressDialog.show();
                     loginUser(email, password);
                 }
             }
         });
 
-        txtRegister.setOnClickListener(new View.OnClickListener() {
+        register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent registerIntent = new Intent(MainActivity.this, RegisterActivity.class);
@@ -151,16 +151,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void loginUser(String email, String password) {
         Log.d(TAG, "loginUser: starts");
-        mFirebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    mProgressDialog.dismiss();
-                    Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
-                    startActivity(intent);
-                    Toast.makeText(MainActivity.this, "Login Successful, ", Toast.LENGTH_LONG).show();
+                    progressDialog.dismiss();
+                    final String currentUserId = firebaseAuth.getCurrentUser().getUid();
+                    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( MainActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+                        @Override
+                        public void onSuccess(InstanceIdResult instanceIdResult) {
+                            String token = instanceIdResult.getToken();
+                            userDatabaseReference.child(currentUserId).child("token").setValue(token).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+                                    startActivity(intent);
+                                    Toast.makeText(MainActivity.this, "Login Successful, ", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    });
+
                 } else {
-                    mProgressDialog.hide();
+                    progressDialog.hide();
                     Toast.makeText(MainActivity.this, "Error, login failed", Toast.LENGTH_LONG).show();
                 }
             }
@@ -184,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            mTwitterLoginButton.onActivityResult(requestCode, resultCode, data);
+            twitterLoginButton.onActivityResult(requestCode, resultCode, data);
             Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_LONG).show();
         }
         Log.d(TAG, "onActivityResult: ends");
@@ -197,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 session.getAuthToken().token,
                 session.getAuthToken().secret);
 
-        mFirebaseAuth.signInWithCredential(credential)
+        firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -222,19 +235,19 @@ public class MainActivity extends AppCompatActivity {
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle: starts");
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mFirebaseAuth.signInWithCredential(credential)
+        firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            mProgressDialog.dismiss();
+                            progressDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "Successful Login", Toast.LENGTH_LONG).show();
-                            //FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                            //FirebaseUser user = firebaseAuth.getCurrentUser();
                             Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
                             startActivity(intent);
                             //                          finish();
                         } else {
-                            mProgressDialog.hide();
+                            progressDialog.hide();
                             Toast.makeText(getApplicationContext(), "Error Login", Toast.LENGTH_LONG).show();
                         }
                     }

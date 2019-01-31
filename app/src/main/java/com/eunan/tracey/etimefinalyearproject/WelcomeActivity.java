@@ -10,8 +10,8 @@ import android.widget.Button;
 public class WelcomeActivity extends AppCompatActivity {
 
     // Layout
-    private Button btnLogin;
-    private Button btnSigUp;
+    private Button login;
+    private Button signUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,10 +19,10 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_welcome);
 
         // Layout
-        btnLogin = findViewById(R.id.buttonLogin);
-        btnSigUp = findViewById(R.id.buttonSignUp);
+        login = findViewById(R.id.button_login);
+        signUp = findViewById(R.id.button_sign_up);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent loginIntent = new Intent(WelcomeActivity.this,MainActivity.class);
@@ -30,7 +30,7 @@ public class WelcomeActivity extends AppCompatActivity {
             }
         });
 
-        btnSigUp.setOnClickListener(new View.OnClickListener() {
+        signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent signUpIntent = new Intent(WelcomeActivity.this,RegisterActivity.class);

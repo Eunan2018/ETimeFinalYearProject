@@ -9,7 +9,7 @@
 
 
     <EditText
-        android:id="@+id/editTextLoginEmail"
+        android:id="@+id/edit_text_login_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/twitter_login_button"
@@ -21,14 +21,14 @@
         android:inputType="textEmailAddress"
         android:textColor="@color/tw__composer_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLoginMain" />
+        app:layout_constraintTop_toBottomOf="@+id/text_view_login_main" />
 
     <EditText
-        android:id="@+id/editTextLoginPasword"
+        android:id="@+id/edit_text_login_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextLoginEmail"
-        android:layout_alignEnd="@+id/editTextLoginEmail"
+        android:layout_below="@+id/edit_text_login_email"
+        android:layout_alignEnd="@+id/edit_text_login_email"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
@@ -36,7 +36,7 @@
         android:inputType="textPassword"
         android:textColor="@color/tw__composer_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLoginEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_login_email" />
 
 
     <com.google.android.gms.common.SignInButton
@@ -49,21 +49,21 @@
         android:freezesText="true"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/twitter_login_button"
-        app:layout_constraintStart_toStartOf="@+id/textViewRegister"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLogin"></com.google.android.gms.common.SignInButton>
+        app:layout_constraintStart_toStartOf="@+id/text_view_login_register"
+        app:layout_constraintTop_toBottomOf="@+id/button_login"></com.google.android.gms.common.SignInButton>
 
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/button_login"
         android:layout_width="86dp"
         android:layout_height="26dp"
-        android:layout_alignEnd="@+id/editTextLoginEmail"
+        android:layout_alignEnd="@+id/edit_text_login_email"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:background="@android:color/holo_red_light"
         android:text="@string/login"
         android:textColor="@color/tw__composer_white"
-        app:layout_constraintEnd_toEndOf="@+id/editTextLoginPasword"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLoginPasword" />
+        app:layout_constraintEnd_toEndOf="@+id/edit_text_login_password"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_login_password" />
 
     <com.twitter.sdk.android.core.identity.TwitterLoginButton
         android:id="@+id/twitter_login_button"
@@ -75,8 +75,8 @@
         android:background="@android:color/holo_blue_dark"
         android:text="Button"
         android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="@+id/buttonLogin"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
+        app:layout_constraintEnd_toEndOf="@+id/button_login"
+        app:layout_constraintTop_toBottomOf="@+id/button_login" />
 
     <ImageView
         android:id="@+id/imageViewReg"
@@ -91,10 +91,10 @@
         app:srcCompat="@drawable/timesheet" />
 
     <TextView
-        android:id="@+id/textViewLoginMain"
+        android:id="@+id/text_view_login_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/editTexttLoginPaswordPassword"
+        android:layout_alignStart="@+id/edit_text_login_password"
         android:layout_alignParentTop="true"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -106,15 +106,15 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewReg" />
 
     <TextView
-        android:id="@+id/textViewRegister"
+        android:id="@+id/text_view_login_register"
         android:layout_width="155dp"
         android:layout_height="17dp"
         android:layout_marginStart="4dp"
         android:text="SIGN UP"
         android:textColor="@color/tw__composer_white"
         android:textSize="14sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/buttonLogin"
-        app:layout_constraintStart_toStartOf="@+id/editTextLoginPasword" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/button_login"
+        app:layout_constraintStart_toStartOf="@+id/edit_text_login_password" />
 
 </android.support.constraint.ConstraintLayout>
 

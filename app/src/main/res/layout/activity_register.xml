@@ -10,7 +10,7 @@
 
 
     <EditText
-        android:id="@+id/editTextRegEmail"
+        android:id="@+id/edit_text_reg_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/twitter_login_button"
@@ -25,7 +25,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewReg" />
 
     <EditText
-        android:id="@+id/editTextRegUserName"
+        android:id="@+id/edit_text_reg_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/twitter_login_button"
@@ -37,14 +37,14 @@
         android:inputType="textEmailAddress"
         android:textColor="@color/tw__composer_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextRegEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_reg_email" />
 
     <EditText
-        android:id="@+id/editTextRegPasword"
+        android:id="@+id/edit_text_reg_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editTextLoginEmail"
-        android:layout_alignEnd="@+id/editTextLoginEmail"
+        android:layout_below="@+id/edit_text_login_email"
+        android:layout_alignEnd="@+id/edit_text_login_email"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
@@ -52,21 +52,21 @@
         android:inputType="textPassword"
         android:textColor="@color/tw__composer_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextRegUserName" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_reg_user_name" />
 
 
     <Button
-        android:id="@+id/buttonSignUp"
+        android:id="@+id/button_sign_up"
         android:layout_width="wrap_content"
         android:layout_height="26dp"
-        android:layout_alignEnd="@+id/editTextLoginEmail"
+        android:layout_alignEnd="@+id/edit_text_login_email"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:background="@android:color/holo_red_light"
         android:text="SIGN UP"
         android:textColor="@color/tw__composer_white"
-        app:layout_constraintEnd_toEndOf="@+id/editTextRegPasword"
-        app:layout_constraintTop_toBottomOf="@+id/editTextRegPasword" />
+        app:layout_constraintEnd_toEndOf="@+id/edit_text_reg_password"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_reg_password" />
 
 
     <ImageView
@@ -82,7 +82,7 @@
         app:srcCompat="@drawable/timesheet" />
 
     <TextView
-        android:id="@+id/textViewLogin"
+        android:id="@+id/text_view_reg_login"
         android:layout_width="155dp"
         android:layout_height="17dp"
         android:layout_marginStart="4dp"
@@ -90,8 +90,8 @@
         android:text="LOGIN INSTEAD"
         android:textColor="@color/tw__composer_white"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/editTextRegPasword"
-        app:layout_constraintTop_toBottomOf="@+id/editTextRegPasword" />
+        app:layout_constraintStart_toStartOf="@+id/edit_text_reg_password"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_reg_password" />
 
 </android.support.constraint.ConstraintLayout>
 

@@ -1,5 +1,5 @@
 package com.eunan.tracey.etimefinalyearproject;
 
 public enum EmploymentStatus {
-    EMPLOYER, EMPLOYEE
+    EMPLOYER, EMPLOYEE,RECEIVED,SENT
 }

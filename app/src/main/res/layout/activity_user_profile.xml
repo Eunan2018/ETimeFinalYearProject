@@ -10,7 +10,7 @@
 
 
     <TextView
-        android:id="@+id/textViewEmployee"
+        android:id="@+id/textview_employee"
         android:layout_width="329dp"
         android:layout_height="95dp"
         android:layout_marginStart="8dp"
@@ -21,16 +21,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEmployer" />
+        app:layout_constraintTop_toBottomOf="@+id/textview_employer" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/circleImageView2"
         android:layout_width="92dp"
         android:layout_height="94dp"
         android:src="@drawable/home"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewEmployee"
-        app:layout_constraintStart_toStartOf="@+id/textViewEmployee"
-        app:layout_constraintTop_toTopOf="@+id/textViewEmployee"
+        app:layout_constraintBottom_toBottomOf="@+id/textview_employee"
+        app:layout_constraintStart_toStartOf="@+id/textview_employee"
+        app:layout_constraintTop_toTopOf="@+id/textview_employee"
         app:layout_constraintVertical_bias="0.0" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -38,13 +38,13 @@
         android:layout_width="89dp"
         android:layout_height="92dp"
         android:src="@drawable/home"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewEmployer"
-        app:layout_constraintStart_toStartOf="@+id/textViewEmployer"
-        app:layout_constraintTop_toTopOf="@+id/textViewEmployer"
+        app:layout_constraintBottom_toBottomOf="@+id/textview_employer"
+        app:layout_constraintStart_toStartOf="@+id/textview_employer"
+        app:layout_constraintTop_toTopOf="@+id/textview_employer"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
-        android:id="@+id/textViewEmployer"
+        android:id="@+id/textview_employer"
         android:layout_width="329dp"
         android:layout_height="95dp"
         android:layout_marginStart="8dp"

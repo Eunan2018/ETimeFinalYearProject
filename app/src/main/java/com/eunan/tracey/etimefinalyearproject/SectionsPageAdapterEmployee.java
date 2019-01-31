@@ -4,9 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-public class SectionsPageAdapter extends FragmentPagerAdapter {
+public class SectionsPageAdapterEmployee extends FragmentPagerAdapter {
 
-    public SectionsPageAdapter(FragmentManager fragmentManager) {
+
+    public SectionsPageAdapterEmployee(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
 
@@ -15,11 +16,11 @@ public class SectionsPageAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-               ProjectFragment projectFragment = new ProjectFragment();
-                return projectFragment;
+               TimeSheetFragment timesheetFragment = new TimeSheetFragment();
+                return timesheetFragment;
             case 1:
-                EmployeeFragment employeeFragment = new EmployeeFragment();
-                return employeeFragment;
+                InvoiceFragment invoiceFragment = new InvoiceFragment();
+                return invoiceFragment;
             default:
                 return null;
         }
@@ -34,9 +35,9 @@ public class SectionsPageAdapter extends FragmentPagerAdapter {
 
         switch(position){
             case 0:
-                return "PROJECT";
+                return "TIME SHEET";
             case 1:
-                return "EMPLOYEE";
+                return "INVOICE";
             default:
                 return null;
         }

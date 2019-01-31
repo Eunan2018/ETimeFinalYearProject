@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,17 +28,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
@@ -52,9 +52,9 @@ public class SettingsActivity extends AppCompatActivity {
     // Storage
     private StorageReference storageReferenceImage;
     // Layout
-    private CircleImageView circleImageView;
-    private TextView txtName;
-    private TextView txtStatus;
+    private ImageView imageView;
+    private TextView name;
+    private TextView status;
     private Button btnStatus;
     private Button imgBtn;
     private static final int PICK = 1;
@@ -69,11 +69,11 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         // Layouts
-        txtName = findViewById(R.id.textViewDisplayName);
-        txtStatus = findViewById(R.id.textViewStatus);
-        circleImageView = findViewById(R.id.profileImage);
-        btnStatus = findViewById(R.id.statusBtn);
-        imgBtn = findViewById(R.id.imgBtn);
+        name = findViewById(R.id.textview_set_display_name);
+        status = findViewById(R.id.textview_set_status);
+        imageView = findViewById(R.id.circle_set_profile_image);
+        btnStatus = findViewById(R.id.button_status);
+        imgBtn = findViewById(R.id.button_image);
 
         // Storage
         // Points to root
@@ -82,20 +82,30 @@ public class SettingsActivity extends AppCompatActivity {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String uid = currentUser.getUid();
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
-
+        userDatabase.keepSynced(true);
         userDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 String name = dataSnapshot.child("name").getValue().toString();
-                String image = dataSnapshot.child("image").getValue().toString();
+                final String image = dataSnapshot.child("image").getValue().toString();
                 String status = dataSnapshot.child("status").getValue().toString();
                 String thumbImage = dataSnapshot.child("thumbImage").getValue().toString();
 
-                txtName.setText(name);
-                txtStatus.setText(status);
+                SettingsActivity.this.name.setText(name);
+                SettingsActivity.this.status.setText(status);
                 if (!image.equals("default")) {
-                    Picasso.with(SettingsActivity.this).load(image).placeholder(R.drawable.default_avatar).into(circleImageView);
+                    Picasso.with(SettingsActivity.this).load(image).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.default_avatar).into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            Picasso.with(SettingsActivity.this).load(image).placeholder(R.drawable.default_avatar).into(imageView);
+                        }
+                    });
                 }
             }
 
@@ -108,7 +118,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String statusText = txtStatus.getText().toString();
+                String statusText = status.getText().toString();
                 Intent statusIntent = new Intent(SettingsActivity.this, StatusActivity.class);
                 statusIntent.putExtra("statusText", statusText);
                 startActivity(statusIntent);

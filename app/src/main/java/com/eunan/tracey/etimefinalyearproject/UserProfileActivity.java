@@ -8,30 +8,30 @@ import android.widget.TextView;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    private TextView txtEmployer;
-    private TextView txtEmployee;
+    private TextView employer;
+    private TextView employee;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        txtEmployer = findViewById(R.id.textViewEmployer);
-        txtEmployee = findViewById(R.id.textViewEmployee);
+        employer = findViewById(R.id.textview_employer);
+        employee = findViewById(R.id.textview_employee);
 
 
-        txtEmployer.setOnClickListener(new View.OnClickListener() {
+        employer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent employerIntent = new Intent(UserProfileActivity.this,EmployerProfile.class);
+                Intent employerIntent = new Intent(UserProfileActivity.this,EmployerProfileActivity.class);
                 startActivity(employerIntent);
             }
         });
 
-        txtEmployee.setOnClickListener(new View.OnClickListener() {
+        employee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent employeeIntent = new Intent(UserProfileActivity.this,EmployeeProfile.class);
+                Intent employeeIntent = new Intent(UserProfileActivity.this,EmployeeProfileActivity.class);
                 startActivity(employeeIntent);
             }
         });
