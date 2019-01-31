@@ -148,7 +148,7 @@ public class ProjectActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
-
+                // TODO FIX FIRST ELEMENT IN SPINNER NOT TO SHOW
                 String n = empSpinner.getSelectedItem().toString();
                 x.add(n);
                 adapter = new ArrayAdapter(ProjectActivity.this, android.R.layout.simple_list_item_1, x);
