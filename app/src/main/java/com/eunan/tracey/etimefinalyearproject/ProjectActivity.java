@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -29,12 +30,13 @@ import java.util.List;
 
 public class ProjectActivity extends AppCompatActivity {
     private final String TAG = "Project Activity";
-
+    private boolean isSpinnerInitial = true; //As global variable
     // Layout
     private EditText projectName;
     private EditText projectLocation;
     private EditText projectDescription;
     private Button addProject;
+
 
     // Database
     DatabaseReference databaseProject;
@@ -42,13 +44,16 @@ public class ProjectActivity extends AppCompatActivity {
     DatabaseReference employeeDatabase;
     FirebaseUser currentUser;
     Spinner empSpinner;
-    private ArrayAdapter adapter;
+    private ArrayAdapter employeeAdapter;
     ListView listView;
+    final List<String> empList = new ArrayList<>();
+    final List<String> employeeList = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: starts");
         setContentView(R.layout.activity_project);
+
 
         // Firebase
         databaseProject = FirebaseDatabase.getInstance().getReference("projects");
@@ -72,7 +77,7 @@ public class ProjectActivity extends AppCompatActivity {
                 String location = projectLocation.getText().toString().trim();
                 String description = projectDescription.getText().toString().trim();
                 if (!validate(name)) {
-                    Toast.makeText(ProjectActivity.this, "Name Cannot Be Empty", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProjectActivity.this, "Project Cannot Be Empty", Toast.LENGTH_LONG).show();
                 } else if (!validate(location)) {
                     Toast.makeText(ProjectActivity.this, "Location Cannot Be Empty", Toast.LENGTH_LONG).show();
                 } else if (!validate(description)) {
@@ -80,14 +85,16 @@ public class ProjectActivity extends AppCompatActivity {
                 } else {
                     // Create unique key for each project
                     String id = databaseProject.push().getKey();
-                    Project project = new Project(name, location, description);
+                    Project project = new Project(name, location, description, empList);
                     databaseProject.child(userId).child(id).setValue(project);
 
                     Toast.makeText(ProjectActivity.this, "Project Added", Toast.LENGTH_SHORT).show();
                     projectName.setText("");
                     projectLocation.setText("");
                     projectDescription.setText("");
-
+                    employeeList.clear();
+                    employeeAdapter.notifyDataSetChanged();
+                    projectName.requestFocus();
                 }
             }
         });
@@ -104,7 +111,7 @@ public class ProjectActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: starts : " + dataSnapshot);
-                final List<String> empList = new ArrayList<>();
+
                 for (DataSnapshot db : dataSnapshot.getChildren()) {
                     String key = db.getKey();
                     usersDatabase.child(key).addValueEventListener(new ValueEventListener() {
@@ -141,27 +148,37 @@ public class ProjectActivity extends AppCompatActivity {
         ArrayAdapter<String> employees = new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_spinner_item, names);
         employees.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         empSpinner.setAdapter(employees);
-        final List x = new ArrayList();
-        Log.d(TAG, "onDataChange: below spinner " + employees.toString());
         empSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
                 // TODO FIX FIRST ELEMENT IN SPINNER NOT TO SHOW
-                String n = empSpinner.getSelectedItem().toString();
-                x.add(n);
-                adapter = new ArrayAdapter(ProjectActivity.this, android.R.layout.simple_list_item_1, x);
-                //adapter.add(n);
-                listView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-                Toast.makeText(ProjectActivity.this, n, Toast.LENGTH_SHORT).show();
+                if (isSpinnerInitial) {
+                    isSpinnerInitial = false;
+                    return;
+                }
+
+                String name = parent.getSelectedItem().toString();
+                employeeList.add(name);
+                employeeAdapter = new ArrayAdapter(ProjectActivity.this, android.R.layout.simple_list_item_1, employeeList);
+                listView.setAdapter(employeeAdapter);
+
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
                 // TODO Auto-generated method stub
 
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                employeeList.remove(employeeList.get(position));
+                listView.requestFocus();
+                employeeAdapter.notifyDataSetChanged();
+
+                return false;
             }
         });
     }

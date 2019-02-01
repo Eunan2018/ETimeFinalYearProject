@@ -8,13 +8,14 @@ public class Project {
     private String projectName;
     private String projectLocation;
     private String projectDescription;
-   // private List<User> userList;
+   private List<String> userList;
 
-    public Project(String projectName, String projectLocation, String projectDescription) {
+    public Project(String projectName, String projectLocation, String projectDescription,List user) {
 
         this.projectName = projectName;
         this.projectLocation = projectLocation;
         this.projectDescription = projectDescription;
+        this.userList = user;
     }
 
 
@@ -46,13 +47,13 @@ public class Project {
         this.projectDescription = projectDescription;
     }
 
-//    public List<User> getUserList() {
-//        return userList;
-//    }
-//
-//    public void setUserList(List<User> userList) {
-//        this.userList = userList;
-//    }
+    public List<String> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<String> userList) {
+        this.userList = userList;
+    }
 
     @Override
     public String toString() {
