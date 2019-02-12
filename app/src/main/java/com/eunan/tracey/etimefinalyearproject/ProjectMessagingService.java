@@ -7,23 +7,23 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
 
-public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
+public class ProjectMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        String title = remoteMessage.getNotification().getTitle();
-        String message = remoteMessage.getNotification().getBody();
+        String messageTitle = remoteMessage.getNotification().getTitle();
+        String messageBody = remoteMessage.getNotification().getBody();
 
         String clickAction = remoteMessage.getNotification().getClickAction();
 
         String fromUserId = remoteMessage.getData().get("from_user_id");
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.timesheet)
-                .setContentTitle(title)
-                .setContentText(message);
+        NotificationCompat.Builder builder =  new NotificationCompat.Builder(this,getString(R.string.default_notification_channel_id))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(messageTitle)
+                .setContentText(messageBody);
 
 
         Intent resultIntent = new Intent(clickAction);
