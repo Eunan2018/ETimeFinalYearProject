@@ -19,13 +19,12 @@ import com.google.firebase.database.FirebaseDatabase;
 public class StatusActivity extends AppCompatActivity {
 
     // Layout
-    private android.support.v7.widget.Toolbar toolbar;
     private TextInputLayout txtStatus;
-    private Button btnSave;
+
 
     // Database
-    DatabaseReference statusDatabase;
-    FirebaseUser currentUser;
+    private DatabaseReference statusDatabase;
+    private FirebaseUser currentUser;
 
     // Progress Dialog
     ProgressDialog progressDialog;
@@ -39,6 +38,7 @@ public class StatusActivity extends AppCompatActivity {
         String uid = currentUser.getUid();
         statusDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
         // Layout
+        android.support.v7.widget.Toolbar toolbar;
         toolbar = findViewById(R.id.statusAppBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Account Status");
@@ -47,6 +47,7 @@ public class StatusActivity extends AppCompatActivity {
         String statusText = getIntent().getStringExtra("statusText");
 
         txtStatus = findViewById(R.id.textViewStatusInput);
+        Button btnSave;
         btnSave = findViewById(R.id.buttonSave);
 
         txtStatus.getEditText().setText(statusText);

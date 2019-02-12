@@ -1,6 +1,8 @@
 package com.eunan.tracey.etimefinalyearproject;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,18 +31,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EmployeeFragment extends android.support.v4.app.Fragment {
 
+    private final String TAG = "EmployeeFragment";
     // Firebase
     private RecyclerView recyclerView;
     private DatabaseReference employeeDatabase;
     private DatabaseReference usersDatabaseReference;
     private FirebaseAuth firebaseAuth;
-
     private String currentUserId;
 
 
     // Layout
     private FloatingActionButton fab;
     private View view;
+
     public EmployeeFragment() {
         // Required empty public constructor
     }
@@ -47,6 +51,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: starts");
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_employee, container, false);
 
@@ -55,7 +60,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
 
         currentUserId = firebaseAuth.getCurrentUser().getUid();
-        employeeDatabase = FirebaseDatabase.getInstance().getReference().child("Friends").child(currentUserId);
+        employeeDatabase = FirebaseDatabase.getInstance().getReference().child("Assigned").child(currentUserId);
         employeeDatabase.keepSynced(true);
         usersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
         usersDatabaseReference.keepSynced(true);
@@ -71,6 +76,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart: starts");
         FirebaseRecyclerOptions<Employee> options =
                 new FirebaseRecyclerOptions.Builder<Employee>()
                         .setQuery(employeeDatabase, Employee.class)
@@ -80,6 +86,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
 
             @Override
             public EmployeeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                Log.d(TAG, "onCreateViewHolder: starts");
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.users_layout, parent, false);
                 return new EmployeeViewHolder(view);
@@ -87,34 +94,57 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
 
 
             @Override
-            protected void onBindViewHolder(final EmployeeViewHolder employeeViewHolder, int position, @NonNull Employee employee) {
-
-
+            protected void onBindViewHolder(final EmployeeViewHolder employeeViewHolder, final int position, @NonNull Employee employee) {
+                Log.d(TAG, "onBindViewHolder: starts");
                 final String userId = getRef(position).getKey();
+
                 usersDatabaseReference.child(userId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         String name = dataSnapshot.child("name").getValue().toString();
                         String image = dataSnapshot.child("thumbImage").getValue().toString();
                         employeeViewHolder.setName(name);
-                        employeeViewHolder.setImage(getContext(),image);
+                        employeeViewHolder.setImage(getContext(), image);
                     }
-
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
                 });
-
                 employeeViewHolder.setDate(employee.getDate());
 
                 employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent profileIntent = new Intent(getContext().getApplicationContext(), ProfileActivity.class);
-                        profileIntent.putExtra("from_user_id", userId);
-                        startActivity(profileIntent);
+                        Log.d(TAG, "onClick: starts");
+                        // Build a dialog box where the user can choose either profile or time-sheet
+                        CharSequence options[] = new CharSequence[]{"Open Profile", "View Time Sheet"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Options");
+                        builder.setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int position) {
+                        switch (position) {
+                            case 0:
+                                Intent profileIntent = new Intent(getContext().getApplicationContext(), ProfileActivity.class);
+                                profileIntent.putExtra("from_user_id", userId);
+
+                                startActivity(profileIntent);
+                                break;
+                            case 1:
+                                Intent timeSheetIntent = new Intent(getContext().getApplicationContext(), TimeSheetActivity.class);
+                                timeSheetIntent.putExtra("from_user_id", userId);
+                                timeSheetIntent.putExtra("name", employeeViewHolder.getName());
+                                timeSheetIntent.putExtra("employer_id",currentUserId);
+                                startActivity(timeSheetIntent);
+                                break;
+                            default :
+                                break;
+                        }
+                            }
+                        });
+                        builder.show();
                     }
                 });
             }
@@ -125,10 +155,13 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
     }
 
     public static class EmployeeViewHolder extends RecyclerView.ViewHolder {
+        private final static String TAG = "EmployeeViewHolder";
         View view;
+        String uName;
 
         public EmployeeViewHolder(View itemView) {
             super(itemView);
+            Log.d(TAG, "EmployeeViewHolder: starts");
             view = itemView;
         }
 
@@ -140,6 +173,10 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
         public void setName(String name) {
             TextView userName = view.findViewById(R.id.user_single_name);
             userName.setText(name);
+            uName = name;
+        }
+        public String getName() {
+          return uName;
         }
 
         public void setImage(Context context, String image) {
@@ -151,7 +188,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Log.d(TAG, "onActivityCreated: starts");
         fab = getView().findViewById(R.id.fab_add_employee);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,15 +198,16 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-                if (dy > 0 ||dy<0 && fab.isShown())
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && fab.isShown())
                     fab.hide();
             }
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE){
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     fab.show();
                 }
                 super.onScrollStateChanged(recyclerView, newState);

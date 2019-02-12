@@ -34,8 +34,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
-    private DatabaseReference friendReqDatabase;
-    private DatabaseReference friendDatabase;
+    private DatabaseReference projectReqDatabase;
+    private DatabaseReference assignedDatabase;
     private DatabaseReference notificationDatabase;
 
     private DatabaseReference rootRef;
@@ -54,14 +54,14 @@ public class ProfileActivity extends AppCompatActivity {
         rootRef = FirebaseDatabase.getInstance().getReference();
 
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
-        friendReqDatabase = FirebaseDatabase.getInstance().getReference().child("Friend_req");
-        friendDatabase = FirebaseDatabase.getInstance().getReference().child("Friends");
+        projectReqDatabase = FirebaseDatabase.getInstance().getReference().child("Project_req");
+        assignedDatabase = FirebaseDatabase.getInstance().getReference().child("Assigned");
        // notificationDatabase = FirebaseDatabase.getInstance().getReference().child("notifications");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         profileImage = (ImageView) findViewById(R.id.image_view_profile);
         profileName = (TextView) findViewById(R.id.text_view_profile_display_name);
-        send = (Button) findViewById(R.id.button_profile_friend_request);
+        send = (Button) findViewById(R.id.button_profile_project_request);
         decline = (Button) findViewById(R.id.button_profile_decline_request);
 
 
@@ -102,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 //--------------- EMPLOYEE LIST / REQUEST FEATURE -----
 
-                friendReqDatabase.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                projectReqDatabase.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -131,7 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         } else {
 
-                            friendDatabase.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            assignedDatabase.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -186,8 +186,8 @@ public class ProfileActivity extends AppCompatActivity {
                     notificationData.put("type", "request");
 
                     Map requestProjectMap = new HashMap();
-                    requestProjectMap.put("Friend_req/" + currentUser.getUid() + "/" + user_id + "/request_type", "sent");
-                    requestProjectMap.put("Friend_req/" + user_id + "/" + currentUser.getUid() + "/request_type", "received");
+                    requestProjectMap.put("Project_req/" + currentUser.getUid() + "/" + user_id + "/request_type", "sent");
+                    requestProjectMap.put("Project_req/" + user_id + "/" + currentUser.getUid() + "/request_type", "received");
                     requestProjectMap.put("notifications/" + user_id + "/" + newNotificationId, notificationData);
 
                     rootRef.updateChildren(requestProjectMap, new DatabaseReference.CompletionListener() {
@@ -215,11 +215,11 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if(currentState.equals(Status.SENT)){
 
-                    friendReqDatabase.child(currentUser.getUid()).child(user_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    projectReqDatabase.child(currentUser.getUid()).child(user_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
 
-                            friendReqDatabase.child(user_id).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            projectReqDatabase.child(user_id).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
 
@@ -248,11 +248,11 @@ public class ProfileActivity extends AppCompatActivity {
                     final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
 
                     Map projectMap = new HashMap();
-                    projectMap.put("Friends/" + user_id + "/"  + currentUser.getUid() + "/date", currentDate);
+                    projectMap.put("Assigned/" + user_id + "/"  + currentUser.getUid() + "/date", currentDate);
 
 
-                    projectMap.put("Friend_req/" + currentUser.getUid() + "/" + user_id, null);
-                    projectMap.put("Friend_req/" + user_id + "/" + currentUser.getUid(), null);
+                    projectMap.put("Project_req/" + currentUser.getUid() + "/" + user_id, null);
+                    projectMap.put("Project_req/" + user_id + "/" + currentUser.getUid(), null);
 
 
                     rootRef.updateChildren(projectMap, new DatabaseReference.CompletionListener() {
@@ -284,13 +284,13 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
 
-                // ------------ UNFRIENDS ---------
+                // ------------ REMOVE FROM PROJECT ---------
 
                 if(currentState.equals(Status.EMPLOYED)){
 
                     Map removeFromProject = new HashMap();
-                    removeFromProject.put("Friends/" + currentUser.getUid() + "/" + user_id, null);
-                    removeFromProject.put("Friends/" + user_id + "/" + currentUser.getUid(), null);
+                    removeFromProject.put("Assigned/" + currentUser.getUid() + "/" + user_id, null);
+                    removeFromProject.put("Assigned/" + user_id + "/" + currentUser.getUid(), null);
 
                     rootRef.updateChildren(removeFromProject, new DatabaseReference.CompletionListener() {
                         @Override

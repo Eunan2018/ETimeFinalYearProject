@@ -8,9 +8,9 @@ public class Project {
     private String projectName;
     private String projectLocation;
     private String projectDescription;
-   private List<String> userList;
+    private List<String> userList;
 
-    public Project(String projectName, String projectLocation, String projectDescription,List user) {
+    public Project(String projectName, String projectLocation, String projectDescription, List user) {
 
         this.projectName = projectName;
         this.projectLocation = projectLocation;

@@ -31,4 +31,6 @@
     <string name="send_project_request">Send Project Request</string>
     <string name="select_employee">SELECT EMPLOYEE</string>
     <string name="create">CREATE</string>
+    <string name="accept">ACCEPT</string>
+    <string name="decline">DECLINE</string>
 </resources>

@@ -48,6 +48,46 @@ public class ProjectActivity extends AppCompatActivity {
     ListView listView;
     final List<String> empList = new ArrayList<>();
     final List<String> employeeList = new ArrayList<>();
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "onStart: starts ");
+        super.onStart();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userId = user.getUid();
+        employeeDatabase.child("Assigned").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: starts : " + dataSnapshot);
+
+                for (DataSnapshot db : dataSnapshot.getChildren()) {
+                    String key = db.getKey();
+                    usersDatabase.child(key).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            String empUserName = dataSnapshot.child("name").getValue(String.class);
+                            empList.add(empUserName);
+                            populateSpinner(empList);
+                            Log.d(TAG, "onDataChange: starts " + empUserName);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            String error = databaseError.toString();
+                            Toast.makeText(ProjectActivity.this, error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                String error = databaseError.toString();
+                Toast.makeText(ProjectActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,74 +140,25 @@ public class ProjectActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        Log.d(TAG, "onStart: starts ");
-        super.onStart();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final String userId = user.getUid();
-        employeeDatabase.child("Friends").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: starts : " + dataSnapshot);
-
-                for (DataSnapshot db : dataSnapshot.getChildren()) {
-                    String key = db.getKey();
-                    usersDatabase.child(key).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                            String empUserName = dataSnapshot.child("name").getValue(String.class);
-                            empList.add(empUserName);
-                            populateSpinner(empList);
-                            Log.d(TAG, "onDataChange: starts " + empUserName);
-                        }
-
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            String error = databaseError.toString();
-                            Toast.makeText(ProjectActivity.this, error, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                String error = databaseError.toString();
-                Toast.makeText(ProjectActivity.this, error, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
 
     public void populateSpinner(final List names) {
 
-        ArrayAdapter<String> employees = new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_spinner_item, names);
+        ArrayAdapter<String> employees = new ArrayAdapter<String>(ProjectActivity.this, android.R.layout.simple_spinner_item, names);
         employees.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         empSpinner.setAdapter(employees);
         empSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 // TODO FIX FIRST ELEMENT IN SPINNER NOT TO SHOW
-                if (isSpinnerInitial) {
-                    isSpinnerInitial = false;
-                    return;
-                }
-
                 String name = parent.getSelectedItem().toString();
                 employeeList.add(name);
-                employeeAdapter = new ArrayAdapter(ProjectActivity.this, android.R.layout.simple_list_item_1, employeeList);
+                employeeAdapter = new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, employeeList);
                 listView.setAdapter(employeeAdapter);
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
                 // TODO Auto-generated method stub
-
             }
         });
 

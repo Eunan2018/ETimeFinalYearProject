@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +45,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.title.setText(itemList.getProjectName());
         holder.location.setText(itemList.getProjectLocation());
         holder.description.setText(itemList.getProjectDescription());
-
 
         holder.optionsDigit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +84,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public TextView location;
         public TextView description;
         public TextView optionsDigit;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
