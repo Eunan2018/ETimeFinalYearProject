@@ -61,11 +61,19 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".TimeSheetActivity"
+        <activity android:name=".EmployerTimeSheetActivity">
+        <intent-filter>
+            <action android:name="com.eunan.tracey.etimefinalyearproject_TIMESHEET_TARGET_NOTIFICATION" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
             android:parentActivityName=".MainActivity"></activity>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/default_notification_channel_id" />
+            android:value="@string/ts_notification_channel_id" />
+        <!--<meta-data-->
+            <!--android:name="com.google.firebase.messaging.default_notification_channel_id"-->
+            <!--android:value="@string/ts_notification_channel_id" />-->
     </application>
 
 </manifest>

@@ -3,16 +3,13 @@ package com.eunan.tracey.etimefinalyearproject;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -26,7 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectActivity extends AppCompatActivity {
     private final String TAG = "Project Activity";
@@ -46,8 +45,12 @@ public class ProjectActivity extends AppCompatActivity {
     Spinner empSpinner;
     private ArrayAdapter employeeAdapter;
     ListView listView;
-    final List<String> empList = new ArrayList<>();
-    final List<String> employeeList = new ArrayList<>();
+    final List<Map<String,String>> empList = new ArrayList<>();
+    final List employeeList = new ArrayList<>();
+    final List tempList = new ArrayList<>();
+    Map<String,String> map = new HashMap<>();
+    final List<Map<String,String>> empMap = new ArrayList<>();
+    private String employee;
     @Override
     protected void onStart() {
         Log.d(TAG, "onStart: starts ");
@@ -55,7 +58,7 @@ public class ProjectActivity extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String userId = user.getUid();
-        employeeDatabase.child("Assigned").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        employeeDatabase.child("Employer").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: starts : " + dataSnapshot);
@@ -66,9 +69,18 @@ public class ProjectActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+
+                            // TODO USE ID AS WELL AS NAME, ID CAN THEN BE USED TO FILTER PROJECTS
+                            // TODO WILL HAVE TO USE MAP
                             String empUserName = dataSnapshot.child("name").getValue(String.class);
-                            empList.add(empUserName);
-                            populateSpinner(empList);
+                            String empUserId = dataSnapshot.getKey();
+
+                            map.put(empUserId,empUserName);
+                            empList.add(map);
+                            for(String value : map.values()){
+                                tempList.add(value);
+                           }
+                            populateSpinner(tempList);
                             Log.d(TAG, "onDataChange: starts " + empUserName);
                         }
 
@@ -96,7 +108,7 @@ public class ProjectActivity extends AppCompatActivity {
 
 
         // Firebase
-        databaseProject = FirebaseDatabase.getInstance().getReference("projects");
+        databaseProject = FirebaseDatabase.getInstance().getReference("Projects");
         usersDatabase = FirebaseDatabase.getInstance().getReference("Users");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         final String userId = currentUser.getUid();
@@ -109,6 +121,7 @@ public class ProjectActivity extends AppCompatActivity {
         projectLocation = findViewById(R.id.edit_text_project_location);
         empSpinner = findViewById(R.id.spinner_employes);
         listView = findViewById(R.id.list_view_names);
+
         // Onclick
         addProject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,14 +138,16 @@ public class ProjectActivity extends AppCompatActivity {
                 } else {
                     // Create unique key for each project
                     String id = databaseProject.push().getKey();
-                    Project project = new Project(name, location, description, empList);
+                    Project project = new Project(name, location, description,empMap);
                     databaseProject.child(userId).child(id).setValue(project);
 
                     Toast.makeText(ProjectActivity.this, "Project Added", Toast.LENGTH_SHORT).show();
+                    // clear all and reset focus
                     projectName.setText("");
                     projectLocation.setText("");
                     projectDescription.setText("");
                     employeeList.clear();
+                    empMap.clear();
                     employeeAdapter.notifyDataSetChanged();
                     projectName.requestFocus();
                 }
@@ -141,19 +156,42 @@ public class ProjectActivity extends AppCompatActivity {
     }
 
 
-    public void populateSpinner(final List names) {
-
-        ArrayAdapter<String> employees = new ArrayAdapter<String>(ProjectActivity.this, android.R.layout.simple_spinner_item, names);
+    public void populateSpinner(final List employeeNames) {
+        // load the employee names into the adapter and load the spinner
+        ArrayAdapter<String> employees = new ArrayAdapter<String>(ProjectActivity.this, android.R.layout.simple_spinner_item, employeeNames);
         employees.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         empSpinner.setAdapter(employees);
+
+        // fires when user clicks on employee
         empSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 // TODO FIX FIRST ELEMENT IN SPINNER NOT TO SHOW
-                String name = parent.getSelectedItem().toString();
-                employeeList.add(name);
+                if (isSpinnerInitial) {
+                    isSpinnerInitial = false;
+                    return;
+                }
+
+                // get the selected user and load into list
+                employee = parent.getSelectedItem().toString();
+                employeeList.add(employee);
+
+                // loop through the map and match the value to the key
+                for (Map.Entry<String, String> entry : map.entrySet())
+                {
+                    if (entry.getValue().equals(employee))
+                    {
+                        // store the key from entry to the list
+                        Map<String,String> tempMap = new HashMap<>();
+                        tempMap.put(entry.getKey(),employee);
+                        empMap.add(tempMap);
+                    }
+                }
+                //load the selected employee into the list
                 employeeAdapter = new ArrayAdapter<>(ProjectActivity.this, android.R.layout.simple_list_item_1, employeeList);
                 listView.setAdapter(employeeAdapter);
+                Log.d(TAG, "onItemSelected: spinner" + employee);
+
             }
 
             @Override
@@ -161,11 +199,11 @@ public class ProjectActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
             }
         });
-
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 employeeList.remove(employeeList.get(position));
+                empMap.remove(position);
                 listView.requestFocus();
                 employeeAdapter.notifyDataSetChanged();
 

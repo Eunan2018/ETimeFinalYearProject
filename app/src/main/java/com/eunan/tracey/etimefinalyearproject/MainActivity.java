@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         password = findViewById(R.id.edit_text_login_password);
         // Initialise FireBaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
-        userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users").getParent();
+        userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
         // Initialise Twitter Kit
         twitterLoginButton = findViewById(R.id.twitter_login_button);
 

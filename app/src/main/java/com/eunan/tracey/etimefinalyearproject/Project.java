@@ -1,6 +1,7 @@
 package com.eunan.tracey.etimefinalyearproject;
 
 import java.util.List;
+import java.util.Map;
 
 public class Project {
 
@@ -8,9 +9,9 @@ public class Project {
     private String projectName;
     private String projectLocation;
     private String projectDescription;
-    private List<String> userList;
+    private List<Map<String,String>> userList;
 
-    public Project(String projectName, String projectLocation, String projectDescription, List user) {
+    public Project(String projectName, String projectLocation, String projectDescription, List<Map<String,String>> user) {
 
         this.projectName = projectName;
         this.projectLocation = projectLocation;
@@ -47,11 +48,11 @@ public class Project {
         this.projectDescription = projectDescription;
     }
 
-    public List<String> getUserList() {
+    public List<Map<String,String>> getUserList() {
         return userList;
     }
 
-    public void setUserList(List<String> userList) {
+    public void setUserList(List<Map<String,String>> userList) {
         this.userList = userList;
     }
 

@@ -28,7 +28,9 @@ import com.google.firebase.database.ValueEventListener;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
@@ -42,6 +44,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
     private EditText comment;
     private Button submit;
     private Spinner tsSpinner;
+    private List<User> userList = new ArrayList<>();
 
     String projName;
     String projDay;
@@ -53,7 +56,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
     // Firebase
     private DatabaseReference tsDatabaseReference;
     private DatabaseReference projDatabaseReference;
-    private DatabaseReference assignedDatabaseReference;
+    private DatabaseReference employeesDatabaseReference;
     private FirebaseUser currentUser;
     private String userId;
     private List<String> projList;
@@ -86,8 +89,8 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
         // Firebase
         tsDatabaseReference = FirebaseDatabase.getInstance().getReference().child("TimeSheet");
-        projDatabaseReference = FirebaseDatabase.getInstance().getReference().child("projects");
-        assignedDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Assigned");
+        projDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Projects");
+        employeesDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Employer");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (currentUser != null) {
@@ -102,33 +105,54 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        assignedDatabaseReference.addValueEventListener(new ValueEventListener() {
+        employeesDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // get the employer key
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    String key = child.getKey();
-                    for (DataSnapshot x : child.getChildren()) {
-                        String val = x.getKey();
-                        if ((val.equals(userId) && flag)){
+                    String employerKey = child.getKey();
+                    // move down a node and get the employee key
+                    // if it matches userId, use employerKey to access employer projects
+                    for (DataSnapshot postChild : child.getChildren()) {
+                        String employeeKey = postChild.getKey();
+                        if ((employeeKey.equals(userId) && flag)) {
                             flag = false;
-                            setKey(key);
+                            setKey(employerKey);
                         }
                     }
                 }
             }
 
-            void setKey(final String k) {
-                projDatabaseReference.child(k).addValueEventListener(new ValueEventListener() {
+            void setKey(final String key) {
+                projDatabaseReference.child(key).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // moves to second node of project table and gets push id
                         for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                            String id = childSnapshot.getKey();
-                            String projectName = dataSnapshot.child(id).child("projectName").getValue(String.class);
-                            projList.add(projectName);
-                            populateSpinner(projList);
-                            Log.d(TAG, "onDataChange: starts " + projectName);
+                            String pushId = childSnapshot.getKey();
+                            String projectName = dataSnapshot.child(pushId).child("projectName").getValue(String.class);
+
+                            ArrayList<Map<String, String>> data  = ( ArrayList<Map<String, String>>) dataSnapshot.child(pushId).child("userList").getValue();
+
+                            // check if the list is empty
+                            if (!data.isEmpty()) {
+                                for (int i = 0; i < data.size(); i++) {
+                                    // get the map at position
+                                    Map<String, String> map = data.get(i);
+                                    // check if the key matches the user id
+                                    // and if it does add project to spinner
+                                    if (map.containsKey(userId)) {
+                                        projList.add(projectName);
+                                        populateSpinner(projList);
+                                    }
+                                }
+
+                                Log.d(TAG, "onDataChange: starts " + projectName);
+
+                                }
+                            }
+
                         }
-                    }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -160,8 +184,8 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
                         projComments = TimeSheetFragment.this.comment.getText().toString();
 
                         Timesheet timesheet = new Timesheet(projName, projHours, projComments, projDay);
-                        if (!TextUtils.isEmpty(k)) {
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("project").push();
+                        if (!TextUtils.isEmpty(key)) {
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Projects").push();
                             String id = ref.getKey();
                             tsDatabaseReference.child(userId).child(id).setValue(timesheet).addOnSuccessListener(new OnSuccessListener<Void>() {
 
@@ -186,8 +210,6 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
             }
         });
-
-
     }
 
     private void populateSpinner(final List projList) {

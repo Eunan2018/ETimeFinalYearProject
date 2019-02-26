@@ -44,7 +44,7 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         id = currentUser.getUid();
-        databaseProject = FirebaseDatabase.getInstance().getReference("projects");
+        databaseProject = FirebaseDatabase.getInstance().getReference("Projects");
 
         projectList = new ArrayList<>();
         // Inflate the layout for this fragment

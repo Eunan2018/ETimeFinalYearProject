@@ -18,11 +18,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class TimeSheetActivity extends AppCompatActivity {
-    private final String TAG = "TimeSheetActivity";
+public class EmployerTimeSheetActivity extends AppCompatActivity {
+    private final String TAG = "EmpTimeSheetActivity";
     // Firebase
     private DatabaseReference root;
     private FirebaseAuth firebaseAuth;
+//
+//    // Intent values
+//    private String ts_comments;
+//    private String ts_projects;
+//    private String ts_hours;
+//    private String ts_days;
+//    private String id;
+
     private String key;
     private String employeeId;
     private String name;
@@ -54,8 +62,17 @@ public class TimeSheetActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Retrieve string values from EmployeeFragment when it is clicked clicked
+
+        // TODO CLEAN ALL THIS UP
+//
+//
+//        ts_comments = getIntent().getStringExtra("ts_comments");
+        employeeId = getIntent().getStringExtra("ts_id");
+//        ts_days = getIntent().getStringExtra("ts_days");
+//        ts_hours = getIntent().getStringExtra("ts_hour");
+//        ts_projects = getIntent().getStringExtra("ts_proj ects");
         name = getIntent().getStringExtra("name");
-        employeeId = getIntent().getStringExtra("from_user_id");
+//        id = getIntent().getStringExtra("ts_id");
         getSupportActionBar().setTitle(name);
 
         // Firebase
@@ -68,55 +85,54 @@ public class TimeSheetActivity extends AppCompatActivity {
         accept.setVisibility(View.VISIBLE);
         accept.setEnabled(true);
 
-        // Get two the second element in tree which is the employee
-        root.child("TimeSheet").child(employeeId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Get the push key below the employeeId and use it to get values
-                for (DataSnapshot db : dataSnapshot.getChildren()) {
-                    key = db.getKey();
+
+            // Get to the second element in tree which is the employee
+            root.child("TimeSheet").child(employeeId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // Get the push key below the employeeId and use it to get values
+                    for (DataSnapshot db : dataSnapshot.getChildren()) {
+                        key = db.getKey();
+                    }
+                    // Check if time-sheet is blank
+                    if (!TextUtils.isEmpty(key)) {
+                        root.child("TimeSheet").child(employeeId).child(key).addValueEventListener(new ValueEventListener() {
+                            // Populate time-sheet at employer's view
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Log.d(TAG, "onDataChange: starts : " + dataSnapshot);
+                                String days = dataSnapshot.child("day").getValue().toString();
+                                String projects = dataSnapshot.child("project").getValue().toString();
+                                String comments = dataSnapshot.child("comments").getValue().toString();
+                                String hours = dataSnapshot.child("hours").getValue().toString();
+
+                                day.setText(days);
+                                project.setText(projects);
+                                comment.setText(comments);
+                                hour.setText(hours);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                String error = databaseError.toString();
+                                Toast.makeText(EmployerTimeSheetActivity.this, error, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        // If time sheet is blank hide and disable buttons
+                        decline.setEnabled(false);
+                        decline.setVisibility(View.INVISIBLE);
+                        accept.setVisibility(View.INVISIBLE);
+                        accept.setEnabled(false);
+                    }
                 }
-                // Check if time-sheet is blank
-                if (!TextUtils.isEmpty(key)) {
-                    root.child("TimeSheet").child(employeeId).child(key).addValueEventListener(new ValueEventListener() {
-                        // Populate time-sheet at employees view
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.d(TAG, "onDataChange: starts : " + dataSnapshot);
 
-                            String days = dataSnapshot.child("day").getValue().toString();
-                            String projects = dataSnapshot.child("project").getValue().toString();
-                            String comments = dataSnapshot.child("comments").getValue().toString();
-                            String hours = dataSnapshot.child("hours").getValue().toString();
-
-                            day.setText(days);
-                            project.setText(projects);
-                            comment.setText(comments);
-                            hour.setText(hours);
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            String error = databaseError.toString();
-                            Toast.makeText(TimeSheetActivity.this, error, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {
-                    // If time sheet is blank hide and disable buttons
-                    decline.setEnabled(false);
-                    decline.setVisibility(View.INVISIBLE);
-                    accept.setVisibility(View.INVISIBLE);
-                    accept.setEnabled(false);
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    String error = databaseError.toString();
+                    Toast.makeText(EmployerTimeSheetActivity.this, error, Toast.LENGTH_SHORT).show();
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                String error = databaseError.toString();
-                Toast.makeText(TimeSheetActivity.this, error, Toast.LENGTH_SHORT).show();
-            }
-        });
+            });
     }
 
 //
@@ -151,7 +167,7 @@ public class TimeSheetActivity extends AppCompatActivity {
 //                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
 //
 //                            if(databaseError != null){
-//                                Toast.makeText(TimeSheetActivity.this, "Error uploading time sheet", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(EmployerTimeSheetActivity.this, "Error uploading time sheet", Toast.LENGTH_SHORT).show();
 //                            }
 //                        }
 //                    });
@@ -202,7 +218,7 @@ public class TimeSheetActivity extends AppCompatActivity {
 //                @Override
 //                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
 //                    if (databaseError != null) {
-//                        Toast.makeText(TimeSheetActivity.this, "Error uploading time sheet", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(EmployerTimeSheetActivity.this, "Error uploading time sheet", Toast.LENGTH_SHORT).show();
 //                    }
 //                }
 //            });

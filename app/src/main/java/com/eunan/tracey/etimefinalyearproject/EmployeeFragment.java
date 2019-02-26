@@ -60,7 +60,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
 
         currentUserId = firebaseAuth.getCurrentUser().getUid();
-        employeeDatabase = FirebaseDatabase.getInstance().getReference().child("Assigned").child(currentUserId);
+        employeeDatabase = FirebaseDatabase.getInstance().getReference().child("Employer").child(currentUserId);
         employeeDatabase.keepSynced(true);
         usersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
         usersDatabaseReference.keepSynced(true);
@@ -133,8 +133,8 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                                 startActivity(profileIntent);
                                 break;
                             case 1:
-                                Intent timeSheetIntent = new Intent(getContext().getApplicationContext(), TimeSheetActivity.class);
-                                timeSheetIntent.putExtra("from_user_id", userId);
+                                Intent timeSheetIntent = new Intent(getContext().getApplicationContext(), EmployerTimeSheetActivity.class);
+                                timeSheetIntent.putExtra("ts_id", userId);
                                 timeSheetIntent.putExtra("name", employeeViewHolder.getName());
                                 timeSheetIntent.putExtra("employer_id",currentUserId);
                                 startActivity(timeSheetIntent);

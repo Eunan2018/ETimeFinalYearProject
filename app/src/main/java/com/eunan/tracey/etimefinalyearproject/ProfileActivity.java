@@ -1,6 +1,7 @@
 package com.eunan.tracey.etimefinalyearproject;
 
 import android.app.ProgressDialog;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -36,7 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private DatabaseReference projectReqDatabase;
     private DatabaseReference assignedDatabase;
-    private DatabaseReference notificationDatabase;
+    private String display_name;
 
     private DatabaseReference rootRef;
 
@@ -55,7 +56,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
         projectReqDatabase = FirebaseDatabase.getInstance().getReference().child("Project_req");
-        assignedDatabase = FirebaseDatabase.getInstance().getReference().child("Assigned");
+        assignedDatabase = FirebaseDatabase.getInstance().getReference().child("Employer");
        // notificationDatabase = FirebaseDatabase.getInstance().getReference().child("notifications");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -81,7 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                String display_name = dataSnapshot.child("name").getValue().toString();
+                display_name = dataSnapshot.child("name").getValue().toString();
                 String status = dataSnapshot.child("status").getValue().toString();
                 String image = dataSnapshot.child("image").getValue().toString();
 
@@ -246,37 +247,48 @@ public class ProfileActivity extends AppCompatActivity {
                 if(currentState.equals(Status.RECEIVED)){
 
                     final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
-
-                    Map projectMap = new HashMap();
-                    projectMap.put("Assigned/" + user_id + "/"  + currentUser.getUid() + "/date", currentDate);
-
-
-                    projectMap.put("Project_req/" + currentUser.getUid() + "/" + user_id, null);
-                    projectMap.put("Project_req/" + user_id + "/" + currentUser.getUid(), null);
-
-
-                    rootRef.updateChildren(projectMap, new DatabaseReference.CompletionListener() {
+                    userDatabase.child(currentUser.getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                           // String n = dataSnapshot.child("name").getValue().toString();
+                            Map projectMap = new HashMap();
+                            projectMap.put("Employer/" + user_id + "/"  + currentUser.getUid() + "/date", currentDate);
 
 
-                            if(databaseError == null){
-
-                                send.setEnabled(true);
-                                currentState = Status.EMPLOYED;
-                                send.setText("Remove From Project");
-
-                                decline.setVisibility(View.INVISIBLE);
-                                decline.setEnabled(false);
-
-                            } else {
-
-                                String error = databaseError.getMessage();
-
-                                Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+                            projectMap.put("Project_req/" + currentUser.getUid() + "/" + user_id, null);
+                            projectMap.put("Project_req/" + user_id + "/" + currentUser.getUid(), null);
 
 
-                            }
+                            rootRef.updateChildren(projectMap, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+
+                                    if(databaseError == null){
+
+                                        send.setEnabled(true);
+                                        currentState = Status.EMPLOYED;
+                                        send.setText("Remove From Project");
+
+                                        decline.setVisibility(View.INVISIBLE);
+                                        decline.setEnabled(false);
+
+                                    } else {
+
+                                        String error = databaseError.getMessage();
+
+                                        Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+
+
+                                    }
+
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
                     });
