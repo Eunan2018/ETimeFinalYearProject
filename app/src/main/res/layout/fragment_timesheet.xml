@@ -5,86 +5,109 @@
     android:id="@+id/ts_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tw__composer_deep_gray"
+    android:background="@android:color/white"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:layout_editor_absoluteY="25dp">
 
 
-    <EditText
-        android:id="@+id/edit_text_ts_hrs"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:hint="Hours"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_time_sheet" />
-
-    <EditText
-        android:id="@+id/edit_text_ts_day"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:hint="Day"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_ts_hrs" />
-
-    <EditText
-        android:id="@+id/edit_text_ts_comments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:hint="Comments"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_ts_day" />
-
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="66dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="4dp"
+        android:text="16"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/button4"
+        tools:layout_editor_absoluteX="16dp" />
 
     <Button
-        android:id="@+id/button_ts_submit"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/holo_blue_dark"
-        android:text="SUBMIT"
-        android:textColor="@color/tw__composer_white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_ts_comments" />
+        android:id="@+id/button4"
+        android:layout_width="66dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="4dp"
+        android:text="15"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/button5"
+        tools:layout_editor_absoluteX="16dp" />
 
-    <Spinner
-        android:id="@+id/spinner_time_sheet"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="66dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="4dp"
+        android:text="14"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/button6"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="66dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="4dp"
+        android:text="13"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/button7"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="66dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="4dp"
+        android:text="12"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/button8"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <Button
+        android:id="@+id/button8"
+        android:layout_width="66dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="20dp"
+        android:text="11"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/btn_monday"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <Button
+        android:id="@+id/btn_monday"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:text="10"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="48dp" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="225dp"
-        android:layout_height="22dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:text="SELECT PROJECT"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/text_view_monday_day"
+        android:layout_width="275dp"
+        android:layout_height="70dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/btn_monday"
+        tools:layout_editor_absoluteY="48dp" />
 
+    <TextView
+        android:id="@+id/text_view_monday_date"
+        android:layout_width="105dp"
+        android:layout_height="25dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_monday_day"
+        app:layout_constraintStart_toStartOf="@+id/text_view_monday_day" />
+
+    <TextView
+        android:id="@+id/text_view_moday_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_monday_day"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_monday_day" />
 </android.support.constraint.ConstraintLayout>

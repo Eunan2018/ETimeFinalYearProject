@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/tw__composer_deep_gray"
-    tools:context=".SettingsActivity">
+    tools:context=".settings.SettingsActivity">
 
     <ImageView
         android:id="@+id/circle_set_profile_image"

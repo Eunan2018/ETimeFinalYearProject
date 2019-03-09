@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/tw__composer_deep_gray"
-    tools:context=".EmployerTimeSheetActivity">
+    tools:context=".employer.EmployerTimeSheetActivity">
 
     <include
         android:id="@+id/time_sheet_app_bar"
         layout="@layout/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
+        android:layout_height="55dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></include>
 

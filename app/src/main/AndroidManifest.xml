@@ -15,14 +15,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".ProjectMessagingService">
+        <service android:name=".project.ProjectMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".welcome.WelcomeActivity"
             android:icon="@drawable/timesheet"
             android:label="ETime">
             <intent-filter>
@@ -32,48 +32,52 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
+            android:name=".register.RegisterActivity"
             android:label="@string/register_title" />
         <activity
-            android:name=".UserProfileActivity"
+            android:name=".user.UserProfileActivity"
             android:label="@string/register_title" />
         <activity android:name="com.twitter.sdk.android.core.identity.OAuthActivity" />
         <activity
-            android:name=".EmployeeProfileActivity"
-            android:parentActivityName=".UserProfileActivity" />
-        <activity android:name=".EmployerProfileActivity" />
-        <activity android:name=".ProjectActivity" />
-        <activity android:name=".SettingsActivity" />
+            android:name=".employee.EmployeeProfileActivity"
+            android:parentActivityName=".user.UserProfileActivity" />
+        <activity android:name=".employer.EmployerProfileActivity" />
+        <activity android:name=".project.ProjectActivity" />
+        <activity android:name=".settings.SettingsActivity" />
         <activity
-            android:name=".StatusActivity"
-            android:parentActivityName=".SettingsActivity" />
+            android:name=".status.StatusActivity"
+            android:parentActivityName=".settings.SettingsActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
-            android:name=".UsersActivity"
-            android:parentActivityName=".EmployerProfileActivity" />
-        <activity android:name=".ProfileActivity">
+            android:name=".user.UsersActivity"
+            android:parentActivityName=".employer.EmployerProfileActivity" />
+        <activity android:name=".profile.ProfileActivity">
             <intent-filter>
                 <action android:name="com.eunan.tracey.etimefinalyearproject_TARGET_NOTIFICATION" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".EmployerTimeSheetActivity">
-        <intent-filter>
-            <action android:name="com.eunan.tracey.etimefinalyearproject_TIMESHEET_TARGET_NOTIFICATION" />
+        <activity android:name=".main.MainActivity" />
+        <activity android:name=".employer.EmployerTimeSheetActivity"
+            android:parentActivityName=".employee.EmployeeProfileActivity">
+            <intent-filter>
+                <action android:name="com.eunan.tracey.etimefinalyearproject_TIMESHEET_TARGET_NOTIFICATION" />
 
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
-            android:parentActivityName=".MainActivity"></activity>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            android:parentActivityName=".MainActivity">
+        </activity>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/ts_notification_channel_id" />
-        <!--<meta-data-->
-            <!--android:name="com.google.firebase.messaging.default_notification_channel_id"-->
-            <!--android:value="@string/ts_notification_channel_id" />-->
+        <!-- <meta-data -->
+        <!-- android:name="com.google.firebase.messaging.default_notification_channel_id" -->
+        <!-- android:value="@string/ts_notification_channel_id" /> -->
+        <activity android:name=".salary.SalaryActivity"></activity>
     </application>
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>

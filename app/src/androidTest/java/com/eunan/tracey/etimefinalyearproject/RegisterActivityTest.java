@@ -3,6 +3,8 @@ package com.eunan.tracey.etimefinalyearproject;
 import android.support.test.rule.ActivityTestRule;
 import android.view.View;
 
+import com.eunan.tracey.etimefinalyearproject.register.RegisterActivity;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;

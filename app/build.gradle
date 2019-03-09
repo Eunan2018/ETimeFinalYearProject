@@ -63,5 +63,8 @@ dependencies {
     implementation 'com.squareup.okhttp:okhttp:2.5.0'
 
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
+
+    implementation 'com.opencsv:opencsv:4.5'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 }
 apply plugin: 'com.google.gms.google-services'
