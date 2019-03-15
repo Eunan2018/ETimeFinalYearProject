@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
     private TwitterLoginButton twitterLoginButton;
     private DatabaseReference userDatabaseReference;
+    private DatabaseReference tokenDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialise FireBaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
         userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
+        tokenDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Token");
         // Initialise Twitter Kit
         twitterLoginButton = findViewById(R.id.twitter_login_button);
 
@@ -165,6 +167,12 @@ public class MainActivity extends AppCompatActivity {
                         public void onSuccess(InstanceIdResult instanceIdResult) {
                             // update the token of the device if the users logs in on another device
                             String token = instanceIdResult.getToken();
+                            tokenDatabaseReference.child(currentUserId).child("tokenId").setValue(token).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    //TODO
+                                }
+                            });
                             userDatabaseReference.child(currentUserId).child("token").setValue(token).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {

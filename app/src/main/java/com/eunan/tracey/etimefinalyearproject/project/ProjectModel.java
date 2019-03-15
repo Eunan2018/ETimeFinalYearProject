@@ -1,7 +1,10 @@
 package com.eunan.tracey.etimefinalyearproject.project;
 
+import com.eunan.tracey.etimefinalyearproject.AssignedEmployess;
+
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ProjectModel {
 
@@ -9,14 +12,16 @@ public class ProjectModel {
     private String projectName;
     private String projectLocation;
     private String projectDescription;
-    private List<Map<String,String>> userList;
+    private int projectTimestamp;
+    private Map<String,AssignedEmployess> assignedEmployessList;
 
-    public ProjectModel(String projectName, String projectLocation, String projectDescription, List<Map<String,String>> user) {
+    public ProjectModel(String projectName, String projectLocation, String projectDescription,int projectTimestamp, Map<String,AssignedEmployess> assignedEmployessList) {
 
         this.projectName = projectName;
         this.projectLocation = projectLocation;
         this.projectDescription = projectDescription;
-        this.userList = user;
+        this.assignedEmployessList = assignedEmployessList;
+        this.projectTimestamp = projectTimestamp;
     }
 
 
@@ -48,12 +53,28 @@ public class ProjectModel {
         this.projectDescription = projectDescription;
     }
 
-    public List<Map<String,String>> getUserList() {
-        return userList;
+    public Map<String,AssignedEmployess> getUserList() {
+        return assignedEmployessList;
     }
 
-    public void setUserList(List<Map<String,String>> userList) {
-        this.userList = userList;
+    public void setUserList(Map<String,AssignedEmployess> assignedEmployessList) {
+        this.assignedEmployessList = assignedEmployessList;
+    }
+
+    public int getProjectTimestamp() {
+        return projectTimestamp;
+    }
+
+    public void setProjectTimestamp(int projectTimestamp) {
+        this.projectTimestamp = projectTimestamp;
+    }
+
+    public Map<String, AssignedEmployess> getAssignedEmployessList() {
+        return assignedEmployessList;
+    }
+
+    public void setAssignedEmployessList(Map<String, AssignedEmployess> assignedEmployessList) {
+        this.assignedEmployessList = assignedEmployessList;
     }
 
     @Override
@@ -62,7 +83,10 @@ public class ProjectModel {
                 "projectName='" + projectName + '\'' +
                 ", projectLocation='" + projectLocation + '\'' +
                 ", projectDescription='" + projectDescription + '\'' +
-
+                ", projectTimestamp=" + projectTimestamp +
+                ", assignedEmployessList=" + assignedEmployessList +
                 '}';
     }
+
+
 }

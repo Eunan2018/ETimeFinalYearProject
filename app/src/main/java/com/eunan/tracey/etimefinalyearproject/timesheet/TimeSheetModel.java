@@ -6,14 +6,16 @@ public class TimeSheetModel {
     private String project;
     private String hours;
     private String comments;
-    private String day;
+
    // private Weekday day;
 
-    public TimeSheetModel(String project, String hours, String comments, String day) {
+    public TimeSheetModel(String project, String hours, String comments) {
         this.project = project;
         this.hours = hours;
         this.comments = comments;
-        this.day = day;
+    }
+
+    public TimeSheetModel() {
     }
 
     public String getProject() {
@@ -40,31 +42,14 @@ public class TimeSheetModel {
         this.comments = comments;
     }
 
-//    public Weekday getDay() {
-//        return day;
-//    }
-//
-//    public void setDay(Weekday day) {
-//        this.day = day;
-//    }
-
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
-    }
 
     @Override
     public String toString() {
         return "TimeSheetModel{" +
-                "project=" + project +
-                ", hours=" + hours +
+                "project='" + project + '\'' +
+                ", hours='" + hours + '\'' +
                 ", comments='" + comments + '\'' +
-                ", day=" + day +
                 '}';
     }
-
 }
 

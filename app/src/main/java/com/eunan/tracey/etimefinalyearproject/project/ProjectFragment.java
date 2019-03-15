@@ -1,5 +1,6 @@
 package com.eunan.tracey.etimefinalyearproject.project;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,9 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.eunan.tracey.etimefinalyearproject.R;
-import com.eunan.tracey.etimefinalyearproject.adapter.RecyclerViewAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,9 +22,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProjectFragment extends android.support.v4.app.Fragment {
 
@@ -32,10 +36,11 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
     RecyclerView recyclerView;
     List<ProjectModel> projectList;
     View view;
-    DatabaseReference databaseProject;
+    DatabaseReference projectRef;
     FirebaseUser currentUser;
     RecyclerViewAdapter adapter;
     String id;
+
     public ProjectFragment() {
         // Required empty public constructor
     }
@@ -46,12 +51,13 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         id = currentUser.getUid();
-        databaseProject = FirebaseDatabase.getInstance().getReference("Projects");
+        projectRef = FirebaseDatabase.getInstance().getReference("Projects");
 
         projectList = new ArrayList<>();
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_project, container, false);
         recyclerView = view.findViewById(R.id.recycler_view_project);
+
         return view;
     }
 
@@ -59,7 +65,7 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
     public void onStart() {
         Log.d(TAG, "onStart: starts");
         super.onStart();
-        databaseProject.child(id).addValueEventListener(new ValueEventListener() {
+        projectRef.child(id).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -69,12 +75,14 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
                     ProjectModel project = projectSnapshot.getValue(ProjectModel.class);
                     projectList.add(project);
                 }
-                adapter = new RecyclerViewAdapter(getActivity(),projectList);
+                adapter = new RecyclerViewAdapter(getActivity(), projectList);
                 recyclerView.setAdapter(adapter);
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 recyclerView.setLayoutManager(layoutManager);
+
                 Log.d(TAG, "onDataChange: ends");
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -96,19 +104,65 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
             }
         });
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-                if (dy > 0 ||dy<0 && fab.isShown())
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && fab.isShown())
                     fab.hide();
             }
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE){
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     fab.show();
                 }
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
+
+
+    }
+
+    public static class ProjectViewHolder extends RecyclerView.ViewHolder {
+        private final static String TAG = "EmployeeViewHolder";
+        View view;
+        String uName;
+        String key;
+
+        public ProjectViewHolder(View itemView) {
+            super(itemView);
+            Log.d(TAG, "EmployeeViewHolder: starts");
+            view = itemView;
+        }
+
+        public void setDate(String date) {
+            TextView empDate = view.findViewById(R.id.user_single_status);
+            empDate.setText(date);
+        }
+
+        public void setName(String name) {
+            TextView userName = view.findViewById(R.id.user_single_name);
+            userName.setText(name);
+            uName = name;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String k) {
+
+            key = k;
+        }
+
+        public String getName() {
+            return uName;
+        }
+
+        public void setImage(Context context, String image) {
+            CircleImageView circleImageView = view.findViewById(R.id.user_image);
+            Picasso.with(context).load(image).placeholder(R.drawable.default_avatar).into(circleImageView);
+        }
+
     }
 }

@@ -10,13 +10,13 @@
 
     <EditText
         android:id="@+id/edit_text_project_name"
-        android:layout_width="320dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:ems="10"
         android:hint="@string/project"
         android:inputType="textPersonName"
@@ -26,83 +26,59 @@
 
     <EditText
         android:id="@+id/edit_text_project_location"
-        android:layout_width="317dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/edit_text_project_name"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:ems="10"
         android:hint="@string/location"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/edit_text_project_description"
-        app:layout_constraintStart_toStartOf="@+id/edit_text_project_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_project_description" />
 
     <EditText
         android:id="@+id/edit_text_project_description"
-        android:layout_width="320dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/edit_text_project_name"
         android:layout_alignEnd="@+id/edit_text_project_name"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:ems="10"
         android:hint="@string/description"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/edit_text_project_name"
-        app:layout_constraintStart_toStartOf="@+id/edit_text_project_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_project_name" />
 
     <Button
         android:id="@+id/button_add_project"
         android:layout_width="wrap_content"
         android:layout_height="53dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="22dp"
         android:background="@android:color/holo_blue_dark"
         android:text="@string/create"
         android:textColor="@color/tw__composer_white"
-        app:layout_constraintEnd_toEndOf="@+id/list_view_names"
-        app:layout_constraintTop_toBottomOf="@+id/list_view_names" />
-
-    <Spinner
-        android:id="@+id/spinner_employes"
-        android:layout_width="37dp"
-        android:layout_height="30dp"
-        android:layout_alignParentStart="@+id/edit_text_project_description"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:dropDownWidth="match_parent"
-        android:spinnerMode="dialog"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="@+id/edit_text_project_location"
-        app:layout_constraintHorizontal_bias="0.613"
-        app:layout_constraintStart_toEndOf="@+id/list_view_names"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_project_location" />
-
-    <ListView
-        android:id="@+id/list_view_names"
-        android:layout_width="315dp"
-        android:layout_height="164dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="12dp"
-        android:background="@color/tw__composer_deep_gray"
-        android:scrollIndicators="right"
-        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_select_employee" />
+        app:layout_constraintTop_toBottomOf="@+id/project_employee_recyclerview" />
 
-    <TextView
-        android:id="@+id/text_view_select_employee"
-        android:layout_width="150dp"
-        android:layout_height="30dp"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/project_employee_recyclerview"
+        android:layout_width="0dp"
+        android:layout_height="192dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        android:gravity="center|start"
-        android:text="@string/select_employee"
-        app:layout_constraintStart_toStartOf="@+id/edit_text_project_location"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/shape"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_project_location" />
 
 </android.support.constraint.ConstraintLayout>

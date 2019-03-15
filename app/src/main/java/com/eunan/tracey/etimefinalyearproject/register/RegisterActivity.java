@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
+import com.eunan.tracey.etimefinalyearproject.Token;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
 import com.eunan.tracey.etimefinalyearproject.user.UserModel;
 import com.eunan.tracey.etimefinalyearproject.user.UserProfileActivity;
@@ -23,8 +24,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -45,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     String token;
     private DatabaseReference databaseReference;
-
+    private DatabaseReference databaseReferenceToken;
     // Create ProgressDialog
     private ProgressDialog progressDialog;
 
@@ -120,6 +124,16 @@ public class RegisterActivity extends AppCompatActivity {
                     String uid = currentUser.getUid();
 
                     databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+                    databaseReferenceToken = FirebaseDatabase.getInstance().getReference().child("Token").child(uid);
+                    Token tokenModel = new Token(token,uid);
+                    databaseReferenceToken.setValue(tokenModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                //
+                            }
+                        }
+                    });
 
                     // use the model class to populate the database
                     UserModel userModel = new UserModel(displayName,"default","default","default",email,token);

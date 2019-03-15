@@ -3,6 +3,15 @@ package com.eunan.tracey.etimefinalyearproject.employee;
 public class EmployeeModel {
 
     public String date;
+    public String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public EmployeeModel(){
 

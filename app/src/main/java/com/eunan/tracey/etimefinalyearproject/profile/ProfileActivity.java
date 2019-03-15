@@ -298,7 +298,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                 }
 
-
                 // ------------ REMOVE FROM PROJECT ---------
 
                 if(currentState.equals(Status.EMPLOYED)){
