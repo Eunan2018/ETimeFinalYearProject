@@ -92,13 +92,13 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 String id = databaseReferenceTimesheet.push().getKey();
-                databaseReferenceTimesheet.child(currentUserId).child(id).setValue(TimeSheetBuilder.getTimeMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        //
-                    }
-                });
-                Log.d(TAG, "onClick: " + TimeSheetBuilder.getTimeMap());
+//                databaseReferenceTimesheet.child(currentUserId).child(id).setValue(TimeSheetBuilder.getTimeMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        //
+//                    }
+//                });
+//                Log.d(TAG, "onClick: " + TimeSheetBuilder.getTimeMap());
             }
         });
 

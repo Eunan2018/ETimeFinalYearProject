@@ -148,7 +148,7 @@ public class MaintainProject extends AppCompatActivity {
             @Override
             public void onCallBack(final String pushId) {
                 Query query = FirebaseDatabase.getInstance().getReference().child("Projects")
-                        .child(currentUserId).child(pushId).child("userList").orderByChild("name");
+                        .child(currentUserId).child(pushId).child("assignedEmployessList").orderByChild("name");
                 FirebaseRecyclerOptions<EmployeeModel> options =
                         new FirebaseRecyclerOptions.Builder<EmployeeModel>()
                                 .setQuery(query, EmployeeModel.class)
@@ -190,7 +190,7 @@ public class MaintainProject extends AppCompatActivity {
                         employeeViewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
-                                projectRef.child(currentUserId).child(pushId).child("userList").child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                projectRef.child(currentUserId).child(pushId).child("assignedEmployessList").child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         Toast.makeText(MaintainProject.this, "Deleted" + userId, Toast.LENGTH_SHORT).show();

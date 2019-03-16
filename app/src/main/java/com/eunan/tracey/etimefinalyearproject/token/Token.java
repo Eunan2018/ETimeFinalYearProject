@@ -1,4 +1,4 @@
-package com.eunan.tracey.etimefinalyearproject;
+package com.eunan.tracey.etimefinalyearproject.token;
 
 public class Token {
 

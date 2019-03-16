@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.AssignedEmployess;
 import com.eunan.tracey.etimefinalyearproject.R;
+import com.eunan.tracey.etimefinalyearproject.employee.Employee;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -49,11 +50,14 @@ public class ProjectActivity extends AppCompatActivity {
     private DatabaseReference projectRef;
     private DatabaseReference userRef;
     private DatabaseReference employeeRef;
+    private DatabaseReference assignedRef;
     private FirebaseUser currentUser;
 
     // Variables
     private String currentUserId;
     private Map<String, AssignedEmployess> assignedEmployessList;
+    private Map<String, String> employeeProjects;
+    Employee employee;
     AssignedEmployess assignedEmployess;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +67,12 @@ public class ProjectActivity extends AppCompatActivity {
 
 
         assignedEmployessList = new HashMap();
+        employeeProjects = new HashMap();
         assignedEmployess = new AssignedEmployess();
         // Firebase
         projectRef = FirebaseDatabase.getInstance().getReference("Projects");
         userRef = FirebaseDatabase.getInstance().getReference("Users");
+        assignedRef = FirebaseDatabase.getInstance().getReference("Employee");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
         employeeRef = FirebaseDatabase.getInstance().getReference().child("Employer");
@@ -97,9 +103,8 @@ public class ProjectActivity extends AppCompatActivity {
                     // Create unique key for each project
                     String id = projectRef.push().getKey();
                     ProjectModel project = new ProjectModel(name, location, description, (int) System.currentTimeMillis(), assignedEmployessList);
-
-                    // TODO ADD ON SUCCESS
                     projectRef.child(currentUserId).child(id).setValue(project);
+                    assignedRef.child(name).setValue(assignedEmployess);
                     Log.d(TAG, "onClick: + " + project);
                     Toast.makeText(ProjectActivity.this, "Project Added", Toast.LENGTH_SHORT).show();
                     // clear all and reset focus
@@ -174,6 +179,7 @@ public class ProjectActivity extends AppCompatActivity {
                         AssignedEmployess assignedEmployess = new AssignedEmployess(employeeViewHolder.getName(), employeeViewHolder.getKey());
                         employeeViewHolder.view.setBackgroundColor(Color.GRAY);
                         assignedEmployessList.put(employeeViewHolder.getKey(), assignedEmployess);
+                        employeeProjects.put(employeeViewHolder.getKey(),employeeViewHolder.getName());
 
                     }
 

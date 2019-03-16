@@ -53,14 +53,6 @@ public class ProjectModel {
         this.projectDescription = projectDescription;
     }
 
-    public Map<String,AssignedEmployess> getUserList() {
-        return assignedEmployessList;
-    }
-
-    public void setUserList(Map<String,AssignedEmployess> assignedEmployessList) {
-        this.assignedEmployessList = assignedEmployessList;
-    }
-
     public int getProjectTimestamp() {
         return projectTimestamp;
     }
