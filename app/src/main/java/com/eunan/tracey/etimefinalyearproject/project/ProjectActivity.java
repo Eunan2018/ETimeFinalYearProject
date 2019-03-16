@@ -46,7 +46,7 @@ public class ProjectActivity extends AppCompatActivity {
     private EditText projectDescription;
     private Button addProject;
     private RecyclerView recyclerView;
-    public static EmployeeViewHolder employeeViewHolder;
+
 
     // Database
     private DatabaseReference projectRef;
@@ -113,7 +113,7 @@ public class ProjectActivity extends AppCompatActivity {
                     projectRef.child(currentUserId).child(id).setValue(project);
                     for (Map.Entry<String, AssignedEmployess> entry : assignedEmployessMap.entrySet()) {
                         employeeProjectModel = new EmployeeProjectModel(entry.getKey(),name);
-                        assignedRef.child(entry.getKey()).child(assigned_push).setValue(employeeProjectModel);
+                        assignedRef.child(entry.getKey()).child(currentUserId).child(assigned_push).setValue(employeeProjectModel);
                     }
 
                     Log.d(TAG, "onClick: + " + project);
