@@ -9,9 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProjectModel;
@@ -27,6 +31,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,57 +41,103 @@ public class TimeSheetBuilder extends AppCompatActivity {
 
     private static final String TAG = "TimeSheetBuilder";
 
-    private EditText hours;
-    private EditText comment;
+
     private Button btnDone;
     private RecyclerView recyclerView;
-
+    private Spinner spinnerMinutes;
+    private Spinner spinnerHours;
+    private String hours;
+    private String minutes;
+    private boolean inispinner;
     // Firebase
-    private DatabaseReference timesheetRef;
-    private DatabaseReference projectRef;
-    private DatabaseReference employerRef;
     private DatabaseReference assignedRef;
     private FirebaseUser currentUser;
     private String userId;
     public static Map<String, TimeSheetModel> timesheetMap = new HashMap<>();
     private TimeSheetModel timesheet;
-    String projName;
-    String projHours;
-    String projComments;
+    String projectName;
+
     String day;
+
+    //Hour Spinner Values
+    String[] hoursArray = {"0", "1", "2", "3", "4", "5", "6",
+            "7", "8", "9", "10", "11", "12"};
+
+    //Minutes Spinner Values
+    String[] minutesArray = {"0", "15", "30", "45"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_sheet_builder);
 
-        hours = findViewById(R.id.edit_text_ts_hrs);
-        comment = findViewById(R.id.edit_text_ts_comments);
+        // hours = findViewById(R.id.edit_text_ts_hrs);
+
         btnDone = findViewById(R.id.button_done_ts);
         recyclerView = findViewById(R.id.recycler_view_ts_builder);
+        spinnerHours = findViewById(R.id.spinner_hours);
+        spinnerMinutes = findViewById(R.id.spinner_minutes);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Firebase
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         userId = currentUser.getUid();
-        timesheetRef = FirebaseDatabase.getInstance().getReference().child("TimeSheet");
-        projectRef = FirebaseDatabase.getInstance().getReference().child("Projects");
-        employerRef = FirebaseDatabase.getInstance().getReference().child("Employer");
         assignedRef = FirebaseDatabase.getInstance().getReference("EmployeeProjects");
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 day = getIntent().getStringExtra("day");
-                projHours = hours.getText().toString();
-                projComments = comment.getText().toString();
 
-                 timesheet = new TimeSheetModel(projName, projHours, projComments, day);
+                timesheet = new TimeSheetModel(projectName, hours, minutes);
 
                 timesheetMap.put(day, timesheet);
+            }
+        });
+
+        ArrayAdapter hoursAdapter = new ArrayAdapter(this,
+                android.R.layout.simple_spinner_item, hoursArray);
+        hoursAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+        spinnerHours.setAdapter(hoursAdapter);
+
+        spinnerHours.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!inispinner) {
+                    inispinner = true;
+                    return;
+                }
+                hours = spinnerHours.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+
+        ArrayAdapter minutesAdapter = new ArrayAdapter(this,
+                android.R.layout.simple_spinner_item, minutesArray);
+        minutesAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+        spinnerMinutes.setAdapter(minutesAdapter);
+
+        spinnerMinutes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!inispinner) {
+                    inispinner = true;
+                    return;
+                }
+                minutes = spinnerMinutes.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     public static Map<String, TimeSheetModel> getTimeMap() {
@@ -115,7 +166,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(final TimeSheetBuilder.EmployeeViewHolder employeeViewHolder, final int position, @NonNull EmployeeProjectModel employee) {
+            protected void onBindViewHolder(final TimeSheetBuilder.EmployeeViewHolder employeeViewHolder, final int position, @NonNull final EmployeeProjectModel employee) {
                 Log.d(TAG, "onBindViewHolder: starts");
                 final String userId = getRef(position).getKey();
 
@@ -135,8 +186,18 @@ public class TimeSheetBuilder extends AppCompatActivity {
 
                     }
                 });
+
                 employeeViewHolder.setName(employee.getProject());
+
+                employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        projectName = employeeViewHolder.getName();
+                    }
+                });
             }
+
+
         };
         adapter.startListening();
         recyclerView.setAdapter(adapter);
@@ -147,7 +208,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
     public static class EmployeeViewHolder extends RecyclerView.ViewHolder {
         private final static String TAG = "EmployeeViewHolder";
         View view;
-        String uName;
+        String pName;
 
         public EmployeeViewHolder(View itemView) {
             super(itemView);
@@ -159,11 +220,11 @@ public class TimeSheetBuilder extends AppCompatActivity {
         public void setName(String name) {
             TextView userName = view.findViewById(R.id.textview_title);
             userName.setText(name);
-            uName = name;
+            pName = name;
         }
 
         public String getName() {
-            return uName;
+            return pName;
         }
     }
 

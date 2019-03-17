@@ -61,7 +61,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_time_sheet_activity);
+        setContentView(R.layout.activity_time_sheet_employer);
         String filePath =  this.getFilesDir().getPath() + "output.csv";
         Log.d(TAG, "onCreate: " + filePath);
         try {
@@ -71,11 +71,11 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
         }
         // Layout
         toolbar = findViewById(R.id.time_sheet_app_bar);
-        day = findViewById(R.id.text_view_ts_day);
-        project = findViewById(R.id.text_view_ts_project);
-        hour = findViewById(R.id.text_view_ts_hour);
-        comment = findViewById(R.id.text_view_ts_comments);
-        decline = findViewById(R.id.button_ts_decline);
+//        day = findViewById(R.id.text_view_ts_day);
+//        project = findViewById(R.id.text_view_ts_total);
+//        hour = findViewById(R.id.text_view_ts_hour);
+//        comment = findViewById(R.id.text_view_ts_total);
+//        decline = findViewById(R.id.button_ts_decline);
         accept = findViewById(R.id.button_ts_accept);
 
         // Set the action bar and set the required name

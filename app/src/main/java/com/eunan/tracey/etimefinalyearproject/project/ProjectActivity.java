@@ -62,7 +62,6 @@ public class ProjectActivity extends AppCompatActivity {
     private Map<String, AssignedEmployess> assignedEmployessMap;
     EmployeeProjectModel employeeProjectModel;
     AssignedEmployess assignedEmployess;
-    static String testKey;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +112,7 @@ public class ProjectActivity extends AppCompatActivity {
                     projectRef.child(currentUserId).child(id).setValue(project);
                     for (Map.Entry<String, AssignedEmployess> entry : assignedEmployessMap.entrySet()) {
                         employeeProjectModel = new EmployeeProjectModel(entry.getKey(),name);
-                        assignedRef.child(entry.getKey()).child(currentUserId).child(assigned_push).setValue(employeeProjectModel);
+                        assignedRef.child(entry.getKey()).child(assigned_push).setValue(employeeProjectModel);
                     }
 
                     Log.d(TAG, "onClick: + " + project);
@@ -123,8 +122,6 @@ public class ProjectActivity extends AppCompatActivity {
                     projectLocation.setText("");
                     projectDescription.setText("");
 
-                    // empMap.clear();
-                    // employeeAdapter.notifyDataSetChanged();
                     projectName.requestFocus();
 
                 }
@@ -181,7 +178,7 @@ public class ProjectActivity extends AppCompatActivity {
 
                     }
                 });
-                //TODO SET LONG CLICKLISTENER TO REOVE FROM LIST AND CHAnGE COLOUR BACK
+                //TODO SET LONG CLICKLISTENER TO REMOVE FROM LIST AND CHAnGE COLOUR BACK
                 employeeViewHolder.setDate(employee.getDate());
                 employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override

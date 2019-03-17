@@ -7,71 +7,63 @@
     tools:context=".timesheet.TimeSheetBuilder"
     tools:layout_editor_absoluteY="25dp">
 
-    <EditText
-        android:id="@+id/edit_text_ts_comments"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
+    <Spinner
+        android:id="@+id/spinner_minutes"
+        android:layout_width="104dp"
+        android:layout_height="38dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="Comments"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.166"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_ts_hrs" />
-
-    <EditText
-        android:id="@+id/edit_text_ts_hrs"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="56dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="Hours"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.166"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="40dp"
+        android:maxHeight="100dp"
+        app:layout_constraintStart_toEndOf="@+id/spinner_hours"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button_done_ts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:background="@color/tw__composer_blue"
         android:text="DONE"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/recycler_view_ts_builder"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_view_ts_builder"
-        app:layout_constraintVertical_bias="0.027" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/button_cancel_ts"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_ts_builder" />
 
     <Button
         android:id="@+id/button_cancel_ts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:background="@color/tw__composer_blue_text"
         android:text="CANCEL"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/recycler_view_ts_builder"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_view_ts_builder"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_ts_builder" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_ts_builder"
-        android:layout_width="321dp"
-        android:layout_height="262dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="220dp"
+        android:layout_height="387dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/edit_text_ts_comments"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_ts_comments" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_minutes" />
+
+    <Spinner
+        android:id="@+id/spinner_hours"
+        android:layout_width="104dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="8dp"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_view_ts_builder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

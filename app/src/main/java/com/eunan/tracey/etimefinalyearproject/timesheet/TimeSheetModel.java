@@ -5,14 +5,16 @@ public class TimeSheetModel {
    // private ProjectModel project;
     private String project;
     private String hours;
-    private String comments;
-    private String day;
+    private String minutes;
 
-    public TimeSheetModel(String project, String hours, String comments, String day) {
+    public TimeSheetModel(String project, String hours, String minutes) {
         this.project = project;
         this.hours = hours;
-        this.comments = comments;
-        this.day = day;
+        this.minutes = minutes;
+
+    }
+
+    public TimeSheetModel() {
     }
 
     public String getProject() {
@@ -31,20 +33,12 @@ public class TimeSheetModel {
         this.hours = hours;
     }
 
-    public String getComments() {
-        return comments;
+    public String getMinutes() {
+        return minutes;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
+    public void setMinutes(String minutes) {
+        this.minutes = minutes;
     }
 
     @Override
@@ -52,8 +46,7 @@ public class TimeSheetModel {
         return "TimeSheetModel{" +
                 "project='" + project + '\'' +
                 ", hours='" + hours + '\'' +
-                ", comments='" + comments + '\'' +
-                ", day='" + day + '\'' +
+                ", minutes='" + minutes + '\'' +
                 '}';
     }
 }
