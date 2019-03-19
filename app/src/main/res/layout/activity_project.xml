@@ -10,74 +10,55 @@
 
     <EditText
         android:id="@+id/edit_text_project_name"
-        android:layout_width="0dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="@string/project"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/edit_text_project_location"
-        android:layout_width="0dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/edit_text_project_name"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/location"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_project_description" />
-
-    <EditText
-        android:id="@+id/edit_text_project_description"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/edit_text_project_name"
-        android:layout_alignEnd="@+id/edit_text_project_name"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:ems="10"
-        android:hint="@string/description"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_project_name" />
 
     <Button
         android:id="@+id/button_add_project"
         android:layout_width="wrap_content"
-        android:layout_height="53dp"
+        android:layout_height="40dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="22dp"
-        android:background="@android:color/holo_blue_dark"
+        android:background="@drawable/round_button"
         android:text="@string/create"
         android:textColor="@color/tw__composer_white"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.945"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/project_employee_recyclerview" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/project_employee_recyclerview"
-        android:layout_width="0dp"
-        android:layout_height="192dp"
-        android:layout_marginStart="32dp"
+        android:layout_width="320dp"
+        android:layout_height="220dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
         android:background="@drawable/shape"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_project_location" />
 

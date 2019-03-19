@@ -139,7 +139,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                                 break;
                             case 1:
                                 Intent timeSheetIntent = new Intent(getContext().getApplicationContext(), EmployerTimeSheetActivity.class);
-                                timeSheetIntent.putExtra("ts_id", userId);
+                                timeSheetIntent.putExtra("employeeId", userId);
                                 timeSheetIntent.putExtra("name", employeeViewHolder.getName());
                                 timeSheetIntent.putExtra("employer_id",currentUserId);
                                 startActivity(timeSheetIntent);
@@ -191,7 +191,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
         }
 
         public void setImage(Context context, String image) {
-            CircleImageView circleImageView = view.findViewById(R.id.user_image);
+            CircleImageView circleImageView = view.findViewById(R.id.history_image);
             Picasso.with(context).load(image).placeholder(R.drawable.default_avatar).into(circleImageView);
         }
     }

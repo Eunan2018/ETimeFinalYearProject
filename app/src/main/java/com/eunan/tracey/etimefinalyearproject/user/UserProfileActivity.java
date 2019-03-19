@@ -29,6 +29,7 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent employerIntent = new Intent(UserProfileActivity.this,EmployerProfileActivity.class);
                 startActivity(employerIntent);
+                finish();
             }
         });
 
@@ -37,6 +38,8 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent employeeIntent = new Intent(UserProfileActivity.this,EmployeeProfileActivity.class);
                 startActivity(employeeIntent);
+                finish();
+
             }
         });
     }

@@ -14,30 +14,18 @@
 
         <RelativeLayout
             android:id="@+id/project_layout_view"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_width="384dp"
+            android:layout_height="match_parent"
             android:paddingLeft="@dimen/activity_horizontal_margin">
-
-            <ImageView
-                android:id="@+id/cc"
-                android:layout_width="71dp"
-                android:layout_height="69dp"
-                android:layout_alignStart="@+id/textview_title"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:contentDescription="TODO"
-                android:src="@drawable/home"
-                android:tint="@android:color/holo_red_light" />
 
             <TextView
                 android:id="@+id/textview_title"
-                android:layout_width="match_parent"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textview_options_digit"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="31dp"
-                android:layout_marginEnd="0dp"
+                android:layout_marginTop="-30dp"
+                android:layout_marginEnd="160dp"
                 android:hint="Project Name"
                 android:textAppearance="?android:textAppearanceLarge" />
 
@@ -47,18 +35,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textview_title"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="11dp"
                 android:hint="Location"
-                android:textAppearance="?android:textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/textview_description"
-                android:layout_width="360dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textview_location"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="0dp"
-                android:hint="Description"
                 android:textAppearance="?android:textAppearanceMedium" />
 
             <TextView

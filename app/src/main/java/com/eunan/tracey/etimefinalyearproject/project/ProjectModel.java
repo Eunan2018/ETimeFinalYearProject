@@ -11,15 +11,13 @@ public class ProjectModel {
     //private String projectId;
     private String projectName;
     private String projectLocation;
-    private String projectDescription;
     private int projectTimestamp;
     private Map<String,AssignedEmployess> assignedEmployessList;
 
-    public ProjectModel(String projectName, String projectLocation, String projectDescription,int projectTimestamp, Map<String,AssignedEmployess> assignedEmployessList) {
+    public ProjectModel(String projectName, String projectLocation,int projectTimestamp, Map<String,AssignedEmployess> assignedEmployessList) {
 
         this.projectName = projectName;
         this.projectLocation = projectLocation;
-        this.projectDescription = projectDescription;
         this.assignedEmployessList = assignedEmployessList;
         this.projectTimestamp = projectTimestamp;
     }
@@ -45,13 +43,6 @@ public class ProjectModel {
         this.projectLocation = projectLocation;
     }
 
-    public String getProjectDescription() {
-        return projectDescription;
-    }
-
-    public void setProjectDescription(String projectDescription) {
-        this.projectDescription = projectDescription;
-    }
 
     public int getProjectTimestamp() {
         return projectTimestamp;
@@ -74,7 +65,6 @@ public class ProjectModel {
         return "ProjectModel{" +
                 "projectName='" + projectName + '\'' +
                 ", projectLocation='" + projectLocation + '\'' +
-                ", projectDescription='" + projectDescription + '\'' +
                 ", projectTimestamp=" + projectTimestamp +
                 ", assignedEmployessList=" + assignedEmployessList +
                 '}';

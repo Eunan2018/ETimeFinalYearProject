@@ -163,7 +163,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(getContext().getApplicationContext(), "In t builder", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext().getApplicationContext(), "In time-sheet builder", Toast.LENGTH_SHORT).show();
                             }
                         });
             }

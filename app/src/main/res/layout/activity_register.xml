@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tw__composer_deep_gray"
+    android:background="@color/tw__composer_white"
     android:padding="16dp"
     tools:layout_editor_absoluteY="25dp">
 
@@ -15,12 +15,12 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/twitter_login_button"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:textColor="@color/tw__composer_white"
+        android:textColor="@color/tw__composer_black"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewReg" />
 
@@ -30,12 +30,13 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/twitter_login_button"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="User Name"
         android:inputType="textEmailAddress"
-        android:textColor="@color/tw__composer_white"
+        android:textColor="@color/tw__composer_black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_reg_email" />
 
@@ -45,38 +46,43 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/edit_text_login_email"
         android:layout_alignEnd="@+id/edit_text_login_email"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
-        android:textColor="@color/tw__composer_white"
+        android:textColor="@color/tw__composer_black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_reg_user_name" />
 
 
     <Button
         android:id="@+id/button_sign_up"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:layout_alignEnd="@+id/edit_text_login_email"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="4dp"
-        android:background="@android:color/holo_red_light"
+        android:background="@drawable/round_button"
         android:text="SIGN UP"
         android:textColor="@color/tw__composer_white"
-        app:layout_constraintEnd_toEndOf="@+id/edit_text_reg_password"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_reg_password" />
 
 
     <ImageView
         android:id="@+id/imageViewReg"
-        android:layout_width="175dp"
-        android:layout_height="124dp"
+        android:layout_width="198dp"
+        android:layout_height="144dp"
         android:layout_alignStart="@+id/google_signin_button"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/timesheet" />
@@ -85,13 +91,13 @@
         android:id="@+id/text_view_reg_login"
         android:layout_width="155dp"
         android:layout_height="17dp"
-        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:text="LOGIN INSTEAD"
-        android:textColor="@color/tw__composer_white"
+        android:textColor="@color/tw__composer_black"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/edit_text_reg_password"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_reg_password" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/button_sign_up"
+        app:layout_constraintTop_toBottomOf="@+id/button_sign_up" />
 
 </android.support.constraint.ConstraintLayout>
 

@@ -12,13 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.eunan.tracey.etimefinalyearproject.AssignedEmployess;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
-import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -206,7 +203,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
         }
 
         public void setImage(Context context, String image) {
-            CircleImageView circleImageView = view.findViewById(R.id.user_image);
+            CircleImageView circleImageView = view.findViewById(R.id.history_image);
             Picasso.with(context).load(image).placeholder(R.drawable.default_avatar).into(circleImageView);
         }
 

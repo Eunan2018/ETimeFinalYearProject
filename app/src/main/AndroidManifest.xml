@@ -82,7 +82,9 @@
         <activity android:name=".salary.SalaryActivity" />
         <activity android:name=".timesheet.TimeSheetBuilder" />
         <activity android:name=".project.MaintainProject" />
-        <activity android:name=".project.AddEmployeeActivity"></activity>
+        <activity android:name=".project.AddEmployeeActivity" />
+        <activity android:name=".timesheet.History" />
+        <activity android:name=".timesheet.HistoryCSV"></activity>
     </application>
 
 </manifest>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tw__composer_deep_gray"
+    tools:background="@color/tw__composer_white"
     tools:context=".employer.EmployerTimeSheetActivity"
     tools:layout_editor_absoluteY="25dp">
 
@@ -19,25 +19,27 @@
         android:id="@+id/button_ts_accept"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
+        android:layout_marginStart="144dp"
         android:layout_marginTop="8dp"
-        android:background="@android:color/holo_blue_dark"
+        android:background="@drawable/round_button"
         android:text="@string/accept"
         android:textColor="@color/tw__composer_white"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_ts_comments"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/textview_salary_total"
         app:layout_constraintTop_toBottomOf="@+id/text_view_ts_comments" />
 
     <TextView
         android:id="@+id/text_view_ts_total"
-        android:layout_width="300dp"
+        android:layout_width="334dp"
         android:layout_height="300dp"
-        android:layout_marginStart="44dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/shape"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time_sheet_app_bar" />
 
@@ -45,9 +47,8 @@
         android:id="@+id/textview_salary_total"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-
+        android:background="@drawable/round_button"
         android:layout_marginTop="8dp"
-        android:background="@android:color/holo_blue_dark"
         android:text="@string/decline"
         android:textColor="@color/tw__composer_white"
         app:layout_constraintStart_toStartOf="@+id/text_view_ts_comments"
@@ -55,13 +56,15 @@
 
     <TextView
         android:id="@+id/text_view_ts_comments"
-        android:layout_width="300dp"
-        android:layout_height="30dp"
+        android:layout_width="334dp"
+        android:layout_height="49dp"
         android:layout_marginStart="44dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="40dp"
-        android:text="TextView"
+        android:background="@drawable/shape"
+        android:text="COMMENTS"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_ts_total" />
 

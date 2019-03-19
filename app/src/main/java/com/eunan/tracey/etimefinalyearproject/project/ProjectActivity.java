@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.AssignedEmployess;
 import com.eunan.tracey.etimefinalyearproject.R;
-import com.eunan.tracey.etimefinalyearproject.employee.Employee;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProjectModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -43,7 +42,6 @@ public class ProjectActivity extends AppCompatActivity {
     // Layout
     private EditText projectName;
     private EditText projectLocation;
-    private EditText projectDescription;
     private Button addProject;
     private RecyclerView recyclerView;
 
@@ -57,8 +55,7 @@ public class ProjectActivity extends AppCompatActivity {
 
     // Variables
     private String currentUserId;
-    private Map<String, AssignedEmployess> assignedEmployessList;
-    private Map<String, String> employeeProjects;
+    private Map<String, AssignedEmployess> employeesMap;
     private Map<String, AssignedEmployess> assignedEmployessMap;
     EmployeeProjectModel employeeProjectModel;
     AssignedEmployess assignedEmployess;
@@ -69,8 +66,7 @@ public class ProjectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_project);
 
 
-        assignedEmployessList = new HashMap();
-        employeeProjects = new HashMap();
+        employeesMap = new HashMap();
         assignedEmployessMap = new HashMap<>();
         assignedEmployess = new AssignedEmployess();
         // Firebase
@@ -84,7 +80,6 @@ public class ProjectActivity extends AppCompatActivity {
         // Layout
         addProject = findViewById(R.id.button_add_project);
         projectName = findViewById(R.id.edit_text_project_name);
-        projectDescription = findViewById(R.id.edit_text_project_description);
         projectLocation = findViewById(R.id.edit_text_project_location);
         recyclerView = findViewById(R.id.project_employee_recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -96,18 +91,15 @@ public class ProjectActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String name = projectName.getText().toString().trim();
                 String location = projectLocation.getText().toString().trim();
-                String description = projectDescription.getText().toString().trim();
                 if (!validate(name)) {
                     Toast.makeText(ProjectActivity.this, "Project Cannot Be Empty", Toast.LENGTH_LONG).show();
                 } else if (!validate(location)) {
                     Toast.makeText(ProjectActivity.this, "Location Cannot Be Empty", Toast.LENGTH_LONG).show();
-                } else if (!validate(description)) {
-                    Toast.makeText(ProjectActivity.this, "Description Cannot Be Empty", Toast.LENGTH_LONG).show();
-                } else {
+                }  else {
                     // Create unique key for each project
                     String id = projectRef.push().getKey();
                     String assigned_push = assignedRef.push().getKey();
-                    ProjectModel project = new ProjectModel(name, location, description, (int) System.currentTimeMillis(), assignedEmployessList);
+                    ProjectModel project = new ProjectModel(name, location,(int) System.currentTimeMillis(), employeesMap);
 
                     projectRef.child(currentUserId).child(id).setValue(project);
                     for (Map.Entry<String, AssignedEmployess> entry : assignedEmployessMap.entrySet()) {
@@ -120,8 +112,6 @@ public class ProjectActivity extends AppCompatActivity {
                     // clear all and reset focus
                     projectName.setText("");
                     projectLocation.setText("");
-                    projectDescription.setText("");
-
                     projectName.requestFocus();
 
                 }
@@ -186,7 +176,7 @@ public class ProjectActivity extends AppCompatActivity {
 
                         AssignedEmployess assignedEmployess = new AssignedEmployess(employeeViewHolder.getName(), employeeViewHolder.getKey());
                         employeeViewHolder.view.setBackgroundColor(Color.GRAY);
-                        assignedEmployessList.put(employeeViewHolder.getKey(), assignedEmployess);
+                        employeesMap.put(employeeViewHolder.getKey(), assignedEmployess);
                         assignedEmployessMap.put(employeeViewHolder.getKey(),assignedEmployess);
                     }
 
@@ -236,7 +226,7 @@ public class ProjectActivity extends AppCompatActivity {
         }
 
         public void setImage(Context context, String image) {
-            CircleImageView circleImageView = view.findViewById(R.id.user_image);
+            CircleImageView circleImageView = view.findViewById(R.id.history_image);
             Picasso.with(context).load(image).placeholder(R.drawable.default_avatar).into(circleImageView);
         }
 

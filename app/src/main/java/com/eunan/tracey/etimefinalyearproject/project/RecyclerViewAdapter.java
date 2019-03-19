@@ -62,14 +62,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final ProjectModel itemList = listItems.get(i);
         holder.title.setText(itemList.getProjectName());
         holder.location.setText(itemList.getProjectLocation());
-        holder.description.setText(itemList.getProjectDescription());
         holder.projectLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, MaintainProject.class);
                 intent.putExtra("title", itemList.getProjectName());
                 intent.putExtra("location", itemList.getProjectLocation());
-                intent.putExtra("description", itemList.getProjectDescription());
                 intent.putExtra("timestamp",itemList.getProjectTimestamp());
                 context.startActivity(intent);
                 Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show();
@@ -128,7 +126,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView title;
         public TextView location;
-        public TextView description;
         public TextView optionsDigit;
         public RelativeLayout projectLayout;
 
@@ -136,7 +133,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(itemView);
             title = itemView.findViewById(R.id.textview_title);
             location = itemView.findViewById(R.id.textview_location);
-            description = itemView.findViewById(R.id.textview_description);
             optionsDigit = itemView.findViewById(R.id.textview_options_digit);
             projectLayout = itemView.findViewById(R.id.project_layout_view);
         }

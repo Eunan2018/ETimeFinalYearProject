@@ -57,7 +57,7 @@
         android:layout_width="63dp"
         android:layout_height="53dp"
         android:layout_marginTop="8dp"
-        android:background="@color/tw__composer_blue_text"
+        android:background="@drawable/round_button"
         android:text="+"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/recycler_view_mp"

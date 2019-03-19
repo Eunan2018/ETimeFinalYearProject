@@ -1,10 +1,16 @@
 package com.eunan.tracey.etimefinalyearproject.timesheet;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +19,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
+import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProfileActivity;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProjectModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -30,16 +38,25 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.eunan.tracey.etimefinalyearproject.timesheet.TimeSheetFragment.txtMondayDay;
 
 
 public class TimeSheetBuilder extends AppCompatActivity {
 
     private static final String TAG = "TimeSheetBuilder";
+    public interface DataFromActivityToFragment {
+        void sendData(String data);
+    }
+    DataFromActivityToFragment dataFromActivityToFragment;
 
 
     private Button btnDone;
@@ -48,12 +65,14 @@ public class TimeSheetBuilder extends AppCompatActivity {
     private Spinner spinnerHours;
     private String hours;
     private String minutes;
+  //  private TextView txtMonday;
     private boolean inispinner;
     // Firebase
     private DatabaseReference assignedRef;
     private FirebaseUser currentUser;
     private String userId;
-    public static Map<String, TimeSheetModel> timesheetMap = new HashMap<>();
+    public static LinkedHashMap<String, TimeSheetModel> timesheetMap = new LinkedHashMap<>();
+    private final ArrayList<Integer> selectionList = new ArrayList<>();
     private TimeSheetModel timesheet;
     String projectName;
 
@@ -75,6 +94,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
         // hours = findViewById(R.id.edit_text_ts_hrs);
 
         btnDone = findViewById(R.id.button_done_ts);
+      //  txtMonday = findViewById(R.id.text_view_monday_day);
         recyclerView = findViewById(R.id.recycler_view_ts_builder);
         spinnerHours = findViewById(R.id.spinner_hours);
         spinnerMinutes = findViewById(R.id.spinner_minutes);
@@ -91,14 +111,31 @@ public class TimeSheetBuilder extends AppCompatActivity {
                 day = getIntent().getStringExtra("day");
 
                 timesheet = new TimeSheetModel(projectName, hours, minutes);
+                if (TextUtils.isEmpty(projectName)) {
+                    Toast.makeText(TimeSheetBuilder.this, "Please select a project!!", Toast.LENGTH_SHORT).show();
+                } else if (TextUtils.equals(hours, "0")) {
+                    Toast.makeText(TimeSheetBuilder.this, "Please enter hours!!", Toast.LENGTH_SHORT).show();
+               }else {
+//                    ((FrameLayout)findViewById(R.id.frameLayout)).removeAllViews();
+//                    Fragment mFragment = null;
+//                    mFragment = new TimeSheetFragment();
+//                    FragmentManager fragmentManager = getSupportFragmentManager();
+//                    fragmentManager.beginTransaction()
+//                            .replace(R.id.frameLayout, mFragment).commit();
+                    timesheetMap.put(day, timesheet);
 
-                timesheetMap.put(day, timesheet);
+                    finish();
+
+                }
+
             }
         });
 
         ArrayAdapter hoursAdapter = new ArrayAdapter(this,
                 android.R.layout.simple_spinner_item, hoursArray);
+
         hoursAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+
         spinnerHours.setAdapter(hoursAdapter);
 
         spinnerHours.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -119,7 +156,10 @@ public class TimeSheetBuilder extends AppCompatActivity {
 
         ArrayAdapter minutesAdapter = new ArrayAdapter(this,
                 android.R.layout.simple_spinner_item, minutesArray);
+
+
         minutesAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+
         spinnerMinutes.setAdapter(minutesAdapter);
 
         spinnerMinutes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -140,7 +180,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
 
     }
 
-    public static Map<String, TimeSheetModel> getTimeMap() {
+    public static LinkedHashMap<String, TimeSheetModel> getTimeMap() {
         return timesheetMap;
     }
 
@@ -168,6 +208,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(final TimeSheetBuilder.EmployeeViewHolder employeeViewHolder, final int position, @NonNull final EmployeeProjectModel employee) {
                 Log.d(TAG, "onBindViewHolder: starts");
+                selectionList.add(0, 0);
                 final String userId = getRef(position).getKey();
 
                 assignedRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -192,7 +233,26 @@ public class TimeSheetBuilder extends AppCompatActivity {
                 employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        projectName = employeeViewHolder.getName();
+
+                        if (selectionList.get(0).equals(0)) {
+                            employeeViewHolder.view.setBackgroundColor(Color.GRAY);
+                            projectName = employeeViewHolder.getName();
+                            selectionList.set(0, 1);
+                        } else {
+                            Toast.makeText(TimeSheetBuilder.this, projectName + " already " +
+                                    "selected. Select " + projectName + " again to cancel", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                });
+                employeeViewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        selectionList.set(0, 0);
+                        employeeViewHolder.view.setBackgroundColor(Color.TRANSPARENT);
+                        projectName = "";
+                        return true;
                     }
                 });
             }

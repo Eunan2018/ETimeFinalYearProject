@@ -1,11 +1,8 @@
 package com.eunan.tracey.etimefinalyearproject.project;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,14 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eunan.tracey.etimefinalyearproject.AssignedEmployess;
 import com.eunan.tracey.etimefinalyearproject.R;
-import com.eunan.tracey.etimefinalyearproject.employee.Employee;
-import com.eunan.tracey.etimefinalyearproject.employee.EmployeeFragment;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
-import com.eunan.tracey.etimefinalyearproject.employer.EmployerTimeSheetActivity;
-import com.eunan.tracey.etimefinalyearproject.profile.ProfileActivity;
-import com.eunan.tracey.etimefinalyearproject.salary.SalaryActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -37,10 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -239,7 +226,7 @@ public class MaintainProject extends AppCompatActivity {
         }
 
         public void setImage(Context context, String image) {
-            CircleImageView circleImageView = view.findViewById(R.id.user_image);
+            CircleImageView circleImageView = view.findViewById(R.id.history_image);
             Picasso.with(context).load(image).placeholder(R.drawable.default_avatar).into(circleImageView);
         }
 

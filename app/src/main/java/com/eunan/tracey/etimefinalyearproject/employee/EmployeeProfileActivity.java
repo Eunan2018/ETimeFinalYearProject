@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.settings.SettingsActivity;
+import com.eunan.tracey.etimefinalyearproject.timesheet.History;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class EmployeeProfileActivity extends AppCompatActivity {
     private final String TAG = "Employer Profile";
@@ -32,8 +34,9 @@ public class EmployeeProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_employee_profile);
 
         // Initialise Toolbar and set its constraints
-       // toolbar = findViewById(R.id.employee_page_toolbar);
-
+        toolbar = findViewById(R.id.employee_page_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Time-Sheet");
 
         // Initialise ViewPager
         viewPager = findViewById(R.id.employee_tab_pager);
@@ -51,7 +54,7 @@ public class EmployeeProfileActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG, "onCreateOptionsMenu: starts");
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_employe, menu);
         return true;
     }
 
@@ -62,15 +65,23 @@ public class EmployeeProfileActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.logout_button_app_bar :
-                // FirebaseAuth.getInstance().signOut();
+                FirebaseAuth.getInstance().signOut();
                 Intent mainIntent = new Intent(EmployeeProfileActivity.this, MainActivity.class);
                 startActivity(mainIntent);
+                finish();
                 break;
 
             case R.id.user_settings_button :
                 Intent settingsIntent = new Intent(EmployeeProfileActivity.this, SettingsActivity.class);
                 startActivity(settingsIntent);
                 break;
+
+
+            case R.id.view_timesheets :
+                Intent timesheetIntent = new Intent(EmployeeProfileActivity.this, History.class);
+                startActivity(timesheetIntent);
+                break;
+
 
             default :
                 break;

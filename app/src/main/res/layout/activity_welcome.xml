@@ -4,60 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tw__composer_deep_gray"
-    tools:context=".welcome.WelcomeActivity">
+    android:background="@color/tw__composer_white"
+    tools:background="@color/tw__composer_white"
+    tools:context=".welcome.WelcomeActivity"
+    tools:layout_editor_absoluteY="25dp">
 
     <ImageView
         android:id="@+id/imageViewWelcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
+        android:layout_width="139dp"
+        android:layout_height="117dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="96dp"
+        android:background="@drawable/shape"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/timesheet" />
 
-    <TextView
-        android:id="@+id/textViewWelcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="144dp"
-        android:layout_marginTop="8dp"
-        android:text="Welcome...."
-        android:textAlignment="center"
-        android:textColor="@color/tw__composer_white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewWelcome" />
-
     <Button
         android:id="@+id/button_login"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/holo_blue_dark"
-        android:text="Login"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="212dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/round_button"
+        android:text="Start"
         android:textColor="@android:color/white"
-        app:layout_constraintEnd_toStartOf="@+id/button_sign_up"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewWelcome" />
-
-    <Button
-        android:id="@+id/button_sign_up"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="24dp"
-        android:background="@android:color/holo_blue_dark"
-        android:text="Sign Up"
-        android:textColor="@color/tw__composer_white"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button_login"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/button_login" />
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="237dp"
+        android:layout_height="87dp"
+        android:layout_marginTop="36dp"
+        android:text="Create projects, manage employee hours or if you sign up as an emplyee you cand send time-sheet to your employer. "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewWelcome" />
 </android.support.constraint.ConstraintLayout>

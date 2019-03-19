@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void onSuccess(Void aVoid) {
                                     Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
                                     startActivity(intent);
+                                    finish();
                                     Toast.makeText(MainActivity.this, "Login Successful, ", Toast.LENGTH_LONG).show();
                                 }
                             });

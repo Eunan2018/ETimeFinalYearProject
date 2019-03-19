@@ -35,7 +35,7 @@ public class EmployerProfileActivity extends AppCompatActivity {
         // Initialise Toolbar and set its constraints
         toolbar = findViewById(R.id.employer_page_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("ETime");
+        getSupportActionBar().setTitle("Time-Sheet");
 
         // Initialise ViewPager
         viewPager = findViewById(R.id.employer_tab_pager);

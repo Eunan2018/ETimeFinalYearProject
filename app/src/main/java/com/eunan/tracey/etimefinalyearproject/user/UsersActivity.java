@@ -111,7 +111,7 @@ public class UsersActivity extends AppCompatActivity {
         }
 
         public void setImage(Context context, String user_image){
-            CircleImageView circleImageView = view.findViewById(R.id.user_image);
+            CircleImageView circleImageView = view.findViewById(R.id.history_image);
             Picasso.with(context).load(user_image).placeholder(R.drawable.default_avatar).into(circleImageView);
         }
     }

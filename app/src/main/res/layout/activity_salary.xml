@@ -86,6 +86,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:text="UPDATE"
+        android:background="@drawable/round_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_salary_ni_num" />
 
@@ -95,6 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="save"
+        android:background="@drawable/round_button"
         app:layout_constraintEnd_toEndOf="@+id/edit_text_salary_ni_num"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_salary_ni_num" />
 
