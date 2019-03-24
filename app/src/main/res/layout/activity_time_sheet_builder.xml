@@ -26,7 +26,7 @@
         android:id="@+id/button_done_ts"
         android:layout_width="320dp"
         android:layout_height="40dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/round_button"
         android:text="DONE"
         android:textColor="@color/tw__composer_white"
@@ -77,8 +77,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="225dp"
-        android:layout_height="171dp"
+        android:layout_width="317dp"
+        android:layout_height="185dp"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

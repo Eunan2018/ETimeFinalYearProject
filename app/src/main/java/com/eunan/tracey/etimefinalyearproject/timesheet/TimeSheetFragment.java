@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +61,8 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
     private TextView txtFridayDay;
     private TextView txtFridayHours;
 
+    private TextView txtClock;
+
     @SuppressLint("SimpleDateFormat")
     DateFormat dayDateFormat;
     @SuppressLint("SimpleDateFormat")
@@ -68,7 +71,10 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
     private DatabaseReference timesheetRef;
     private DatabaseReference employerRef;
     private String currentUserId;
+
+    TextClock textClock;
     String employerKey;
+
     public TimeSheetFragment() {
         // Required empty public constructor
     }
@@ -84,15 +90,17 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         view = inflater.inflate(R.layout.fragment_timesheet, container, false);
         employerRef = FirebaseDatabase.getInstance().getReference("Employer");
 
+        textClock = new TextClock(getContext());
+
         employerRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot childSnapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     employerKey = childSnapshot.getKey();
                     Log.d(TAG, "onDataChange: employer key" + employerKey);
-                    for(DataSnapshot postChildSnapshot : childSnapshot.getChildren()){
+                    for (DataSnapshot postChildSnapshot : childSnapshot.getChildren()) {
                         String employeeKey = postChildSnapshot.getKey();
-                        if(TextUtils.equals(employeeKey,currentUserId)) {
+                        if (TextUtils.equals(employeeKey, currentUserId)) {
                             Log.d(TAG, "onDataChange: employee key " + employeeKey + " currentUserId " + currentUserId);
                         }
                     }
@@ -106,7 +114,17 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         });
 
         // Layout
+        initialiseTextViewsAndButtons(view);
 
+        // Firebase
+        timesheetRef = FirebaseDatabase.getInstance().getReference("TimeSheet");
+
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Log.d(TAG, "onCreateView: " + currentUserId);
+        return view;
+    }
+
+    private void initialiseTextViewsAndButtons(View view) {
         btnMonday = view.findViewById(R.id.btn_monday);
         txtMondayDate = view.findViewById(R.id.text_view_monday_date);
         txtMondayDay = view.findViewById(R.id.text_view_monday_day);
@@ -134,12 +152,10 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
         btnSubmit = view.findViewById(R.id.button_submit);
 
-        // Firebase
-        timesheetRef = FirebaseDatabase.getInstance().getReference("TimeSheet");
+        txtClock = view.findViewById(R.id.text_clock);
 
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Log.d(TAG, "onCreateView: " + currentUserId);
-        return view;
+       // textClock.setFormat24Hour("HH:mm:ss");
+        txtClock.setText(textClock.getText().toString());
     }
 
     @SuppressLint("SimpleDateFormat")
