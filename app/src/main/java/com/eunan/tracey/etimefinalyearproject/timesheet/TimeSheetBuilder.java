@@ -115,12 +115,6 @@ public class TimeSheetBuilder extends AppCompatActivity {
                 } else if (TextUtils.equals(hours, "0")) {
                     Toast.makeText(TimeSheetBuilder.this, "Please enter hours!!", Toast.LENGTH_SHORT).show();
                }else {
-//                    ((FrameLayout)findViewById(R.id.frameLayout)).removeAllViews();
-//                    Fragment mFragment = null;
-//                    mFragment = new TimeSheetFragment();
-//                    FragmentManager fragmentManager = getSupportFragmentManager();
-//                    fragmentManager.beginTransaction()
-//                            .replace(R.id.frameLayout, mFragment).commit();
                     timesheetMap.put(day, timesheet);
 
                     finish();

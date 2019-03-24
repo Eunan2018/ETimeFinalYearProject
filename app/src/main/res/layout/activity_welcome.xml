@@ -41,7 +41,7 @@
         android:layout_width="237dp"
         android:layout_height="87dp"
         android:layout_marginTop="36dp"
-        android:text="Create projects, manage employee hours or if you sign up as an emplyee you cand send time-sheet to your employer. "
+        android:text="Create projects, manage employee hours or if you sign up as an employee you can send time-sheet to your employer. "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewWelcome" />

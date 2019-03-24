@@ -124,7 +124,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                     public void onClick(View v) {
                         Log.d(TAG, "onClick: starts");
                         // Build a dialog box where the user can choose either profile or time-sheet
-                        CharSequence options[] = new CharSequence[]{"Remove EmployeeModel", "View Time Sheet", "Set Salary"};
+                        CharSequence options[] = new CharSequence[]{"Remove Employee", "Time-Sheets", "Set Salary"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Options");
                         builder.setItems(options, new DialogInterface.OnClickListener() {

@@ -1,5 +1,7 @@
 package com.eunan.tracey.etimefinalyearproject.employer;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -8,12 +10,17 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.eunan.tracey.etimefinalyearproject.MessageModel;
 import com.eunan.tracey.etimefinalyearproject.R;
+import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProfileActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,19 +42,31 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
     // Firebase
     private DatabaseReference timesheetRef;
     private DatabaseReference historyRef;
+    private DatabaseReference declineRef;
 
+
+    // Variables
     private String currentUser;
     private String employeeId;
+    private MessageModel messageModel;
 
     // Layout
     private Toolbar toolbar;
     private TextView txtTotal;
     private Button btnAccept;
-
+    private Button btnDecline;
 
     private Map<String,EmployerWeek> employerWeekMap;
     private List<EmployerWeek> employerWeekList;
     private EmployerWeek employerWeek;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,20 +75,27 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
 
         employerWeekMap = new HashMap<>();
         employerWeekList = new ArrayList<>();
-        // Set the action bar and set the required name
+        // Set the action bar with name and logo
         toolbar = findViewById(R.id.time_sheet_app_bar);
-        txtTotal = findViewById(R.id.text_view_ts_total);
-        btnAccept = findViewById(R.id.button_ts_accept);
         setSupportActionBar(toolbar);
         Drawable dr = ContextCompat.getDrawable(this,R.drawable.timesheet);
         Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
         getSupportActionBar().setLogo(d);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        txtTotal = findViewById(R.id.text_view_ts_total);
+        btnAccept = findViewById(R.id.button_ts_accept);
+        btnDecline = findViewById(R.id.textview_ts_decline);
+
+        // Firebase
         currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
         employeeId = getIntent().getStringExtra("employeeId");
         timesheetRef = FirebaseDatabase.getInstance().getReference().child("TimeSheet");
+        declineRef = FirebaseDatabase.getInstance().getReference().child("Decline");
         historyRef = FirebaseDatabase.getInstance().getReference().child("History");
+
         timesheetRef.child(employeeId).child(currentUser).orderByPriority().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -92,6 +118,9 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                String error = databaseError.toString();
+                Toast.makeText(EmployerTimeSheetActivity.this, "Error retrieving time-sheet. Please try again later.", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onCancelled: error" + error);
             }
         });
 
@@ -119,6 +148,36 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
 
                     }
                 });
+            }
+        });
+
+        btnDecline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(EmployerTimeSheetActivity.this);
+                final EditText edittext = new EditText(getApplicationContext());
+                alert.setTitle("Information");
+
+                alert.setView(edittext);
+
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        String message = edittext.getText().toString();
+                        messageModel = new MessageModel(message,"default");
+                        declineRef.child(employeeId).setValue(messageModel);
+                        txtTotal.setText("");
+                        Log.d(TAG, "onClick: text: " + message);
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // what ever you want to do with No option.
+                    }
+                });
+
+                alert.show();
             }
         });
     }

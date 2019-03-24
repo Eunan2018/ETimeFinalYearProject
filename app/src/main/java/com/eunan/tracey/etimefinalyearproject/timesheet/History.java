@@ -41,7 +41,7 @@ public class History extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: ");
+        Log.d(TAG, "onCreate: starts");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         recyclerView = findViewById(R.id.recycler_view_history);
@@ -51,12 +51,13 @@ public class History extends AppCompatActivity {
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         employerWeekList = new ArrayList<>();
-
+        Log.d(TAG, "onCreate: ends");
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart: starts");
         FirebaseRecyclerOptions<HistoryModel> options =
                 new FirebaseRecyclerOptions.Builder<HistoryModel>()
                         .setQuery(historyRef.child(userId), HistoryModel.class)
@@ -75,48 +76,39 @@ public class History extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(final EmployeeViewHolder employeeViewHolder, final int position, final HistoryModel employee) {
                 Log.d(TAG, "onBindViewHolder: starts");
-                 final String pushId = getRef(position).getKey();
+                final String pushId = getRef(position).getKey();
 
                 Log.d(TAG, "onBindViewHolder: key " + userId);
 
+                if(pushId != null) {
+                    historyRef.child(pushId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Log.d(TAG, "onDataChange: starts");
+                            String key = dataSnapshot.getKey();
+                            Log.d(TAG, "onDataChange: key: " + key);
+                            employeeViewHolder.setDate(key);
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        historyRef.child(pushId).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String key = dataSnapshot.getKey();
-                                Log.d(TAG, "onDataChange: key: " + key);
-                                employeeViewHolder.setDate(key);
-                            }
+                        }
+                    });
+                }else{
+                    Toast.makeText(History.this, "Error loading time-sheet. Try again later.", Toast.LENGTH_SHORT).show();
+                }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        employeeViewHolder.constraintLayout.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                String date = employeeViewHolder.getDate();
-                                final Intent intent = new Intent(History.this, HistoryCSV.class);
-                                intent.putExtra("date", date);
-                                getApplicationContext().startActivity(intent);
-                                Toast.makeText(History.this, "hello", Toast.LENGTH_SHORT).show();
-                                Log.d(TAG, "onClick: date: " + date);
-                            }
-                        });
-//                employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent intent = new Intent(History.this, HistoryCSV.class);
-//                        intent.putExtra("project", itemList.getProjectName());
-//                        intent.putExtra("location", itemList.getProjectLocation());
-//                        intent.putExtra("timestamp",itemList.getProjectTimestamp());
-//                        context.startActivity(intent);
-//                        Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
+                employeeViewHolder.constraintLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String date = employeeViewHolder.getDate();
+                        final Intent intent = new Intent(History.this, HistoryCSV.class);
+                        intent.putExtra("date", date);
+                        getApplicationContext().startActivity(intent);
+                        Log.d(TAG, "onClick: date: " + date);
+                    }
+                });
                 employeeViewHolder.setDate(employee.getDay());
             }
         };
@@ -126,6 +118,7 @@ public class History extends AppCompatActivity {
 
     public static class EmployeeViewHolder extends RecyclerView.ViewHolder {
         private final static String TAG = "EmployeeViewHolder";
+
         View view;
         String tDate;
         ConstraintLayout constraintLayout;
@@ -138,13 +131,16 @@ public class History extends AppCompatActivity {
         }
 
         public void setDate(String date) {
+            Log.d(TAG, "setDate: starts");
             TextView empDate = view.findViewById(R.id.history_date);
             empDate.setText(date);
             tDate = date;
+            Log.d(TAG, "setDate: ends");
         }
 
         public String getDate() {
-           return tDate;
+            Log.d(TAG, "getDate: starts");
+            return tDate;
         }
 
     }

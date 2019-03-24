@@ -2,6 +2,7 @@ package com.eunan.tracey.etimefinalyearproject.timesheet;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -159,6 +160,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 String pushId = timesheetRef.push().getKey();
+                resetButtonColour();
                 timesheetRef.child(currentUserId).child(employerKey).child(pushId).setValue(TimeSheetBuilder.getTimeMap())
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -170,6 +172,14 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         });
     }
 
+    private void resetButtonColour() {
+        btnMonday.setBackgroundColor(Color.BLUE);
+        btnTuesday.setBackgroundColor(Color.BLUE);
+        btnWednesday.setBackgroundColor(Color.BLUE);
+        btnThursday.setBackgroundColor(Color.BLUE);
+        btnFriday.setBackgroundColor(Color.BLUE);
+    }
+
     private void mondayBuilder() {
         Calendar monday = Calendar.getInstance();
         monday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
@@ -179,9 +189,10 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         txtMondayDay.setText(String.valueOf(Weekday.MONDAY));
         txtMondayDate.setText(displayDateFormat.format(monday.getTime()));
 
-        btnMonday.setOnClickListener(new View.OnClickListener() {
+        txtMondayDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnMonday.setBackgroundColor(Color.GRAY);
                 Intent intent = new Intent(getContext().getApplicationContext(), TimeSheetBuilder.class);
                 intent.putExtra("day", String.valueOf(Weekday.MONDAY));
                 startActivity(intent);
@@ -199,9 +210,10 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         txtTuesdayDay.setText(String.valueOf(Weekday.TUESDAY));
         txtTuesdayDate.setText(displayDateFormat.format(tuesday.getTime()));
 
-        btnTuesday.setOnClickListener(new View.OnClickListener() {
+        txtTuesdayDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnTuesday.setBackgroundColor(Color.GRAY);
                 Intent intent = new Intent(getContext().getApplicationContext(), TimeSheetBuilder.class);
                 intent.putExtra("day", String.valueOf(Weekday.TUESDAY));
                 startActivity(intent);
@@ -218,9 +230,10 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         txtWednesdayDay.setText(String.valueOf(Weekday.WEDNESDAY));
         txtWednesdayDate.setText(displayDateFormat.format(wednesday.getTime()));
 
-        btnWednesday.setOnClickListener(new View.OnClickListener() {
+        txtWednesdayDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnWednesday.setBackgroundColor(Color.GRAY);
                 Intent intent = new Intent(getContext().getApplicationContext(), TimeSheetBuilder.class);
                 intent.putExtra("day", String.valueOf(Weekday.WEDNESDAY));
                 startActivity(intent);
@@ -237,9 +250,10 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         txtThursdayDay.setText(String.valueOf(Weekday.THURSDAY));
         txtThursdayDate.setText(displayDateFormat.format(thursday.getTime()));
 
-        btnThursday.setOnClickListener(new View.OnClickListener() {
+        txtThursdayDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnThursday.setBackgroundColor(Color.GRAY);
                 Intent intent = new Intent(getContext().getApplicationContext(), TimeSheetBuilder.class);
                 intent.putExtra("day", String.valueOf(Weekday.THURSDAY));
                 startActivity(intent);
@@ -256,9 +270,10 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         txtFridayDay.setText(String.valueOf(Weekday.FRIDAY));
         txtFridayDate.setText(displayDateFormat.format(friday.getTime()));
 
-        btnFriday.setOnClickListener(new View.OnClickListener() {
+        txtFridayDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnFriday.setBackgroundColor(Color.GRAY);
                 Intent intent = new Intent(getContext().getApplicationContext(), TimeSheetBuilder.class);
                 intent.putExtra("day", String.valueOf(Weekday.FRIDAY));
                 startActivity(intent);
