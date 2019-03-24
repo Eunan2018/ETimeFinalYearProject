@@ -1,6 +1,6 @@
 package com.eunan.tracey.etimefinalyearproject.employee;
 
-public class AssignedProjects {
+public class AssignedProjectsModel {
 
     private String name;
     private int timestamp;
@@ -13,14 +13,14 @@ public class AssignedProjects {
         this.timestamp = timestamp;
     }
 
-    public AssignedProjects(String name, int timestamp) {
+    public AssignedProjectsModel(String name, int timestamp) {
         this.name = name;
 
         this.timestamp = timestamp;
 
     }
 
-    public AssignedProjects() {
+    public AssignedProjectsModel() {
     }
 
     public String getName() {
@@ -34,7 +34,7 @@ public class AssignedProjects {
 
     @Override
     public String toString() {
-        return "AssignedProjects{" +
+        return "AssignedProjectsModel{" +
                 "name='" + name + '\'' +
                 ", timestamp=" + timestamp +
                 '}';

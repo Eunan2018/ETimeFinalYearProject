@@ -1,7 +1,11 @@
 package com.eunan.tracey.etimefinalyearproject.employee;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,6 +40,10 @@ public class EmployeeProfileActivity extends AppCompatActivity {
         // Initialise Toolbar and set its constraints
         toolbar = findViewById(R.id.employee_page_toolbar);
         setSupportActionBar(toolbar);
+        Drawable dr = ContextCompat.getDrawable(this,R.drawable.timesheet);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
+        getSupportActionBar().setLogo(d);
         getSupportActionBar().setTitle("Time-Sheet");
 
         // Initialise ViewPager

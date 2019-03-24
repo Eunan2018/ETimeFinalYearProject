@@ -42,11 +42,9 @@ public class MaintainProject extends AppCompatActivity {
 
     private TextView txtProjectName;
     private TextView txtProjectLocation;
-    private TextView txtProjectDescrition;
     private Button btnAddEmployee;
     private String names;
     private String location;
-    private String descrition;
     private int timestamp;
 
     private FirebaseAuth firebaseAuth;
@@ -61,12 +59,10 @@ public class MaintainProject extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintain_project);
 
-        descrition = getIntent().getStringExtra("description");
         location = getIntent().getStringExtra("location");
         names = getIntent().getStringExtra("title");
         timestamp = getIntent().getIntExtra("timestamp", 0);
 
-        txtProjectDescrition = findViewById(R.id.text_view_project_des_mp);
         txtProjectLocation = findViewById(R.id.text_view_proj_loc_mp);
         txtProjectName = findViewById(R.id.text_view_project_name_mp);
         btnAddEmployee = findViewById(R.id.button_add_emplyee_mp);
@@ -76,7 +72,6 @@ public class MaintainProject extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         currentUserId = firebaseAuth.getCurrentUser().getUid();
 
-        txtProjectDescrition.setText(descrition);
         txtProjectLocation.setText(location);
         txtProjectName.setText(names);
         firebaseAuth = FirebaseAuth.getInstance();

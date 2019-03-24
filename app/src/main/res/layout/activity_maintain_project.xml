@@ -2,13 +2,13 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".project.MaintainProject">
 
     <TextView
         android:id="@+id/text_view_project_name_mp"
-        android:layout_width="341dp"
+        android:layout_width="392dp"
         android:layout_height="32dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="44dp"
@@ -18,21 +18,11 @@
         app:layout_constraintHorizontal_bias="0.08"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Name" />
+        tools:text="Project" />
 
     <TextView
         android:id="@+id/text_view_proj_loc_mp"
-        android:layout_width="341dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="8dp"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/text_view_project_des_mp"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_project_des_mp"
-        tools:text="Description" />
-
-    <TextView
-        android:id="@+id/text_view_project_des_mp"
-        android:layout_width="343dp"
+        android:layout_width="390dp"
         android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:textSize="24sp"
@@ -42,8 +32,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_mp"
-        android:layout_width="340dp"
-        android:layout_height="293dp"
+        android:layout_width="392dp"
+        android:layout_height="456dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -63,11 +53,5 @@
         app:layout_constraintEnd_toEndOf="@+id/recycler_view_mp"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view_mp" />
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

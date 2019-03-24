@@ -65,10 +65,10 @@ public class ProfileActivity extends AppCompatActivity {
        // notificationDatabase = FirebaseDatabase.getInstance().getReference().child("notifications");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        profileImage = (ImageView) findViewById(R.id.image_view_profile);
-        profileName = (TextView) findViewById(R.id.text_view_profile_display_name);
-        send = (Button) findViewById(R.id.button_profile_project_request);
-        decline = (Button) findViewById(R.id.button_profile_decline_request);
+        profileImage = findViewById(R.id.image_view_profile);
+        profileName =  findViewById(R.id.text_view_profile_display_name);
+        send = findViewById(R.id.button_profile_project_request);
+        decline = findViewById(R.id.button_profile_decline_request);
 
 
         currentState = Status.NOT_EMPLOYED;
@@ -122,7 +122,6 @@ public class ProfileActivity extends AppCompatActivity {
                                 decline.setVisibility(View.VISIBLE);
                                 decline.setEnabled(true);
 
-
                             } else if(req_type.equals("sent")) {
 
                                 currentState = Status.SENT;
@@ -172,13 +171,14 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        // Depending on status button will determine which feature is selected
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 send.setEnabled(false);
 
-                // --------------- NOT EMPLOYED STATE ------------
+                // --------------- NOT EMPLOYED STATE --------------------
 
                 if(currentState.equals(Status.NOT_EMPLOYED)){
 
@@ -204,7 +204,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                             } else {
                                 currentState = Status.RECEIVED;
-                                send.setText("Remove From Project");
+                                send.setText("Cancel Request");
                             }
 
                             send.setEnabled(true);
@@ -213,7 +213,6 @@ public class ProfileActivity extends AppCompatActivity {
                     });
 
                 }
-
 
                 // - -------------- CANCEL REQUEST STATE ------------
 
@@ -226,7 +225,6 @@ public class ProfileActivity extends AppCompatActivity {
                             projectReqDatabase.child(user_id).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-
 
                                     send.setEnabled(true);
                                     currentState = Status.NOT_EMPLOYED;
@@ -245,19 +243,20 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
 
-                // ------------ REQ RECEIVED STATE ----------
+                // ------------ REQUEST RECEIVED STATE ----------
 
                 if(currentState.equals(Status.RECEIVED)){
 
                     final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
-                    userDatabase.child(currentUser.getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                    userDatabase.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                           // String n = dataSnapshot.child("name").getValue().toString();
+
+                            // // Table for employees
                             Map projectMap = new HashMap();
                             projectMap.put("Employer/" + user_id + "/"  + currentUser.getUid() + "/date", currentDate);
 
-
+                            // Delete project request straight way only needed for request type.  Once employee is selected no need for it.
                             projectMap.put("Project_req/" + currentUser.getUid() + "/" + user_id, null);
                             projectMap.put("Project_req/" + user_id + "/" + currentUser.getUid(), null);
 
@@ -302,9 +301,11 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if(currentState.equals(Status.EMPLOYED)){
 
+                    // Map used to delete employees from employee and projects
+                    // Only to be used when you want to remove from your projects for good
                     Map removeFromProject = new HashMap();
-                    removeFromProject.put("Assigned/" + currentUser.getUid() + "/" + user_id, null);
-                    removeFromProject.put("Assigned/" + user_id + "/" + currentUser.getUid(), null);
+                    removeFromProject.put("Employer/" + currentUser.getUid() + "/" + user_id, null);
+                    removeFromProject.put("Employer/" + user_id + "/" + currentUser.getUid(), null);
 
                     rootRef.updateChildren(removeFromProject, new DatabaseReference.CompletionListener() {
                         @Override
@@ -321,7 +322,6 @@ public class ProfileActivity extends AppCompatActivity {
                                 Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
                             }
                             send.setEnabled(true);
-
                         }
                     });
                 }

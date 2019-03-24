@@ -1,7 +1,11 @@
 package com.eunan.tracey.etimefinalyearproject.employer;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -9,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.eunan.tracey.etimefinalyearproject.EmployerWeek;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -58,6 +61,10 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
         txtTotal = findViewById(R.id.text_view_ts_total);
         btnAccept = findViewById(R.id.button_ts_accept);
         setSupportActionBar(toolbar);
+        Drawable dr = ContextCompat.getDrawable(this,R.drawable.timesheet);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
+        getSupportActionBar().setLogo(d);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
         employeeId = getIntent().getStringExtra("employeeId");

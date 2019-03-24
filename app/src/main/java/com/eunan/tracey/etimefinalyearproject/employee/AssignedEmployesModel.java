@@ -1,16 +1,16 @@
-package com.eunan.tracey.etimefinalyearproject;
+package com.eunan.tracey.etimefinalyearproject.employee;
 
-public class AssignedEmployess {
+public class AssignedEmployesModel {
 
     private String name;
     private String key;
 
-    public AssignedEmployess(String name, String key) {
+    public AssignedEmployesModel(String name, String key) {
         this.name = name;
         this.key = key;
     }
 
-    public AssignedEmployess() {
+    public AssignedEmployesModel() {
     }
 
     public String getName() {

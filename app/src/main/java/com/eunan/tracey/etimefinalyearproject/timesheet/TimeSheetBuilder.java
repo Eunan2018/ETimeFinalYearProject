@@ -47,7 +47,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.eunan.tracey.etimefinalyearproject.timesheet.TimeSheetFragment.txtMondayDay;
 
 
 public class TimeSheetBuilder extends AppCompatActivity {

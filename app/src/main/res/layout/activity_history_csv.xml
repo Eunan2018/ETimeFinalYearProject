@@ -6,4 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".timesheet.HistoryCSV">
 
+    <TextView
+        android:id="@+id/text_view_total_hs_csv"
+        android:layout_width="382dp"
+        android:layout_height="327dp"
+        android:layout_marginTop="42dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Total" />
 </android.support.constraint.ConstraintLayout>
