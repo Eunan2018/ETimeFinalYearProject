@@ -3,7 +3,9 @@ package com.eunan.tracey.etimefinalyearproject.timesheet;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.RecoverySystem;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import static android.app.Activity.RESULT_OK;
 
 public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
@@ -61,7 +66,8 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
     private TextView txtFridayDay;
     private TextView txtFridayHours;
 
-    private TextView txtClock;
+    private ImageView imageView;
+    private Uri imageUri;
 
     @SuppressLint("SimpleDateFormat")
     DateFormat dayDateFormat;
@@ -74,6 +80,8 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
     TextClock textClock;
     String employerKey;
+
+    public static  final int PICK_IMAGE_REQUEST = 1;
 
     public TimeSheetFragment() {
         // Required empty public constructor
@@ -118,10 +126,35 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
         // Firebase
         timesheetRef = FirebaseDatabase.getInstance().getReference("TimeSheet");
-
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChoser();
+            }
+        });
         Log.d(TAG, "onCreateView: " + currentUserId);
         return view;
+    }
+
+    private void openFileChoser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null){
+
+
+
+        }
     }
 
     private void initialiseTextViewsAndButtons(View view) {
@@ -151,11 +184,10 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         txtFridayHours = view.findViewById(R.id.text_view_friday_hrs);
 
         btnSubmit = view.findViewById(R.id.button_submit);
-
-        txtClock = view.findViewById(R.id.text_clock);
+        imageView = view.findViewById(R.id.image_view_attach_file);
 
        // textClock.setFormat24Hour("HH:mm:ss");
-        txtClock.setText(textClock.getText().toString());
+        textClock.setText(textClock.getText().toString());
     }
 
     @SuppressLint("SimpleDateFormat")

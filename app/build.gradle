@@ -2,6 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
     defaultConfig {
         applicationId "com.eunan.tracey.etimefinalyearproject"
         minSdkVersion 22
@@ -18,7 +23,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
     }
+
 }
 
 dependencies {
@@ -32,8 +39,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:2.2')
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    testImplementation 'org.robolectric:robolectric:4.0.2'
+    testImplementation 'org.robolectric:robolectric:4.2'
     testImplementation 'org.robolectric:shadows-support-v4:3.0'
     implementation 'com.squareup.picasso:picasso:2.5.1'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
@@ -41,6 +49,9 @@ dependencies {
     androidTestImplementation 'org.mockito:mockito-core:2.7.22'
     // required if you want to use Mockito for Android tests
     testImplementation 'org.mockito:mockito-android:2.7.22'
+    testImplementation 'org.powermock:powermock:1.6.5'
+    testImplementation 'org.powermock:powermock-module-junit4:1.6.5'
+    testImplementation 'org.powermock:powermock-api-mockito:1.6.5'
     // required to use google sign in and Firebase auth
     implementation 'com.google.firebase:firebase-core:16.0.5'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
@@ -61,7 +72,7 @@ dependencies {
     implementation 'com.iceteck.silicompressorr:silicompressor:2.2.1'
     implementation 'id.zelory:compressor:2.1.0'
     implementation 'com.squareup.okhttp:okhttp:2.5.0'
-
+// https://mvnrepository.com/artifact/org.mockito/mockito-android
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
     implementation 'com.opencsv:opencsv:4.5'

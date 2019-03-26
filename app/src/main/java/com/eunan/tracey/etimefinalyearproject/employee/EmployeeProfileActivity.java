@@ -1,6 +1,7 @@
 package com.eunan.tracey.etimefinalyearproject.employee;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -36,7 +37,7 @@ public class EmployeeProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_profile);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // Initialise Toolbar and set its constraints
         toolbar = findViewById(R.id.employee_page_toolbar);
         setSupportActionBar(toolbar);

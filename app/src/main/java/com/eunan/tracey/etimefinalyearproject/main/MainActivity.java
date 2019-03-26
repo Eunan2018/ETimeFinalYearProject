@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void loginUser(String email, String password) {
+    public void loginUser(String email, String password) {
         Log.d(TAG, "loginUser: starts");
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -269,13 +269,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Check length of password
-    protected boolean validatePassword(String password) {
+    public boolean validatePassword(String password) {
         Log.d(TAG, "validatePassword: starts " + password);
         return password.length() > 5;
     }
 
     // Check email format
-    protected boolean validateEmail(String email) {
+    public boolean validateEmail(String email) {
         Log.d(TAG, "validateEmail: starts " + email);
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }

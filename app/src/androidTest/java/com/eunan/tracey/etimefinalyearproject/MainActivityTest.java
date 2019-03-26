@@ -18,20 +18,20 @@ public class MainActivityTest {
 
     // Create test rule of MainActivity
     @Rule
-    public ActivityTestRule<MainActivity> mMainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     // Create MainActivity reference
-    private MainActivity mMainActivity = null;
+    private MainActivity mainActivity = null;
 
     @Before
     public void setUp(){
-        mMainActivity = mMainActivityTestRule.getActivity();
+        mainActivity = mainActivityTestRule.getActivity();
     }
 
     // If the button is found the Activity exists
     @Test
     public void testLaunch(){
-        View view =  mMainActivity.findViewById(R.id.button_login);
+        View view =  mainActivity.findViewById(R.id.button_login);
         assertNotNull(view);
     }
 
@@ -39,21 +39,21 @@ public class MainActivityTest {
     public void testValidatePassword() {
         String invalidPassword = "12345";
         String validPassword = "123456";
-//        assertFalse(mMainActivity.validatePassword(invalidPassword));
-//        assertTrue(mMainActivity.validatePassword(validPassword));
+        assertFalse(mainActivity.validatePassword(invalidPassword));
+        assertTrue(mainActivity.validatePassword(validPassword));
     }
 
     @Test
     public void testValidateEmail() {
         String validEmail = "joebloggs@hotmail.com";
         String invalidEmail = "joebloggsemail.co";
-//        assertTrue(mMainActivity.validateEmail(validEmail));
-//        assertFalse(mMainActivity.validateEmail(invalidEmail));
+        assertTrue(mainActivity.validateEmail(validEmail));
+        assertFalse(mainActivity.validateEmail(invalidEmail));
     }
 
     // Stop Activity
     @After
     public void tearDown() {
-        mMainActivity = null;
+        mainActivity = null;
     }
 }
