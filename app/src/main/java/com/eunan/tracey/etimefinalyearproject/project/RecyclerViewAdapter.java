@@ -1,6 +1,8 @@
 package com.eunan.tracey.etimefinalyearproject.project;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,55 +71,68 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Intent intent = new Intent(context, MaintainProject.class);
                 intent.putExtra("title", itemList.getProjectName());
                 intent.putExtra("location", itemList.getProjectLocation());
-                intent.putExtra("timestamp",itemList.getProjectTimestamp());
+                intent.putExtra("timestamp", itemList.getProjectTimestamp());
                 context.startActivity(intent);
                 Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show();
             }
         });
 
-        holder.optionsDigit.setOnClickListener(new View.OnClickListener() {
+        holder.projectLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(context, holder.optionsDigit);
-                popupMenu.inflate(R.menu.options_menu);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.menu_item_save:
-                                Toast.makeText(context, "Saved", Toast.LENGTH_LONG).show();
-                                break;
-                            case R.id.menu_item_delete:
-                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                                Query projectQuery = ref.child("Projects").child(currentUserId).
-                                        orderByChild("projectLocation").equalTo(itemList.getProjectName());
-                                projectQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        for(DataSnapshot ds : dataSnapshot.getChildren()){
-                                            ds.getRef().removeValue();
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                                Toast.makeText(context, "Deleted", Toast.LENGTH_LONG).show();
-                                break;
-                            default:
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();
+            public boolean onLongClick(View v) {
+                deleteProject(itemList);
+                return true;
             }
         });
 
-
         Log.d(TAG, "onBindViewHolder: ends");
     }
+
+
+    public boolean deleteProject(final ProjectModel projectModel) {
+        Log.d(TAG, "deleteProject: starts");
+        if (!projectModel.getProjectLocation().isEmpty()) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setTitle("Remove Project");
+
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                    Query projectQuery = ref.child("Projects").child(currentUserId).
+                            orderByChild("projectLocation").equalTo(projectModel.getProjectLocation());
+                    projectQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                ds.getRef().removeValue();
+                            }
+                            Toast.makeText(context, projectModel.getProjectName() + " deleted", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            String error = databaseError.toString();
+                            Log.d(TAG, "onCancelled: " + error);
+                        }
+                    });
+                }
+            });
+
+            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // what ever you want to do with No option.
+                }
+            });
+
+            alert.show();
+            return true;
+
+        }else{
+            return false;
+        }
+
+    }
+
 
     @Override
     public int getItemCount() {

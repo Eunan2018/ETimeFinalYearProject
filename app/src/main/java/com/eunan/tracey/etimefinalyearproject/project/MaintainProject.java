@@ -19,6 +19,7 @@ import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -118,7 +119,8 @@ public class MaintainProject extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                String error = databaseError.toString();
+                Log.d(TAG, "onCancelled: " + error);
             }
         });
     }
@@ -163,7 +165,8 @@ public class MaintainProject extends AppCompatActivity {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                String error = databaseError.toString();
+                                Log.d(TAG, "onCancelled: " + error);
                             }
                         });
 
@@ -172,12 +175,7 @@ public class MaintainProject extends AppCompatActivity {
                         employeeViewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
-                                projectRef.child(currentUserId).child(pushId).child("assignedEmployessList").child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(MaintainProject.this, "Deleted" + userId, Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                removeEmployeeFromProject(pushId,"assignedEmployessList",userId);
                                 return false;
                             }
                         });
@@ -192,6 +190,21 @@ public class MaintainProject extends AppCompatActivity {
         });
 
 
+    }
+
+    public boolean removeEmployeeFromProject(String pushId,String employee,final String userId){
+        projectRef.child(currentUserId).child(pushId).child(employee).child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(MaintainProject.this, "Deleted" + userId, Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MaintainProject.this, "Unable to delete employee " +  e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        return true;
     }
 
     public static class EmployeeViewHolder extends RecyclerView.ViewHolder {

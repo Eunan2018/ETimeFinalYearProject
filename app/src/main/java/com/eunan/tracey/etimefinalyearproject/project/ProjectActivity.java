@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -65,8 +66,20 @@ public class ProjectActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: starts");
         setContentView(R.layout.activity_project);
 
+        initialiseViews();
 
-        employeesMap = new HashMap();
+
+        // Onclick
+        addProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addProject();
+            }
+        });
+    }
+
+    private void initialiseViews() {
+        employeesMap = new HashMap<>();
         assignedEmployessMap = new HashMap<>();
         assignedEmployess = new AssignedEmployess();
         // Firebase
@@ -84,39 +97,37 @@ public class ProjectActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.project_employee_recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(ProjectActivity.this));
+    }
 
-        // Onclick
-        addProject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = projectName.getText().toString().trim();
-                String location = projectLocation.getText().toString().trim();
-                if (!validate(name)) {
-                    Toast.makeText(ProjectActivity.this, "Project Cannot Be Empty", Toast.LENGTH_LONG).show();
-                } else if (!validate(location)) {
-                    Toast.makeText(ProjectActivity.this, "Location Cannot Be Empty", Toast.LENGTH_LONG).show();
-                }  else {
-                    // Create unique key for each project
-                    String id = projectRef.push().getKey();
-                    String assigned_push = assignedRef.push().getKey();
-                    ProjectModel project = new ProjectModel(name, location,(int) System.currentTimeMillis(), employeesMap);
+    public boolean addProject(){
+        String name = projectName.getText().toString().trim();
+        String location = projectLocation.getText().toString().trim();
 
-                    projectRef.child(currentUserId).child(id).setValue(project);
-                    for (Map.Entry<String, AssignedEmployess> entry : assignedEmployessMap.entrySet()) {
-                        employeeProjectModel = new EmployeeProjectModel(entry.getKey(),name);
-                        assignedRef.child(entry.getKey()).child(assigned_push).setValue(employeeProjectModel);
-                    }
+        if (!validate(name)) {
+            Toast.makeText(ProjectActivity.this, "Project Cannot Be Empty", Toast.LENGTH_LONG).show();
+        } else if (!validate(location)) {
+            Toast.makeText(ProjectActivity.this, "Location Cannot Be Empty", Toast.LENGTH_LONG).show();
+        }  else {
+            // Create unique key for each project
+            String id = projectRef.push().getKey();
+            String assigned_push = assignedRef.push().getKey();
+            ProjectModel project = new ProjectModel(name, location,(int) System.currentTimeMillis(), employeesMap);
 
-                    Log.d(TAG, "onClick: + " + project);
-                    Toast.makeText(ProjectActivity.this, "Project Added", Toast.LENGTH_SHORT).show();
-                    // clear all and reset focus
-                    projectName.setText("");
-                    projectLocation.setText("");
-                    projectName.requestFocus();
-
-                }
+            projectRef.child(currentUserId).child(id).setValue(project);
+            for (Map.Entry<String, AssignedEmployess> entry : assignedEmployessMap.entrySet()) {
+                employeeProjectModel = new EmployeeProjectModel(entry.getKey(),name);
+                assignedRef.child(entry.getKey()).child(assigned_push).setValue(employeeProjectModel);
             }
-        });
+
+            Log.d(TAG, "onClick: + " + project);
+            Toast.makeText(ProjectActivity.this, "Project Added", Toast.LENGTH_SHORT).show();
+            // clear all and reset focus
+            projectName.setText("");
+            projectLocation.setText("");
+            projectName.requestFocus();
+
+        }
+        return true;
     }
 
     public boolean validate(String data) {
@@ -125,7 +136,6 @@ public class ProjectActivity extends AppCompatActivity {
             return true;
         }
         return false;
-
     }
 
     @Override
@@ -149,7 +159,7 @@ public class ProjectActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(final ProjectActivity.EmployeeViewHolder employeeViewHolder, final int position, @NonNull final EmployeeModel employee) {
+            protected void onBindViewHolder(final EmployeeViewHolder employeeViewHolder, final int position, @NonNull final EmployeeModel employee) {
                 Log.d(TAG, "onBindViewHolder: starts");
                 final String userId = getRef(position).getKey();
 
@@ -165,7 +175,8 @@ public class ProjectActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        String error = databaseError.toString();
+                        Log.d(TAG, "onCancelled: " + error);
                     }
                 });
                 //TODO SET LONG CLICKLISTENER TO REMOVE FROM LIST AND CHAnGE COLOUR BACK
@@ -173,13 +184,24 @@ public class ProjectActivity extends AppCompatActivity {
                 employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        AssignedEmployess assignedEmployess = new AssignedEmployess(employeeViewHolder.getName(), employeeViewHolder.getKey());
-                        employeeViewHolder.view.setBackgroundColor(Color.GRAY);
-                        employeesMap.put(employeeViewHolder.getKey(), assignedEmployess);
-                        assignedEmployessMap.put(employeeViewHolder.getKey(),assignedEmployess);
+                        Log.d(TAG, "onClick: EmployeesMap size: " + employeesMap.size());
+                        Log.d(TAG, "onClick: assignedEmployeesMap size: " + assignedEmployessMap.size());
+                        addEmployeeToProject(employeeViewHolder);
+                        Log.d(TAG, "onClick: EmployeesMap size: " + employeesMap.size());
+                        Log.d(TAG, "onClick: assignedEmployeesMap size: " + assignedEmployessMap.size());
+                        //return true;
                     }
-
+                });
+                employeeViewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Log.d(TAG, "onLongClick: EmployeesMap size: " + employeesMap.size());
+                        Log.d(TAG, "onLongClick: assignedEmployeesMap size: " + assignedEmployessMap.size());
+                        removeEmployeeFromProject(employeeViewHolder);
+                        Log.d(TAG, "onLongClick: EmployeesMap size: " + employeesMap.size());
+                        Log.d(TAG, "onLongClick: assignedEmployeesMap size: " + assignedEmployessMap.size());
+                        return true;
+                    }
                 });
 
             }
@@ -188,6 +210,30 @@ public class ProjectActivity extends AppCompatActivity {
         adapter.startListening();
         recyclerView.setAdapter(adapter);
     }
+
+
+    public void addEmployeeToProject(EmployeeViewHolder employeeViewHolder){
+        AssignedEmployess assignedEmployess = new AssignedEmployess(employeeViewHolder.getName(), employeeViewHolder.getKey());
+        String key = employeeViewHolder.getKey();
+        Log.d(TAG, "addEmployeeToProject: " + key);
+        employeeViewHolder.view.setBackgroundColor(Color.GRAY);
+        employeesMap.put(key, assignedEmployess);
+        assignedEmployessMap.put(key,assignedEmployess);
+        Log.d(TAG, "addEmployeeToProject: EmployeesMap size: " + employeesMap.size());
+        Log.d(TAG, "addEmployeeToProject: assignedEmployeesMap size: " + assignedEmployessMap.size());
+    }
+
+    private void removeEmployeeFromProject(EmployeeViewHolder employeeViewHolder) {
+        String key = employeeViewHolder.getKey();
+        Log.d(TAG, "removeEmployeeFromProject: " + key);
+        employeeViewHolder.view.setBackgroundColor(Color.TRANSPARENT);
+        employeesMap.remove(key);   //put(employeeViewHolder.getKey(), assignedEmployess);
+        assignedEmployessMap.remove(key);//     put(employeeViewHolder.getKey(),assignedEmployess);
+
+        Log.d(TAG, "removeEmployeeFromProject: EmployeesMap size: " + employeesMap.size());
+        Log.d(TAG, "removeEmployeeFromProject: assignedEmployeesMap size: " + assignedEmployessMap.size());
+    }
+
 
     public static class EmployeeViewHolder extends RecyclerView.ViewHolder {
         private final static String TAG = "EmployeeViewHolder";

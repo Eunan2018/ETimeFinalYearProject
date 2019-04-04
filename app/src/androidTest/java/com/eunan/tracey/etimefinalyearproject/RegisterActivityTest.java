@@ -29,7 +29,7 @@ public class RegisterActivityTest {
     // If the button is found the Activity exists
     @Test
     public void testLaunch(){
-        View view =  mRegisterActivity.findViewById(R.id.register_button);
+        View view =  mRegisterActivity.findViewById(R.id.button_sign_up);
         assertNotNull(view);
     }
 

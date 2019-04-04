@@ -15,7 +15,7 @@
         android:layout_marginEnd="8dp"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Project" />
@@ -26,7 +26,9 @@
         android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/text_view_project_name_mp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_project_name_mp"
         tools:text="Location" />
 
@@ -38,7 +40,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.071"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_proj_loc_mp" />
 
@@ -46,11 +48,15 @@
         android:id="@+id/button_add_emplyee_mp"
         android:layout_width="63dp"
         android:layout_height="53dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/round_button"
         android:text="+"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="@+id/recycler_view_mp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.993"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view_mp" />
 
 
