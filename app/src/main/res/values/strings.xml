@@ -35,4 +35,5 @@
     <string name="create">CREATE</string>
     <string name="accept">ACCEPT</string>
     <string name="decline">DECLINE</string>
+    <string name="comments">COMMENTS</string>
 </resources>

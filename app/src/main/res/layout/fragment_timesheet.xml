@@ -351,7 +351,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_view_friday_day" />
 
     <ImageView
-        android:id="@+id/image_view_attach_file"
+        android:id="@+id/image_view_upload"
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_marginStart="16dp"

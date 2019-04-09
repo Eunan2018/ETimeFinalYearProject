@@ -2,6 +2,7 @@ package com.eunan.tracey.etimefinalyearproject.employer;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -43,6 +44,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
     private DatabaseReference timesheetRef;
     private DatabaseReference historyRef;
     private DatabaseReference declineRef;
+    private Button btnAttach;
 
 
     // Variables
@@ -75,6 +77,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
 
         employerWeekMap = new HashMap<>();
         employerWeekList = new ArrayList<>();
+        btnAttach = findViewById(R.id.button_attach);
         // Set the action bar with name and logo
         toolbar = findViewById(R.id.time_sheet_app_bar);
         setSupportActionBar(toolbar);
@@ -96,6 +99,13 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
         declineRef = FirebaseDatabase.getInstance().getReference().child("Decline");
         historyRef = FirebaseDatabase.getInstance().getReference().child("History");
 
+        btnAttach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EmployerTimeSheetActivity.this,EmpImage.class);
+                startActivity(intent);
+            }
+        });
         timesheetRef.child(employeeId).child(currentUser).orderByPriority().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -180,6 +190,8 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                 alert.show();
             }
         });
+
+
     }
 
 

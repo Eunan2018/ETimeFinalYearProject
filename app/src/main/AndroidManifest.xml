@@ -16,6 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".employer.EmpImage"></activity>
+        <activity android:name=".upload.UploadActivity" />
+
         <service android:name=".project.ProjectMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -70,13 +73,11 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            android:parentActivityName=".MainActivity">
         </activity>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/ts_notification_channel_id" />
-        <!-- <meta-data -->
+            android:value="@string/ts_notification_channel_id" /> <!-- <meta-data -->
         <!-- android:name="com.google.firebase.messaging.default_notification_channel_id" -->
         <!-- android:value="@string/ts_notification_channel_id" /> -->
         <activity android:name=".salary.SalaryActivity" />
@@ -84,7 +85,7 @@
         <activity android:name=".project.MaintainProject" />
         <activity android:name=".project.AddEmployeeActivity" />
         <activity android:name=".timesheet.History" />
-        <activity android:name=".timesheet.HistoryCSV"></activity>
+        <activity android:name=".timesheet.HistoryCSV" />
     </application>
 
 </manifest>

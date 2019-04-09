@@ -3,7 +3,6 @@ package com.eunan.tracey.etimefinalyearproject.register;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
@@ -11,23 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
-import com.eunan.tracey.etimefinalyearproject.token.Token;
+import com.eunan.tracey.etimefinalyearproject.bdhandler.DBHandler;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
-import com.eunan.tracey.etimefinalyearproject.user.UserModel;
-import com.eunan.tracey.etimefinalyearproject.user.UserProfileActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 public class RegisterActivity extends AppCompatActivity {
     private final String TAG = "RegisterActivity";
@@ -42,12 +28,6 @@ public class RegisterActivity extends AppCompatActivity {
     // Create Login Button
     private Button register;
 
-    // Create FirebaseAuth reference
-    private FirebaseAuth firebaseAuth;
-    String token;
-    private DatabaseReference databaseReference;
-    private DatabaseReference databaseReferenceToken;
-    // Create ProgressDialog
     private ProgressDialog progressDialog;
 
     @Override
@@ -65,15 +45,8 @@ public class RegisterActivity extends AppCompatActivity {
         register = findViewById(R.id.button_sign_up);
 
         // Initialise FirebaseAuth
-        firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
 
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(RegisterActivity.this,  new OnSuccessListener<InstanceIdResult>() {
-            @Override
-            public void onSuccess(InstanceIdResult instanceIdResult) {
-                token = instanceIdResult.getToken();
-            }
-        });
         // Trigger Register button when clicked
         register.setOnClickListener(new View.OnClickListener() {
 
@@ -113,45 +86,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser(final String displayName, final String email, String password) {
         Log.d(TAG, "registerUser: starts");
-        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    String uid = currentUser.getUid();
-
-                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
-                    databaseReferenceToken = FirebaseDatabase.getInstance().getReference().child("Token").child(uid);
-                    Token tokenModel = new Token(token,uid);
-                    databaseReferenceToken.setValue(tokenModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                //
-                            }
-                        }
-                    });
-
-                    // use the model class to populate the database
-                    UserModel userModel = new UserModel(displayName,"default","default","default",email,token);
-                    databaseReference.setValue(userModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                progressDialog.dismiss();
-                                Intent intent = new Intent(RegisterActivity.this, UserProfileActivity.class);
-                                startActivity(intent);
-                                finish();
-                                Toast.makeText(getApplicationContext(), "Successfully Registered, ", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                } else {
-                    progressDialog.hide();
-                    Toast.makeText(getApplicationContext(), "Error, could not create user", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        String userRef = "Users";
+        String tokenRef = "Token";
+        DBHandler dbHandler = new DBHandler(RegisterActivity.this,userRef,tokenRef);
+        dbHandler.registerUser(displayName,email,password);
+        progressDialog.cancel();
     }
 
     // Check length of password

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
+import com.eunan.tracey.etimefinalyearproject.bdhandler.DBHandler;
 import com.eunan.tracey.etimefinalyearproject.register.RegisterActivity;
 import com.eunan.tracey.etimefinalyearproject.user.UserProfileActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -48,18 +49,15 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
     boolean validateEmail(CharSequence target);
 }
 
-public class MainActivity extends AppCompatActivity implements EmailValidator{
+public class MainActivity extends AppCompatActivity implements EmailValidator {
     private final String TAG = "MainActivity";
 
     private TextView register;
     private EditText email;
     private EditText password;
     private Button buttonLogin;
-    private SignInButton signInButton;
     private ProgressDialog progressDialog;
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference userDatabaseReference;
-    private DatabaseReference tokenDatabaseReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,30 +75,20 @@ public class MainActivity extends AppCompatActivity implements EmailValidator{
         // Initialise Login Button
         buttonLogin = findViewById(R.id.button_login);
         // Initialise Email and Password EditTexts
-        // Initialise GoogleSignInButton
-        signInButton = findViewById(R.id.google_signin_button);
+
         email = findViewById(R.id.edit_text_login_email);
         password = findViewById(R.id.edit_text_login_password);
-        // Initialise FireBaseAuth
-        firebaseAuth = FirebaseAuth.getInstance();
-        userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
-        tokenDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Token");
-
 
         register = findViewById(R.id.text_view_login_register);
-
-
         // Trigger Login when button is clicked
         buttonLogin.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: starts");
-
                 // Get credentials from EditTexts
                 String email = MainActivity.this.email.getText().toString();
                 String password = MainActivity.this.password.getText().toString();
-
                 // Validate credentials
                 if (!validateEmail(email)) {
                     MainActivity.this.email.setError("Not a valid email address!");
@@ -126,42 +114,10 @@ public class MainActivity extends AppCompatActivity implements EmailValidator{
 
     private void loginUser(String email, String password) {
         Log.d(TAG, "loginUser: starts");
-        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    progressDialog.dismiss();
-                    // -1
-                    final String currentUserId = firebaseAuth.getCurrentUser().getUid();
-                    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( MainActivity.this,  new OnSuccessListener<InstanceIdResult>() {
-                        @Override
-                        public void onSuccess(InstanceIdResult instanceIdResult) {
-                            // update the token of the device if the users logs in on another device
-                            String token = instanceIdResult.getToken();
-                            tokenDatabaseReference.child(currentUserId).child("tokenId").setValue(token).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    //TODO
-                                }
-                            });
-                            userDatabaseReference.child(currentUserId).child("token").setValue(token).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                    Toast.makeText(MainActivity.this, "Login Successful, ", Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        }
-                    });
-
-                } else {
-                    progressDialog.hide();
-                    Toast.makeText(MainActivity.this, "Error, login failed", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        String userRef = "Users";
+        String tokenRef = "Token";
+        DBHandler dbHandler = new DBHandler(MainActivity.this,userRef,tokenRef);
+        dbHandler.login(email,password);
     }
 
 

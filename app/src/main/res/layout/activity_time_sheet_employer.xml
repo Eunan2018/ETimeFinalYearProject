@@ -8,6 +8,16 @@
     tools:context=".employer.EmployerTimeSheetActivity"
     tools:layout_editor_absoluteY="25dp">
 
+    <Button
+        android:id="@+id/button_attach"
+        android:layout_width="77dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/attachfile"
+        android:textColor="@color/tw__composer_white"
+        app:layout_constraintEnd_toEndOf="@+id/button_ts_accept"
+        app:layout_constraintTop_toBottomOf="@+id/button_ts_accept" />
+
     <include
         android:id="@+id/time_sheet_app_bar"
         layout="@layout/app_bar_layout"
@@ -19,14 +29,11 @@
         android:id="@+id/button_ts_accept"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="144dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/round_button"
         android:text="@string/accept"
         android:textColor="@color/tw__composer_white"
         app:layout_constraintEnd_toEndOf="@+id/text_view_ts_comments"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textview_ts_decline"
         app:layout_constraintTop_toBottomOf="@+id/text_view_ts_comments" />
 
     <TextView
@@ -38,11 +45,11 @@
         android:layout_marginEnd="24dp"
         android:background="@drawable/shape"
         android:scrollbars="vertical"
-        android:textSize="24sp"
+        android:textSize="12sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:autoSizeTextType="uniform"
         app:layout_constraintTop_toBottomOf="@+id/time_sheet_app_bar" />
 
     <Button
@@ -64,10 +71,10 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="40dp"
         android:background="@drawable/shape"
-        android:text="COMMENTS"
+        android:text="@string/comments"
         app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.857"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_ts_total" />
 

@@ -52,10 +52,6 @@ import java.util.Map;
 public class TimeSheetBuilder extends AppCompatActivity {
 
     private static final String TAG = "TimeSheetBuilder";
-    public interface DataFromActivityToFragment {
-        void sendData(String data);
-    }
-    DataFromActivityToFragment dataFromActivityToFragment;
 
 
     private Button btnDone;
