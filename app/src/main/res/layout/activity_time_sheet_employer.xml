@@ -10,9 +10,10 @@
 
     <Button
         android:id="@+id/button_attach"
-        android:layout_width="77dp"
+        android:layout_width="96dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="4dp"
         android:background="@drawable/attachfile"
         android:textColor="@color/tw__composer_white"
         app:layout_constraintEnd_toEndOf="@+id/button_ts_accept"

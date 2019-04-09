@@ -1,12 +1,9 @@
 package com.eunan.tracey.etimefinalyearproject.timesheet;
 
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -14,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -23,11 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
-import com.eunan.tracey.etimefinalyearproject.upload.Upload;
 import com.eunan.tracey.etimefinalyearproject.upload.UploadActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -35,25 +28,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static android.app.Activity.RESULT_OK;
-
 public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
     private static final String TAG = "TimeSheetFragment";
-    private ProgressBar progressBar;
 
     private Button btnMonday;
     private Button btnTuesday;
@@ -116,6 +98,8 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext().getApplicationContext(), UploadActivity.class);
+                intent.putExtra("key2",currentUserId);
+                intent.putExtra("key1",employerKey);
                 startActivity(intent);
 
             }
@@ -131,7 +115,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
                     for (DataSnapshot postChildSnapshot : childSnapshot.getChildren()) {
                         String employeeKey = postChildSnapshot.getKey();
                         if (TextUtils.equals(employeeKey, currentUserId)) {
-                            Log.d(TAG, "onDataChange: employee key " + employeeKey + " currentUserId " + currentUserId);
+                            break;
                         }
                     }
                 }

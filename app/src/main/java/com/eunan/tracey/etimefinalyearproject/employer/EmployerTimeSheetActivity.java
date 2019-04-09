@@ -66,8 +66,6 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-
     }
 
     @Override
@@ -103,6 +101,8 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(EmployerTimeSheetActivity.this,EmpImage.class);
+                intent.putExtra("key1",currentUser);
+                intent.putExtra("key2",employeeId);
                 startActivity(intent);
             }
         });

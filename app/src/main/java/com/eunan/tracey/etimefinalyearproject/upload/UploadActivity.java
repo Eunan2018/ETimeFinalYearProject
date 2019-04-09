@@ -39,6 +39,9 @@ public class UploadActivity extends AppCompatActivity {
     private StorageTask uploadTask;
     private DatabaseReference imageRef;
 
+    private String employeeKey;
+    private String employerKey;
+
     public static  final int PICK_IMAGE_REQUEST = 1;
     private ImageView imageView;
 
@@ -56,6 +59,10 @@ public class UploadActivity extends AppCompatActivity {
         imageRef = FirebaseDatabase.getInstance().getReference("Images");
         imageView = findViewById(R.id.image_view_ts);
         edtImageName = findViewById(R.id.edit_text_image_name);
+
+        employeeKey = getIntent().getStringExtra("key2");
+        employerKey = getIntent().getStringExtra("key1");
+
         btnChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +92,8 @@ public class UploadActivity extends AppCompatActivity {
 
     private void openImagesActivity() {
         Intent intent = new Intent(UploadActivity.this, EmpImage.class);
+        intent.putExtra("key1",employerKey);
+        intent.putExtra("key2",employeeKey);
         startActivity(intent);
     }
 
@@ -120,15 +129,13 @@ public class UploadActivity extends AppCompatActivity {
             uploadTask =  fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                     Toast.makeText(getApplicationContext(), "Upload Successful", Toast.LENGTH_LONG).show();
                     Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                     while (!urlTask.isSuccessful()) ;
                     Uri downloadUrl = urlTask.getResult();
-                    Toast.makeText(getApplicationContext(), "onSuccess: firebase download url: " + downloadUrl.toString(), Toast.LENGTH_LONG);
                     Upload upload = new Upload(edtImageName.getText().toString().trim(), downloadUrl.toString());
                     String uploadId = imageRef.push().getKey();
-                    imageRef.child(uploadId).setValue(upload);
+                    imageRef.child(employerKey).child(employeeKey).child(uploadId).setValue(upload);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
