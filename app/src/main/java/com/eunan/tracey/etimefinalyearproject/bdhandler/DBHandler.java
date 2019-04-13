@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProfileActivity;
+import com.eunan.tracey.etimefinalyearproject.employer.EmployerProfileActivity;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
 import com.eunan.tracey.etimefinalyearproject.register.RegisterActivity;
 import com.eunan.tracey.etimefinalyearproject.token.Token;
@@ -17,8 +19,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -55,61 +60,73 @@ public class DBHandler {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    final String currentUserId = firebaseAuth.getCurrentUser().getUid();
-                    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
-                        @Override
-                        public void onSuccess(InstanceIdResult instanceIdResult) {
-                            // update the token of the device if the users logs in on another device
-                            String token = instanceIdResult.getToken();
-                            ref1.child(currentUserId).child("token").setValue(token).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    //TODO
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-
-                                }
-                            });
-                            ref2.child(currentUserId).child("tokenId").setValue(token).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Intent intent = new Intent(context, UserProfileActivity.class);
-                                    context.startActivity(intent);
-                                    Toast.makeText(context, "Login Successful, ", Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        }
-                    });
+                    updateToken();
+                    openActivity();
                 } else {
                     Toast.makeText(context, "Error, login failed", Toast.LENGTH_LONG).show();
                 }
             }
+
+
         });
 
 
     }
 
-    public void registerUser(final String displayName, final String email, String password) {
+    private void openActivity() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String id = currentUser.getUid();
+        ref1.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String title = dataSnapshot.child("title").getValue().toString();
+                    if (title.equals("Employee"))
+                        context.startActivity(new Intent(context, EmployeeProfileActivity.class));
+                    else
+                        context.startActivity(new Intent(context, EmployerProfileActivity.class));
+                }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void updateToken() {
+        final String currentUserId = firebaseAuth.getCurrentUser().getUid();
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                // update the token of the device if the users logs in on another device
+                String token = instanceIdResult.getToken();
+                ref1.child(currentUserId).child("token").setValue(token);
+                ref2.child(currentUserId).child("tokenId").setValue(token);
+            }
+        });
+    }
+
+    public void registerUser(final String displayName, final String email, String password, final String title) {
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                   final String uid = currentUser.getUid();
+                    final String uid = currentUser.getUid();
                     Token tokenModel = new Token(token, uid);
                     ref2.child(uid).setValue(tokenModel).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                UserModel userModel = new UserModel(displayName, "default", "default", "default", email, token);
+                                UserModel userModel = new UserModel(displayName, "default", "default", "default", email, token, title);
                                 ref1.child(uid).setValue(userModel).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Intent intent = new Intent(context, UserProfileActivity.class);
-                                            context.startActivity(intent);
+                                            if (title.equals("Employee"))
+                                                context.startActivity(new Intent(context, EmployeeProfileActivity.class));
+                                            else
+                                                context.startActivity(new Intent(context, EmployerProfileActivity.class));
                                             Toast.makeText(context, "Successfully Registered, ", Toast.LENGTH_LONG).show();
                                         }
                                     }
@@ -117,7 +134,7 @@ public class DBHandler {
                             }
                         }
                     });
-                   // ((RegisterActivity)context).finish();
+                    // ((RegisterActivity)context).finish();
                 } else {
                     Toast.makeText(context, "Error, could not create user", Toast.LENGTH_LONG).show();
                 }

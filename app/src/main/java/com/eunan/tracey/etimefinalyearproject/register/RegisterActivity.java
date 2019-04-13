@@ -3,12 +3,15 @@ package com.eunan.tracey.etimefinalyearproject.register;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.eunan.tracey.etimefinalyearproject.R;
@@ -22,6 +25,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private EditText userName;
+    private RadioGroup rdoGroup;
+    private RadioButton rdoTitle;
 
     private TextView login;
 
@@ -41,6 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.edit_text_reg_password);
         userName = findViewById(R.id.edit_text_reg_user_name);
         login = findViewById(R.id.text_view_reg_login);
+        rdoGroup = findViewById(R.id.radio_group_reg);
         // Initialise Register Button
         register = findViewById(R.id.button_sign_up);
 
@@ -58,6 +64,13 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = RegisterActivity.this.email.getText().toString().trim();
                 String password = RegisterActivity.this.password.getText().toString().trim();
                 String userName = RegisterActivity.this.userName.getText().toString().trim();
+                // get selected radio button from radioGroup
+                int selectedId = rdoGroup.getCheckedRadioButtonId();
+
+                // find the radiobutton by returned id
+                rdoTitle = findViewById(selectedId);
+
+                String title = rdoTitle.getText().toString();
 
                 // Validate credentials
                 if (!validateEmail(email)) {
@@ -69,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
                     progressDialog.setMessage("Please wait while we register your account !");
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
-                    registerUser(userName, email, password);
+                    registerUser(userName, email, password,title);
                 }
                 Log.d(TAG, "onClick: ends");
             }
@@ -84,13 +97,20 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void registerUser(final String displayName, final String email, String password) {
+    private void registerUser(final String displayName, final String email, String password,String title) {
         Log.d(TAG, "registerUser: starts");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.hide();
+            }
+        },1000);
         String userRef = "Users";
         String tokenRef = "Token";
         DBHandler dbHandler = new DBHandler(RegisterActivity.this,userRef,tokenRef);
-        dbHandler.registerUser(displayName,email,password);
-        progressDialog.cancel();
+        dbHandler.registerUser(displayName,email,password,title);
+       // progressDialog.cancel();
     }
 
     // Check length of password

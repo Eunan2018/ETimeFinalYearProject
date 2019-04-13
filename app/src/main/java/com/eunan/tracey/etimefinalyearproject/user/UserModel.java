@@ -10,14 +10,16 @@ public class UserModel {
     public String thumbImage;
     public String email;
     public String token;
+    public String title;
 
-    public UserModel(String name, String status, String image, String thumbImage,String email,String token) {
+    public UserModel(String name, String status, String image, String thumbImage, String email, String token, String title) {
         this.name = name;
         this.status = status;
         this.image = image;
         this.thumbImage = thumbImage;
         this.email = email;
         this.token = token;
+        this.title = title;
     }
 
     public UserModel() {
@@ -47,6 +49,14 @@ public class UserModel {
         this.image = image;
     }
 
+    public String getThumbImage() {
+        return thumbImage;
+    }
+
+    public void setThumbImage(String thumbImage) {
+        this.thumbImage = thumbImage;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -63,12 +73,12 @@ public class UserModel {
         this.token = token;
     }
 
-    public String getThumbImage() {
-        return thumbImage;
+    public String getTitle() {
+        return title;
     }
 
-    public void setThumbImage(String thumbImage) {
-        this.thumbImage = thumbImage;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
@@ -80,6 +90,7 @@ public class UserModel {
                 ", thumbImage='" + thumbImage + '\'' +
                 ", email='" + email + '\'' +
                 ", token='" + token + '\'' +
+                ", title='" + title + '\'' +
                 '}';
     }
 
@@ -93,12 +104,12 @@ public class UserModel {
                 Objects.equals(image, userModel.image) &&
                 Objects.equals(thumbImage, userModel.thumbImage) &&
                 Objects.equals(email, userModel.email) &&
-                Objects.equals(token, userModel.token);
+                Objects.equals(token, userModel.token) &&
+                Objects.equals(title, userModel.title);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(name, status, image, thumbImage, email, token);
+        return Objects.hash(name, status, image, thumbImage, email, token, title);
     }
 }
