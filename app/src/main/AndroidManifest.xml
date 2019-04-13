@@ -7,7 +7,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:anyDensity="true" />
     <application
         android:name=".ETime"
         android:allowBackup="true"
@@ -20,6 +25,11 @@
         <activity android:name=".upload.UploadActivity" />
 
         <service android:name=".project.ProjectMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".timesheet.TimeSheetMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -77,9 +87,11 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/ts_notification_channel_id" /> <!-- <meta-data -->
-        <!-- android:name="com.google.firebase.messaging.default_notification_channel_id" -->
-        <!-- android:value="@string/ts_notification_channel_id" /> -->
+            android:value="@string/ts_notification_channel_id" />
+        <meta-data
+        android:name="com.google.firebase.messaging.default_notification_channel_id"
+        android:value="@string/ts_notification_channel_id" />
+
         <activity android:name=".salary.SalaryActivity" />
         <activity android:name=".timesheet.TimeSheetBuilder" />
         <activity android:name=".project.MaintainProject" />

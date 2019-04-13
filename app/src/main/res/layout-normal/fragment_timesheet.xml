@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/timesheet_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:layout_editor_absoluteY="25dp">
+
+
+    <Button
+        android:id="@+id/button_cancel_ts"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/round_button"
+        android:text="CANCEL"
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_submit" />
+
+    <TextView
+        android:id="@+id/text_view_thursday_date"
+        android:layout_width="105dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_thursday_day"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_thursday_hrs"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/button_thursday"
+        tools:text="12-JUNE-21" />
+
+    <TextView
+        android:id="@+id/text_view_friday_day"
+        android:layout_width="340dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_thursday_date"
+        tools:text="Friday" />
+
+    <TextView
+        android:id="@+id/text_view_thursday_day"
+        android:layout_width="340dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_wednesday"
+        tools:text="Thursday" />
+
+    <Button
+        android:id="@+id/button_wednesday"
+        android:layout_width="70dp"
+        android:layout_height="55dp"
+        android:background="@color/tw__composer_blue_text"
+        android:textColor="@color/tw__composer_white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_wednesday_day"
+        app:layout_constraintStart_toStartOf="@+id/text_view_tuesday_day"
+        app:layout_constraintTop_toTopOf="@+id/text_view_wednesday_day"
+        app:layout_constraintVertical_bias="1.0"
+        tools:text="12" />
+
+    <TextView
+        android:id="@+id/text_view_wednesday_day"
+        android:layout_width="340dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_tuesday_date"
+        tools:text="Wednesday" />
+
+    <TextView
+        android:id="@+id/text_view_tuesday_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_tuesday_day"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_tuesday_day"
+        tools:text="9.00" />
+
+    <TextView
+        android:id="@+id/text_view_tuesday_date"
+        android:layout_width="105dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="96dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_tuesday_day"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_tuesday_hours"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/button_tuesday"
+        tools:text="21-DEC-16" />
+
+    <Button
+        android:id="@+id/button_tuesday"
+        android:layout_width="70dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/tw__composer_blue_text"
+        android:text="11"
+        android:textColor="@color/tw__composer_white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_tuesday_day"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_tuesday_hours"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/text_view_tuesday_day"
+        app:layout_constraintTop_toTopOf="@+id/text_view_tuesday_day"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/btn_monday"
+        android:layout_width="70dp"
+        android:layout_height="55dp"
+        android:background="@color/tw__composer_blue_text"
+        android:text="10"
+        android:textColor="@color/tw__composer_white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_monday_date"
+        app:layout_constraintStart_toStartOf="@+id/text_view_monday_day"
+        app:layout_constraintTop_toTopOf="@+id/text_view_monday_day"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/text_view_monday_day"
+        android:layout_width="340dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_clock"
+        tools:text="Monday" />
+
+    <TextView
+        android:id="@+id/text_view_tuesday_day"
+        android:layout_width="340dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_monday"
+        tools:text="Tuesday" />
+
+    <TextView
+        android:id="@+id/text_view_monday_date"
+        android:layout_width="105dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="12-OCT -18"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_monday_day"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_moday_hours"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/btn_monday" />
+
+    <TextView
+        android:id="@+id/text_view_moday_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_monday_day"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_monday_day"
+        tools:text="8.50" />
+
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/round_button"
+        android:text="SUBMIT"
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_comments_ts" />
+
+
+    <TextView
+        android:id="@+id/text_view_wednesday_hrs"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_wednesday_day"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_wednesday_day"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/text_view_wednesday_date"
+        tools:text="12.22" />
+
+    <TextView
+        android:id="@+id/text_view_wednesday_date"
+        android:layout_width="105dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="8dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_wednesday_day"
+        app:layout_constraintStart_toEndOf="@+id/button_wednesday"
+        tools:text="21-MAY-14" />
+
+    <Button
+        android:id="@+id/button_thursday"
+        android:layout_width="70dp"
+        android:layout_height="55dp"
+        android:background="@color/tw__composer_blue_text"
+        android:text="13"
+        android:textColor="@color/tw__composer_white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_thursday_day"
+        app:layout_constraintStart_toStartOf="@+id/text_view_thursday_day"
+        app:layout_constraintTop_toTopOf="@+id/text_view_thursday_day" />
+
+    <Button
+        android:id="@+id/button_friday"
+        android:layout_width="70dp"
+        android:layout_height="55dp"
+        android:background="@color/tw__composer_blue_text"
+        android:textColor="@color/tw__composer_white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_friday_day"
+        app:layout_constraintStart_toStartOf="@+id/text_view_friday_day"
+        app:layout_constraintTop_toTopOf="@+id/text_view_friday_day"
+        tools:text="14" />
+
+    <TextView
+        android:id="@+id/text_view_friday_hrs"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_friday_day"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_friday_day"
+        tools:text="12.50" />
+
+    <TextView
+        android:id="@+id/text_view_thursday_hrs"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_thursday_day"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_thursday_day"
+        tools:text="3.50" />
+
+    <TextView
+        android:id="@+id/text_view_friday_date"
+        android:layout_width="105dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/text_view_friday_day"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_friday_hrs"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/button_friday"
+        tools:text="17-APR-23" />
+
+    <TextClock
+        android:id="@+id/text_clock"
+        android:layout_width="340dp"
+        android:layout_height="70dp"
+        android:layout_margin="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/tw__composer_blue_text"
+        android:format12Hour="hh:mm:ss a"
+        android:gravity="center_vertical"
+        android:textAlignment="center"
+        android:textColor="@color/tw__composer_white"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_monday"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Time" />
+
+    <EditText
+        android:id="@+id/edit_text_comments_ts"
+        android:layout_width="270dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:ems="10"
+        android:hint="Comments"
+        android:inputType="textMultiLine|textPersonName"
+        app:layout_constraintStart_toStartOf="@+id/button_friday"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_friday_day" />
+
+    <ImageView
+        android:id="@+id/image_view_upload"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_friday_day"
+        app:layout_constraintStart_toEndOf="@+id/edit_text_comments_ts"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_friday_day"
+        app:srcCompat="@drawable/attachfile" />
+
+</android.support.constraint.ConstraintLayout>

@@ -19,14 +19,12 @@ public class SalaryActivity extends AppCompatActivity {
     private final String TAG = "SalaryActivity";
     // layout
     private TextView txtName;
-    private EditText edtEmail;
     private EditText edtHrRate;
-    private EditText edtNINum;
     private EditText edtTaxCode;
     private Button btnSetDetails;
 
     // firebase
-    private DatabaseReference root;
+    private DatabaseReference salaryRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +34,12 @@ public class SalaryActivity extends AppCompatActivity {
 
         // layout
         txtName = findViewById(R.id.text_view_salary_name);
-        edtEmail = findViewById(R.id.edit_text_salary_email);
         edtHrRate = findViewById(R.id.edit_text_salary_hr_rate2);
-        edtNINum = findViewById(R.id.edit_text_salary_ni_num);
         edtTaxCode = findViewById(R.id.edit_text_salary_tax_code);
         btnSetDetails = findViewById(R.id.button_salary_details);
         // retrieve employee name from intent
         String name = getIntent().getStringExtra("name");
-        final String employeeId = getIntent().getStringExtra("ts_id");
+        final String employeeId = getIntent().getStringExtra("employeeId");
         // set name
         txtName.setText(name);
 
@@ -56,17 +52,15 @@ public class SalaryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: starts");
-                String employeeName = txtName.getText().toString().trim();
-                String employeeEmail = edtEmail.getText().toString().trim();
+
                 String employeeHrRate = edtHrRate.getText().toString().trim();
-                String employeeNiNum = edtNINum.getText().toString().trim();
                 String employeeTaxCode = edtTaxCode.getText().toString().trim();
 
-                SalaryModel salaryModel = new SalaryModel(employeeName, employeeEmail, employeeHrRate, employeeTaxCode, employeeNiNum);
+                SalaryModel salaryModel = new SalaryModel( employeeHrRate, employeeTaxCode);
 
                 // firebase 
-                root = FirebaseDatabase.getInstance().getReference().child("Salary").child(currentUser).child(employeeId);
-                root.setValue(salaryModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+                salaryRef = FirebaseDatabase.getInstance().getReference().child("Salary").child(currentUser).child(employeeId);
+                salaryRef.setValue(salaryModel).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(SalaryActivity.this, "Details have been saved", Toast.LENGTH_LONG).show();

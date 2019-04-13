@@ -147,7 +147,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                             case 2:
                                 Intent salaryIntent = new Intent(getContext().getApplicationContext(), SalaryActivity.class);
                                 salaryIntent.putExtra("name", employeeViewHolder.getName());
-                                salaryIntent.putExtra("ts_id", userId);
+                                salaryIntent.putExtra("employeeId", userId);
                                 startActivity(salaryIntent);
                                 break;
                             default :

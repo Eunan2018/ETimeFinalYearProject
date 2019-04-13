@@ -1,6 +1,7 @@
 package com.eunan.tracey.etimefinalyearproject.status;
 
 import android.app.ProgressDialog;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +25,7 @@ public class StatusActivity extends AppCompatActivity {
 
 
     // Database
-    private DatabaseReference statusDatabase;
+    private DatabaseReference userRef;
     private FirebaseUser currentUser;
 
     // Progress Dialog
@@ -37,7 +38,7 @@ public class StatusActivity extends AppCompatActivity {
         //Database
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String uid = currentUser.getUid();
-        statusDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+        userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
         // Layout
         android.support.v7.widget.Toolbar toolbar;
         toolbar = findViewById(R.id.statusAppBar);
@@ -63,15 +64,19 @@ public class StatusActivity extends AppCompatActivity {
                 progressDialog.show();
                 String status = txtStatus.getEditText().getText().toString();
 
-                statusDatabase.child("status").setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
+                userRef.child("status").setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-                            progressDialog.dismiss();
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressDialog.dismiss();
+                                }
+                            },500);
                         }else{
-                            Toast.makeText(StatusActivity.this, "Needs fixed", Toast.LENGTH_SHORT).show();
-
-
+                            Toast.makeText(StatusActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

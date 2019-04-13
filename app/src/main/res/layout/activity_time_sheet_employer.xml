@@ -12,12 +12,12 @@
         android:id="@+id/button_attach"
         android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/attachfile"
         android:textColor="@color/tw__composer_white"
-        app:layout_constraintEnd_toEndOf="@+id/button_ts_accept"
-        app:layout_constraintTop_toBottomOf="@+id/button_ts_accept" />
+        app:layout_constraintEnd_toEndOf="@+id/textview_ts_decline"
+        app:layout_constraintTop_toBottomOf="@+id/textview_ts_decline" />
 
     <include
         android:id="@+id/time_sheet_app_bar"
@@ -28,22 +28,22 @@
 
     <Button
         android:id="@+id/button_ts_accept"
-        android:layout_width="100dp"
+        android:layout_width="334dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@drawable/round_button"
         android:text="@string/accept"
         android:textColor="@color/tw__composer_white"
-        app:layout_constraintEnd_toEndOf="@+id/text_view_ts_comments"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_ts_comments" />
 
     <TextView
         android:id="@+id/text_view_ts_total"
         android:layout_width="334dp"
         android:layout_height="300dp"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
         android:background="@drawable/shape"
         android:scrollbars="vertical"
         android:textSize="12sp"
@@ -55,27 +55,27 @@
 
     <Button
         android:id="@+id/textview_ts_decline"
-        android:layout_width="100dp"
+        android:layout_width="334dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/round_button"
         android:layout_marginTop="8dp"
+        android:background="@drawable/round_button"
         android:text="@string/decline"
         android:textColor="@color/tw__composer_white"
-        app:layout_constraintStart_toStartOf="@+id/text_view_ts_comments"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_ts_comments" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_ts_accept" />
 
     <TextView
         android:id="@+id/text_view_ts_comments"
         android:layout_width="334dp"
         android:layout_height="49dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/shape"
         android:text="@string/comments"
         app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.857"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_ts_total" />
 

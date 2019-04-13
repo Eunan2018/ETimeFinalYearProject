@@ -1,5 +1,6 @@
 package com.eunan.tracey.etimefinalyearproject.upload;
 
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.employer.EmpImage;
+import com.eunan.tracey.etimefinalyearproject.employer.EmployerTimeSheetActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -38,7 +40,7 @@ public class UploadActivity extends AppCompatActivity {
     private StorageReference storageRef;
     private StorageTask uploadTask;
     private DatabaseReference imageRef;
-
+    private ProgressDialog progressDialog;
     private String employeeKey;
     private String employerKey;
 
@@ -51,7 +53,6 @@ public class UploadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
-
         btnChooseFile = findViewById(R.id.button_choose_file);
         btnUpload = findViewById(R.id.button_upload);
         btnShowUploads = findViewById(R.id.button_show_uploads);
@@ -59,7 +60,11 @@ public class UploadActivity extends AppCompatActivity {
         imageRef = FirebaseDatabase.getInstance().getReference("Images");
         imageView = findViewById(R.id.image_view_ts);
         edtImageName = findViewById(R.id.edit_text_image_name);
-
+        // Initialise dialog
+        progressDialog = new ProgressDialog(UploadActivity.this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
         employeeKey = getIntent().getStringExtra("key2");
         employerKey = getIntent().getStringExtra("key1");
 
@@ -124,11 +129,19 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     private void uploadFile(){
+        progressDialog.show();
         if(imageUri != null){
             StorageReference fileRef = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
             uploadTask =  fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.hide();
+                        }
+                    },1000);
                     Toast.makeText(getApplicationContext(), "Upload Successful", Toast.LENGTH_LONG).show();
                     Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                     while (!urlTask.isSuccessful()) ;
@@ -144,6 +157,7 @@ public class UploadActivity extends AppCompatActivity {
                 }
             });
         }else{
+            progressDialog.hide();
             Toast.makeText(UploadActivity.this, "No file selected", Toast.LENGTH_SHORT).show();
         }
     }
