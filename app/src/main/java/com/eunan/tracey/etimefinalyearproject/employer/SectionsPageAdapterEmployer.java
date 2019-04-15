@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.eunan.tracey.etimefinalyearproject.employee.EmployeeFragment;
-import com.eunan.tracey.etimefinalyearproject.project.ProjectFragment;
+import com.eunan.tracey.etimefinalyearproject.Fragments.EmployeeFragment;
+import com.eunan.tracey.etimefinalyearproject.Fragments.ProjectFragment;
 
 public class SectionsPageAdapterEmployer extends FragmentPagerAdapter {
 

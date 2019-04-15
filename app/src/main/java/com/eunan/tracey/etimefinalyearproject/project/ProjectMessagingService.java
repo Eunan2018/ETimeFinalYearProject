@@ -23,7 +23,7 @@ public class ProjectMessagingService extends com.google.firebase.messaging.Fireb
         String fromUserId = remoteMessage.getData().get("from_user_id");
         Log.d(TAG, "onMessageReceived: in" + fromUserId);
         NotificationCompat.Builder builder =  new NotificationCompat.Builder(this,getString(R.string.default_notification_channel_id))
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle(messageTitle)
                 .setContentText(messageBody);
 

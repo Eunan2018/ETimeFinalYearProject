@@ -1,4 +1,4 @@
-package com.eunan.tracey.etimefinalyearproject.employee;
+package com.eunan.tracey.etimefinalyearproject.Fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -15,8 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
 import com.eunan.tracey.etimefinalyearproject.employer.EmployerTimeSheetActivity;
+import com.eunan.tracey.etimefinalyearproject.invoice.InvoiceActivity;
 import com.eunan.tracey.etimefinalyearproject.profile.ProfileActivity;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.salary.SalaryActivity;
@@ -24,6 +27,7 @@ import com.eunan.tracey.etimefinalyearproject.user.UsersActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +45,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
     private RecyclerView recyclerView;
     private DatabaseReference employeeDatabase;
     private DatabaseReference usersDatabaseReference;
-    private FirebaseAuth firebaseAuth;
+    private FirebaseUser currentUser;
     private String currentUserId;
 
 
@@ -62,9 +66,11 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
 
         recyclerView = view.findViewById(R.id.recycler_view_employees);
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser != null){
+            currentUserId = currentUser.getUid();
+        }
 
-        currentUserId = firebaseAuth.getCurrentUser().getUid();
         employeeDatabase = FirebaseDatabase.getInstance().getReference().child("Employer").child(currentUserId);
         employeeDatabase.keepSynced(true);
         usersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -99,24 +105,28 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
 
 
             @Override
-            protected void onBindViewHolder(final EmployeeViewHolder employeeViewHolder, final int position, @NonNull EmployeeModel employee) {
+            protected void onBindViewHolder(@NonNull final EmployeeViewHolder employeeViewHolder, final int position, @NonNull EmployeeModel employee) {
                 Log.d(TAG, "onBindViewHolder: starts");
                 final String userId = getRef(position).getKey();
 
-                usersDatabaseReference.child(userId).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String name = dataSnapshot.child("name").getValue().toString();
-                        String image = dataSnapshot.child("thumbImage").getValue().toString();
-                        employeeViewHolder.setName(name);
-                        employeeViewHolder.setImage(getContext(), image);
-                    }
+                if(userId != null) {
+                    usersDatabaseReference.child(userId).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String name = String.valueOf(dataSnapshot.child("name").getValue());
+                            String image = String.valueOf(dataSnapshot.child("thumbImage").getValue());
+                            employeeViewHolder.setName(name);
+                            employeeViewHolder.setImage(getContext(), image);
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(getContext(), String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else{
+                    Toast.makeText(getContext(), "Error no such user", Toast.LENGTH_SHORT).show();
+                }
                 employeeViewHolder.setDate(employee.getDate());
 
                 employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +134,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                     public void onClick(View v) {
                         Log.d(TAG, "onClick: starts");
                         // Build a dialog box where the user can choose either profile or time-sheet
-                        CharSequence options[] = new CharSequence[]{"Remove Employee", "Time-Sheets", "Set Salary"};
+                        CharSequence options[] = new CharSequence[]{"Remove Employee", "Time-Sheets","Invoice", "Set Salary"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Options");
                         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -132,20 +142,26 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                             public void onClick(DialogInterface dialog, int position) {
                         switch (position) {
                             case 0:
-                                Intent profileIntent = new Intent(getContext().getApplicationContext(), ProfileActivity.class);
+                                Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
                                 profileIntent.putExtra("from_user_id", userId);
 
                                 startActivity(profileIntent);
                                 break;
                             case 1:
-                                Intent timeSheetIntent = new Intent(getContext().getApplicationContext(), EmployerTimeSheetActivity.class);
+                                Intent timeSheetIntent = new Intent(getContext(), EmployerTimeSheetActivity.class);
                                 timeSheetIntent.putExtra("employeeId", userId);
                                 timeSheetIntent.putExtra("name", employeeViewHolder.getName());
                                 timeSheetIntent.putExtra("employer_id",currentUserId);
                                 startActivity(timeSheetIntent);
                                 break;
                             case 2:
-                                Intent salaryIntent = new Intent(getContext().getApplicationContext(), SalaryActivity.class);
+                                Intent invoiceIntent = new Intent(getContext(), InvoiceActivity.class);
+                                invoiceIntent.putExtra("name", employeeViewHolder.getName());
+                                invoiceIntent.putExtra("employeeId", userId);
+                                startActivity(invoiceIntent);
+                                break;
+                            case 3:
+                                Intent salaryIntent = new Intent(getContext(), SalaryActivity.class);
                                 salaryIntent.putExtra("name", employeeViewHolder.getName());
                                 salaryIntent.putExtra("employeeId", userId);
                                 startActivity(salaryIntent);

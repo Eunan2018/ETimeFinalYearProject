@@ -23,7 +23,7 @@
     <string name="defaultStatus">Welcome to ETIme!!</string>
     <string name="default_notification_channel_id">ET_CH_01</string>
     <string name="ts_notification_channel_id">ET_CH_02</string>
-
+    <string name="acc_notification_icon">timesheet.png</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="description">Description</string>

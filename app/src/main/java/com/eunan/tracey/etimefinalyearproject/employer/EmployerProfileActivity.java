@@ -1,6 +1,7 @@
 package com.eunan.tracey.etimefinalyearproject.employer;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProfileActivity;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.settings.SettingsActivity;
@@ -34,7 +36,7 @@ public class EmployerProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employer_profile);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // Initialise Toolbar and set its constraints
         toolbar = findViewById(R.id.employer_page_toolbar);
         setSupportActionBar(toolbar);
@@ -80,6 +82,10 @@ public class EmployerProfileActivity extends AppCompatActivity {
                 startActivity(settingsIntent);
                 break;
 
+            case R.id.view_employee :
+                Intent employeeIntent = new Intent(EmployerProfileActivity.this, EmployeeProfileActivity.class);
+                startActivity(employeeIntent);
+                break;
             default :
                 break;
         }

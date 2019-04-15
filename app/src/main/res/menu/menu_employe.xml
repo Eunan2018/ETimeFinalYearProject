@@ -10,7 +10,19 @@
         android:title="@string/settings" />
 
     <item
-        android:id="@+id/view_timesheets"
-        android:title="History" />
+    android:id="@+id/view_timesheets"
+    android:title="Timesheets" />
+
+    <item
+        android:id="@+id/view_invoices"
+        android:title="Invoices" />
+
+    <item
+    android:id="@+id/view_users"
+    android:title="Requests" />
+
+    <item
+        android:id="@+id/view_employer"
+        android:title="Switch" />
 
 </menu>

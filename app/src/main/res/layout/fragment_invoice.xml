@@ -7,36 +7,36 @@
     android:background="@android:color/white"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".invoice.InvoiceFragment">
+    tools:context=".Fragments.InvoiceFragment">
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_invoice"
-        android:layout_width="300dp"
-        android:layout_height="132dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="297dp"
+        android:layout_height="161dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_select_project" />
+        app:layout_constraintTop_toBottomOf="@+id/text_view_select_project"></android.support.v7.widget.RecyclerView>
 
     <Button
         android:id="@+id/button_send_invoice"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="SEND"
+        android:text="SUBMIT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_view_invoice" />
+        app:layout_constraintTop_toBottomOf="@+id/text_view_total" />
 
     <Button
         android:id="@+id/button_cancel_invoice"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_width="290dp"
+        android:layout_height="37dp"
         android:layout_marginTop="8dp"
-        android:background="@color/tw__composer_red"
+        android:background="@android:color/holo_red_light"
         android:text="CANCEL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -47,11 +47,109 @@
         android:id="@+id/text_view_select_project"
         android:layout_width="300dp"
         android:layout_height="0dp"
-        android:layout_marginTop="88dp"
-        android:text="SELECT PROJECT"
+        android:layout_marginTop="8dp"
+        android:text="Project"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_date_inv" />
+
+    <TextView
+        android:id="@+id/text_view_date_inv"
+        android:layout_width="300dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="8dp"
+        android:gravity="left|center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_name_inv"
+        tools:text="Date" />
+
+    <TextView
+        android:id="@+id/text_view_name_inv"
+        android:layout_width="300dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="28dp"
+        android:gravity="left|center"
+        android:text="Company Name"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_text_hrs_inv"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="48dp"
+        android:ems="10"
+        android:gravity="left|center"
+        android:hint="Hours"
+        android:inputType="numberSigned"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/edit_text_rate_inv"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/recycler_view_invoice"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_invoice" />
+
+    <EditText
+        android:id="@+id/edit_text_rate_inv"
+        android:layout_width="68dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="48dp"
+        android:ems="10"
+        android:hint="Rate"
+        android:inputType="number"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_tax"
+        app:layout_constraintHorizontal_bias="0.995"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_invoice" />
+
+    <Button
+        android:id="@+id/button_calculate_inv"
+        android:layout_width="109dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="CALCULATE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.88"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_rate_inv" />
+
+    <TextView
+        android:id="@+id/text_view_total"
+        android:layout_width="105dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="8dp"
+        android:gravity="left|center"
+        android:text="Total"
+        app:layout_constraintEnd_toEndOf="@+id/button_calculate_inv"
+        app:layout_constraintTop_toBottomOf="@+id/button_calculate_inv" />
+
+    <TextView
+        android:id="@+id/text_view_tax"
+        android:layout_width="68dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="Tax @ 20%"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_view_invoice"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_invoice" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="31dp" />
 
 </android.support.constraint.ConstraintLayout>

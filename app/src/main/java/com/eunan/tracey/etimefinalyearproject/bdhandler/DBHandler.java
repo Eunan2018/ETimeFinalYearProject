@@ -111,35 +111,39 @@ public class DBHandler {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    final String uid = currentUser.getUid();
-                    Token tokenModel = new Token(token, uid);
-                    ref2.child(uid).setValue(tokenModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                UserModel userModel = new UserModel(displayName, "default", "default", "default", email, token, title);
-                                ref1.child(uid).setValue(userModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            if (title.equals("Employee"))
-                                                context.startActivity(new Intent(context, EmployeeProfileActivity.class));
-                                            else
-                                                context.startActivity(new Intent(context, EmployerProfileActivity.class));
-                                            Toast.makeText(context, "Successfully Registered, ", Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    });
-                    // ((RegisterActivity)context).finish();
+                    createTokenObject(displayName,email,title);
                 } else {
                     Toast.makeText(context, "Error, could not create user", Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+    private void createTokenObject(final String displayName, final String email, final String title) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        final String uid = currentUser.getUid();
+        Token tokenModel = new Token(token, uid);
+        ref2.child(uid).setValue(tokenModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    UserModel userModel = new UserModel(displayName, "default", "default", "default", email, token, title);
+                    ref1.child(uid).setValue(userModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                if (title.equals("Employee"))
+                                    context.startActivity(new Intent(context, EmployeeProfileActivity.class));
+                                else
+                                    context.startActivity(new Intent(context, EmployerProfileActivity.class));
+                                Toast.makeText(context, "Successfully Registered, ", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        // ((RegisterActivity)context).finish();
     }
 
 }

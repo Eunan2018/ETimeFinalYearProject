@@ -1,10 +1,10 @@
-package com.eunan.tracey.etimefinalyearproject.timesheet;
+package com.eunan.tracey.etimefinalyearproject.History;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,8 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
-import com.eunan.tracey.etimefinalyearproject.employer.EmployerWeek;
-import com.eunan.tracey.etimefinalyearproject.project.MaintainProject;
+import com.eunan.tracey.etimefinalyearproject.invoice.InvoiceModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,104 +25,97 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class History extends AppCompatActivity {
-
-    private final static String TAG = "History";
-
+public class HistoryInvoice extends AppCompatActivity {
+    private static final String TAG = "HistoryInvoice";
     private DatabaseReference historyRef;
     private RecyclerView recyclerView;
-    private List<EmployerWeek> employerWeekList;
     private String userId;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: starts");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history);
-        recyclerView = findViewById(R.id.recycler_view_history);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(History.this));
-        historyRef = FirebaseDatabase.getInstance().getReference().child("History");
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        setContentView(R.layout.activity_history_invoice);
 
-        employerWeekList = new ArrayList<>();
-        Log.d(TAG, "onCreate: ends");
+        recyclerView = findViewById(R.id.recycler_invoice_history);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(HistoryInvoice.this));
+        historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryInvoice");
+
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart: starts");
-        FirebaseRecyclerOptions<HistoryModel> options =
-                new FirebaseRecyclerOptions.Builder<HistoryModel>()
-                        .setQuery(historyRef.child(userId), HistoryModel.class)
+        FirebaseRecyclerOptions<InvoiceModel> options =
+                new FirebaseRecyclerOptions.Builder<InvoiceModel>()
+                        .setQuery(historyRef.child(userId), InvoiceModel.class)
                         .build();
 
-        final FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<HistoryModel, EmployeeViewHolder>(options) {
+        final FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<InvoiceModel, HistoryViewHolder>(options) {
 
             @Override
-            public EmployeeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 Log.d(TAG, "onCreateViewHolder: starts");
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.history_layout, parent, false);
-                return new EmployeeViewHolder(view);
+                return new HistoryViewHolder(view);
             }
 
             @Override
-            protected void onBindViewHolder(final EmployeeViewHolder employeeViewHolder, final int position, final HistoryModel employee) {
+            protected void onBindViewHolder(@NonNull final HistoryViewHolder holder, final int position, final InvoiceModel history) {
                 Log.d(TAG, "onBindViewHolder: starts");
                 final String pushId = getRef(position).getKey();
 
                 Log.d(TAG, "onBindViewHolder: key " + userId);
 
-                if(pushId != null) {
+                if (pushId != null) {
                     historyRef.child(pushId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Log.d(TAG, "onDataChange: starts");
-                            String key = dataSnapshot.getKey();
-                            Log.d(TAG, "onDataChange: key: " + key);
-                            employeeViewHolder.setDate(key);
-                        }
-
+                                String key = dataSnapshot.getKey();
+                                Log.d(TAG, "onDataChange: key: " + key);
+                                holder.setDate(key);
+                            }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                            Toast.makeText(HistoryInvoice.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
                         }
                     });
-                }else{
-                    Toast.makeText(History.this, "Error loading time-sheet. Try again later.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(HistoryInvoice.this, "Error loading time-sheet. Try again later.", Toast.LENGTH_SHORT).show();
                 }
 
-                employeeViewHolder.constraintLayout.setOnClickListener(new View.OnClickListener() {
+                holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String date = employeeViewHolder.getDate();
-                        final Intent intent = new Intent(History.this, HistoryCSV.class);
+                        String date = holder.getDate();
+                        final Intent intent = new Intent(HistoryInvoice.this, HistoryCSV.class);
                         intent.putExtra("date", date);
                         getApplicationContext().startActivity(intent);
                         Log.d(TAG, "onClick: date: " + date);
                     }
                 });
-                employeeViewHolder.setDate(employee.getDay());
+                holder.setDate(history.getDate());
             }
         };
         adapter.startListening();
         recyclerView.setAdapter(adapter);
     }
 
-    public static class EmployeeViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * Inner class used because functionality only needed by TimeSheetActivity
+     */
+    public static class HistoryViewHolder extends RecyclerView.ViewHolder {
         private final static String TAG = "EmployeeViewHolder";
 
         View view;
         String tDate;
         ConstraintLayout constraintLayout;
 
-        public EmployeeViewHolder(View itemView) {
+        public HistoryViewHolder(View itemView) {
             super(itemView);
             Log.d(TAG, "EmployeeViewHolder: starts");
             view = itemView;
@@ -144,5 +136,4 @@ public class History extends AppCompatActivity {
         }
 
     }
-
 }

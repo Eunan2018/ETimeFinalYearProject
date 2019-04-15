@@ -1,12 +1,8 @@
 package com.eunan.tracey.etimefinalyearproject.timesheet;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,14 +14,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
-import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProfileActivity;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProjectModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -38,14 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 
 
@@ -60,7 +47,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
     private Spinner spinnerHours;
     private String hours;
     private String minutes;
-  //  private TextView txtMonday;
+    //  private TextView txtMonday;
     private boolean inispinner;
     // Firebase
     private DatabaseReference assignedRef;
@@ -69,16 +56,16 @@ public class TimeSheetBuilder extends AppCompatActivity {
     public static LinkedHashMap<String, TimeSheetModel> timesheetMap = new LinkedHashMap<>();
     private final ArrayList<Integer> selectionList = new ArrayList<>();
     private TimeSheetModel timesheet;
-    String projectName;
+    private String projectName;
 
-    String day;
+    private String day;
 
     //Hour Spinner Values
-    String[] hoursArray = {"0", "1", "2", "3", "4", "5", "6",
+    private String[] hoursArray = {"0", "1", "2", "3", "4", "5", "6",
             "7", "8", "9", "10", "11", "12"};
 
     //Minutes Spinner Values
-    String[] minutesArray = {"0", "15", "30", "45"};
+    private String[] minutesArray = {"0", "15", "30", "45"};
 
 
     @Override
@@ -112,15 +99,13 @@ public class TimeSheetBuilder extends AppCompatActivity {
                     Toast.makeText(TimeSheetBuilder.this, "Please enter hours!!", Toast.LENGTH_SHORT).show();
                }else {
                     timesheetMap.put(day, timesheet);
-
                     finish();
-
                 }
 
             }
         });
 
-        ArrayAdapter hoursAdapter = new ArrayAdapter(this,
+        ArrayAdapter<String> hoursAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, hoursArray);
 
         hoursAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
@@ -143,7 +128,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter minutesAdapter = new ArrayAdapter(this,
+        ArrayAdapter<String> minutesAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, minutesArray);
 
 
@@ -200,22 +185,28 @@ public class TimeSheetBuilder extends AppCompatActivity {
                 selectionList.add(0, 0);
                 final String userId = getRef(position).getKey();
 
-                assignedRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(userId != null){
+                    assignedRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            String name = ds.getValue().toString();
-                            employeeViewHolder.setName(name);
-                            Log.d(TAG, "onDataChange: Winner " + ds.getValue());
+                            for (DataSnapshot postChildSnap : dataSnapshot.getChildren()) {
+                                String name = String.valueOf(postChildSnap.getValue());
+                                employeeViewHolder.setName(name);
+                                Log.d(TAG, "onDataChange: Winner " +postChildSnap.getValue());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.d(TAG, "onCancelled: " + databaseError);
+                            Toast.makeText(TimeSheetBuilder.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else{
+                    Toast.makeText(TimeSheetBuilder.this, "Error userId is empty", Toast.LENGTH_SHORT).show();
+                }
 
-                    }
-                });
 
                 employeeViewHolder.setName(employee.getProject());
 
@@ -231,7 +222,6 @@ public class TimeSheetBuilder extends AppCompatActivity {
                             Toast.makeText(TimeSheetBuilder.this, projectName + " already " +
                                     "selected. Select " + projectName + " again to cancel", Toast.LENGTH_SHORT).show();
                         }
-
                     }
 
                 });
@@ -245,13 +235,9 @@ public class TimeSheetBuilder extends AppCompatActivity {
                     }
                 });
             }
-
-
         };
         adapter.startListening();
         recyclerView.setAdapter(adapter);
-
-
     }
 
     public static class EmployeeViewHolder extends RecyclerView.ViewHolder {
@@ -264,7 +250,6 @@ public class TimeSheetBuilder extends AppCompatActivity {
             Log.d(TAG, "EmployeeViewHolder: starts");
             view = itemView;
         }
-
 
         public void setName(String name) {
             TextView userName = view.findViewById(R.id.textview_title);

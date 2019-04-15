@@ -1,6 +1,7 @@
 package com.eunan.tracey.etimefinalyearproject.employee;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -14,10 +15,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.eunan.tracey.etimefinalyearproject.History.HistoryInvoice;
+import com.eunan.tracey.etimefinalyearproject.employer.EmployerProfileActivity;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.settings.SettingsActivity;
-import com.eunan.tracey.etimefinalyearproject.timesheet.History;
+import com.eunan.tracey.etimefinalyearproject.History.HistoryTimesheet;
+import com.eunan.tracey.etimefinalyearproject.user.UsersActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class EmployeeProfileActivity extends AppCompatActivity {
@@ -36,7 +40,7 @@ public class EmployeeProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_profile);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // Initialise Toolbar and set its constraints
         toolbar = findViewById(R.id.employee_page_toolbar);
         setSupportActionBar(toolbar);
@@ -84,13 +88,25 @@ public class EmployeeProfileActivity extends AppCompatActivity {
                 startActivity(settingsIntent);
                 break;
 
-
             case R.id.view_timesheets :
-                Intent timesheetIntent = new Intent(EmployeeProfileActivity.this, History.class);
+                Intent timesheetIntent = new Intent(EmployeeProfileActivity.this, HistoryTimesheet.class);
                 startActivity(timesheetIntent);
                 break;
 
+            case R.id.view_invoices :
+                Intent invoiceIntent = new Intent(EmployeeProfileActivity.this, HistoryInvoice.class);
+                startActivity(invoiceIntent);
+                break;
 
+            case R.id.view_users :
+                Intent usersIntent = new Intent(EmployeeProfileActivity.this, UsersActivity.class);
+                startActivity(usersIntent);
+                break;
+
+            case R.id.view_employer :
+                Intent employerIntent = new Intent(EmployeeProfileActivity.this, EmployerProfileActivity.class);
+                startActivity(employerIntent);
+                break;
             default :
                 break;
         }

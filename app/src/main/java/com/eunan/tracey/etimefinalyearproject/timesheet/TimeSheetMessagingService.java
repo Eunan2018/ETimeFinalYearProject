@@ -2,15 +2,23 @@ package com.eunan.tracey.etimefinalyearproject.timesheet;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.google.firebase.messaging.RemoteMessage;
 
+
 public class TimeSheetMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     private static final String TAG = "TSMessagingService";
+    Context context;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -21,16 +29,8 @@ public class TimeSheetMessagingService extends com.google.firebase.messaging.Fir
 
         String clickAction = remoteMessage.getNotification().getClickAction();
         String id = remoteMessage.getData().get("employeeId");
-//        String comments = remoteMessage.getData().get("ts_comments");
-//        String days = remoteMessage.getData().get("ts_days");
-//        String hours = remoteMessage.getData().get("ts_hour");
-//        String projects = remoteMessage.getData().get("ts_projects");
-//        String userName = remoteMessage.getData().get("userName");
 
         Log.d(TAG, "onMessageReceived: in: " +  id);
-//
-//        Log.d(TAG, "onMessageReceived: " + comments + " "  + days + " " + hours + " " + projects );
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.ts_notification_channel_id))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(messageTitle)

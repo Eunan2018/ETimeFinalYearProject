@@ -55,7 +55,6 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
 
     // Variables
     private String currentUser;
-    //private String employeeId = "8CIr8g9j2DUEVlF2wQRpt4Flj8i1";
     private MessageModel messageModel;
     private int total = 0;
     // Layout
@@ -105,7 +104,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
         final String employeeId = getIntent().getStringExtra("employeeId");
         timesheetRef = FirebaseDatabase.getInstance().getReference().child("TimeSheet");
         declineRef = FirebaseDatabase.getInstance().getReference().child("Decline");
-        historyRef = FirebaseDatabase.getInstance().getReference().child("History");
+        historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryTimesheet");
         salaryRef = FirebaseDatabase.getInstance().getReference().child("Salary").child(currentUser).child(employeeId);
         btnAttach.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,7 +198,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                         historyRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                historyRef.child(employeeId).child("Fri-Mar-8").setValue(employerWeekMap);
+                                historyRef.child(employeeId).child(date).setValue(employerWeekMap);
                             }
 
                             @Override

@@ -1,4 +1,4 @@
-package com.eunan.tracey.etimefinalyearproject.timesheet;
+package com.eunan.tracey.etimefinalyearproject.History;
 
 public class HistoryModel {
 

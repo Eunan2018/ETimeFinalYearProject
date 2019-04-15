@@ -139,13 +139,8 @@ public class AddEmployeeActivity extends AppCompatActivity {
                                     String key = ds.getKey();
                                     String time = ds.child("projectTimestamp").getValue().toString();
                                     if (time.equals(String.valueOf(timestamp))) {
-                                        projectRef.child(currentUserId).child(key).child("assignedEmployessList").updateChildren(assignedEmployessList)
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
+                                        projectRef.child(currentUserId).child(key).child("assignedEmployessList").updateChildren(assignedEmployessList);
 
-                                                    }
-                                                });
                                     }
 
                                 }

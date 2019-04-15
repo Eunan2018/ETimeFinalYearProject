@@ -1,4 +1,4 @@
-package com.eunan.tracey.etimefinalyearproject.timesheet;
+package com.eunan.tracey.etimefinalyearproject.History;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -47,7 +47,7 @@ public class HistoryCSV extends AppCompatActivity {
         employerWeekList = new ArrayList<>();
         txtTotal = findViewById(R.id.text_view_total_hs_csv);
 
-        historyRef = FirebaseDatabase.getInstance().getReference().child("History");
+        historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryTimesheet");
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         historyRef.child(currentUserId).orderByKey(). addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

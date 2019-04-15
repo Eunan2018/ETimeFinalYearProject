@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.bdhandler.DBHandler;
@@ -66,24 +67,29 @@ public class RegisterActivity extends AppCompatActivity {
                 String userName = RegisterActivity.this.userName.getText().toString().trim();
                 // get selected radio button from radioGroup
                 int selectedId = rdoGroup.getCheckedRadioButtonId();
+                Log.d(TAG, "onClick: selectedID" + selectedId);
 
-                // find the radiobutton by returned id
-                rdoTitle = findViewById(selectedId);
+                if(String.valueOf(selectedId).equals("-1")){
+                    Toast.makeText(RegisterActivity.this, "Need to select title", Toast.LENGTH_SHORT).show();
+                }else{
+                    // find the radiobutton by returned id
+                    rdoTitle = findViewById(selectedId);
+                    String title = rdoTitle.getText().toString();
 
-                String title = rdoTitle.getText().toString();
-
-                // Validate credentials
-                if (!validateEmail(email)) {
-                    RegisterActivity.this.email.setError("Not a valid email address!");
-                } else if (!validatePassword(password)) {
-                    RegisterActivity.this.password.setError("Not a valid password!");
-                } else {
-                    progressDialog.setTitle("Register User");
-                    progressDialog.setMessage("Please wait while we register your account !");
-                    progressDialog.setCanceledOnTouchOutside(false);
-                    progressDialog.show();
-                    registerUser(userName, email, password,title);
+                    // Validate credentials
+                    if (!validateEmail(email)) {
+                        RegisterActivity.this.email.setError("Not a valid email address!");
+                    } else if (!validatePassword(password)) {
+                        RegisterActivity.this.password.setError("Not a valid password!");
+                    } else {
+                        progressDialog.setTitle("Register User");
+                        progressDialog.setMessage("Please wait while we register your account !");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.show();
+                        registerUser(userName, email, password,title);
+                    }
                 }
+
                 Log.d(TAG, "onClick: ends");
             }
         });

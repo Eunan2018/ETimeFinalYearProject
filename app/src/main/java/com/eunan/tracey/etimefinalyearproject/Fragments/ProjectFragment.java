@@ -1,4 +1,4 @@
-package com.eunan.tracey.etimefinalyearproject.project;
+package com.eunan.tracey.etimefinalyearproject.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
+import com.eunan.tracey.etimefinalyearproject.project.ProjectActivity;
+import com.eunan.tracey.etimefinalyearproject.project.ProjectModel;
+import com.eunan.tracey.etimefinalyearproject.project.RecyclerViewAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,24 +37,26 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
 
     private final String TAG = "ProjectFragment";
     private FloatingActionButton fab;
-    RecyclerView recyclerView;
-    List<ProjectModel> projectList;
-    View view;
-    DatabaseReference projectRef;
-    FirebaseUser currentUser;
-    RecyclerViewAdapter adapter;
-    String id;
+    private RecyclerView recyclerView;
+    private  List<ProjectModel> projectList;
+    private View view;
+    private DatabaseReference projectRef;
+    private FirebaseUser currentUser;
+    private RecyclerViewAdapter adapter;
+    private String id;
 
     public ProjectFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: starts");
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        id = currentUser.getUid();
+        if(currentUser != null){
+            id = currentUser.getUid();
+        }
         projectRef = FirebaseDatabase.getInstance().getReference("Projects");
 
         projectList = new ArrayList<>();
@@ -68,7 +74,7 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
         projectRef.child(id).addValueEventListener(new ValueEventListener() {
 
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: starts " + dataSnapshot.toString());
                 projectList.clear();
                 for(DataSnapshot projectSnapshot : dataSnapshot.getChildren()){
@@ -85,7 +91,7 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Toast.makeText(getContext(), String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
             }
         });
         Log.d(TAG, "onStart: ends");
@@ -106,13 +112,13 @@ public class ProjectFragment extends android.support.v4.app.Fragment {
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull  RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0 || dy < 0 && fab.isShown())
                     fab.hide();
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     fab.show();
                 }
