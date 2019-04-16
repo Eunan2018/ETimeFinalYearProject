@@ -143,7 +143,7 @@ public class InvoiceFragment extends android.support.v4.app.Fragment {
         btnCancel = v.findViewById(R.id.button_cancel_invoice);
         Calendar friday = Calendar.getInstance();
         friday.setTime(new Date());
-        friday.set(Calendar.DAY_OF_MONTH, friday.get(Calendar.DAY_OF_MONTH)-3);
+        friday.set(Calendar.DAY_OF_MONTH, friday.get(Calendar.DAY_OF_MONTH)-31);
         txtDate.setText(String.valueOf(friday.getTime()));
         userRef = FirebaseDatabase.getInstance().getReference().child("Users");
         invoiceRef = FirebaseDatabase.getInstance().getReference().child("Invoice");

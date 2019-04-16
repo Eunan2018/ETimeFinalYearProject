@@ -81,7 +81,7 @@ public class UsersActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent profileIntent = new Intent(UsersActivity.this,ProfileActivity.class);
-                        profileIntent.putExtra("from_user_id",userId);
+                        profileIntent.putExtra("id",userId);
                         startActivity(profileIntent);
                     }
                 });

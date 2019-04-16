@@ -39,7 +39,7 @@ public class SalaryActivity extends AppCompatActivity {
         btnSetDetails = findViewById(R.id.button_salary_details);
         // retrieve employee name from intent
         String name = getIntent().getStringExtra("name");
-        final String employeeId = getIntent().getStringExtra("employeeId");
+        final String employeeId = getIntent().getStringExtra("id");
         // set name
         txtName.setText(name);
 

@@ -42,47 +42,20 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
     private static final String TAG = "TimeSheetFragment";
 
-    private Button btnMonday;
-    private Button btnTuesday;
-    private Button btnWednesday;
-    private Button btnThursday;
-    private Button btnFriday;
+    private Button btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSubmit, btnCancel;
 
-    private Button btnSubmit;
-    private Button btnCancel;
-    private TextView txtMondayDate;
-    private TextView txtMondayDay;
-    private TextView txtMondayHours;
-
-    private TextView txtTuesdayDate;
-    private TextView txtTuesdayDay;
-    private TextView txtTuesdayHours;
-
-    private TextView txtWednesdayDate;
-    private TextView txtWednesdayDay;
-    private TextView txtWednesdayHours;
-
-    private TextView txtThursdayDate;
-    private TextView txtThursdayDay;
-    private TextView txtThursdayHours;
-
-    private TextView txtFridayDate;
-    private TextView txtFridayDay;
-    private TextView txtFridayHours;
+    private TextView txtMondayDate, txtMondayDay, txtMondayHours, txtTuesdayDate, txtTuesdayDay, txtTuesdayHours, txtWednesdayDate,
+            txtWednesdayDay, txtWednesdayHours, txtThursdayDate, txtThursdayDay, txtThursdayHours, txtFridayDate, txtFridayDay, txtFridayHours;
 
 
     @SuppressLint("SimpleDateFormat")
-    private DateFormat dayDateFormat;
-    @SuppressLint("SimpleDateFormat")
-    private DateFormat displayDateFormat;
+    private DateFormat dayDateFormat, displayDateFormat;
 
     private DatabaseReference timesheetRef;
-    private DatabaseReference employerRef;
     private ImageView imageView;
-    private String currentUserId;
+    private String currentUserId, employerKey;
 
     private TextClock textClock;
-    private String employerKey;
 
     public TimeSheetFragment() {
         // Required empty public constructor
@@ -96,12 +69,12 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         View view;
         view = inflater.inflate(R.layout.fragment_timesheet, container, false);
-        employerRef = FirebaseDatabase.getInstance().getReference("Employer");
+        DatabaseReference employerRef = FirebaseDatabase.getInstance().getReference("Employer");
         imageView = view.findViewById(R.id.image_view_upload);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext().getApplicationContext(), UploadActivity.class);
+                Intent intent = new Intent(getContext(), UploadActivity.class);
                 intent.putExtra("key2", currentUserId);
                 intent.putExtra("key1", employerKey);
                 startActivity(intent);
@@ -199,13 +172,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
                 } else {
                     String pushId = timesheetRef.push().getKey();
                     resetButtonColour();
-                    timesheetRef.child(currentUserId).child(employerKey).child(pushId).setValue(TimeSheetBuilder.getTimeMap())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    Toast.makeText(getContext(), "In time-sheet builder", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                    timesheetRef.child(currentUserId).child(employerKey).child(pushId).setValue(TimeSheetBuilder.getTimeMap());
                 }
             }
         });
@@ -279,7 +246,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
                         btnTuesday.setBackgroundColor(Color.GRAY);
                     }
                 }, 1000);
-                Intent intent = new Intent(getContext().getApplicationContext(), TimeSheetBuilder.class);
+                Intent intent = new Intent(getContext(), TimeSheetBuilder.class);
                 intent.putExtra("day", String.valueOf(Weekday.TUESDAY));
                 startActivity(intent);
             }

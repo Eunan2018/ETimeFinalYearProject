@@ -9,8 +9,6 @@
     <string name="sign_up">Don\'t have an account?\n Register Here.</string>
     <string name="login_title">Login</string>
     <string name="register_title">Register</string>
-    <string name="com.twitter.sdk.android.CONSUMER_KEY">4QjkYKOY6LwvIc4GO8i9zAa2P</string>
-    <string name="com.twitter.sdk.android.CONSUMER_SECRET">lf8LcKRvqpTvl215EdZ2Tz26tnw49H4ZJY7Imhd0GtLAmJzZkF </string>
     <string name="log_out">Log Out</string>
     <string name="settings">Settings</string>
     <string name="save">Save</string>

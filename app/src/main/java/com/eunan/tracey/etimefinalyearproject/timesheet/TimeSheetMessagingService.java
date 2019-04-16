@@ -28,7 +28,7 @@ public class TimeSheetMessagingService extends com.google.firebase.messaging.Fir
         String messageBody = remoteMessage.getNotification().getBody();
 
         String clickAction = remoteMessage.getNotification().getClickAction();
-        String id = remoteMessage.getData().get("employeeId");
+        String id = remoteMessage.getData().get("from_user_id");
 
         Log.d(TAG, "onMessageReceived: in: " +  id);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.ts_notification_channel_id))
@@ -37,7 +37,7 @@ public class TimeSheetMessagingService extends com.google.firebase.messaging.Fir
                 .setContentText(messageBody);
 
         Intent resultIntent = new Intent(clickAction);
-        resultIntent.putExtra("employeeId", id);
+        resultIntent.putExtra("id", id);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);

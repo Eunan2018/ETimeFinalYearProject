@@ -143,27 +143,25 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                         switch (position) {
                             case 0:
                                 Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
-                                profileIntent.putExtra("from_user_id", userId);
+                                profileIntent.putExtra("id", userId);
 
                                 startActivity(profileIntent);
                                 break;
                             case 1:
                                 Intent timeSheetIntent = new Intent(getContext(), EmployerTimeSheetActivity.class);
-                                timeSheetIntent.putExtra("employeeId", userId);
-                                timeSheetIntent.putExtra("name", employeeViewHolder.getName());
-                                timeSheetIntent.putExtra("employer_id",currentUserId);
+                                timeSheetIntent.putExtra("id", userId);
                                 startActivity(timeSheetIntent);
                                 break;
                             case 2:
                                 Intent invoiceIntent = new Intent(getContext(), InvoiceActivity.class);
                                 invoiceIntent.putExtra("name", employeeViewHolder.getName());
-                                invoiceIntent.putExtra("employeeId", userId);
+                                invoiceIntent.putExtra("id", userId);
                                 startActivity(invoiceIntent);
                                 break;
                             case 3:
                                 Intent salaryIntent = new Intent(getContext(), SalaryActivity.class);
                                 salaryIntent.putExtra("name", employeeViewHolder.getName());
-                                salaryIntent.putExtra("employeeId", userId);
+                                salaryIntent.putExtra("id", userId);
                                 startActivity(salaryIntent);
                                 break;
                             default :
