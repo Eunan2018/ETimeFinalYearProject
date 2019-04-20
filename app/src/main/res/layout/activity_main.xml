@@ -59,12 +59,11 @@
 
     <ImageView
         android:id="@+id/imageViewReg"
-        android:layout_width="198dp"
-        android:layout_height="170dp"
+        android:layout_width="235dp"
+        android:layout_height="190dp"
         android:layout_alignStart="@+id/google_signin_button"
         android:layout_alignParentTop="true"
         android:layout_marginTop="8dp"
-        android:background="@drawable/shape"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +76,7 @@
         android:layout_height="21dp"
         android:layout_marginTop="8dp"
         android:text="SIGN UP"
-        android:textColor="@color/tw__composer_blue_text"
+        android:textColor="@color/tw__composer_black"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/button_login"

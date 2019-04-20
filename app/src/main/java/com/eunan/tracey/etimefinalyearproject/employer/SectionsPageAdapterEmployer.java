@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.eunan.tracey.etimefinalyearproject.Fragments.EmployeeFragment;
 import com.eunan.tracey.etimefinalyearproject.Fragments.ProjectFragment;
 
+import java.util.Stack;
+
 public class SectionsPageAdapterEmployer extends FragmentPagerAdapter {
 
     public SectionsPageAdapterEmployer(FragmentManager fragmentManager) {
@@ -18,11 +20,9 @@ public class SectionsPageAdapterEmployer extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-               ProjectFragment projectFragment = new ProjectFragment();
-                return projectFragment;
+                return new ProjectFragment();
             case 1:
-                EmployeeFragment employeeFragment = new EmployeeFragment();
-                return employeeFragment;
+                return new EmployeeFragment();
             default:
                 return null;
         }
@@ -44,4 +44,7 @@ public class SectionsPageAdapterEmployer extends FragmentPagerAdapter {
                 return null;
         }
     }
+
+
+
 }

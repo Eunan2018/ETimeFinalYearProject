@@ -29,13 +29,10 @@ import java.util.List;
 public class InvoiceActivity extends AppCompatActivity {
     private static final String TAG = "InvoiceActivity";
     // Firebase
-    private DatabaseReference invoiceRef;
-    private DatabaseReference historyRef;
+    private DatabaseReference invoiceRef,historyRef;
 
-    ValueEventListener listener;
     // Class
-    private String employeeId;
-    private String currentUserId;
+    private String employeeId,currentUserId;
     private InvoiceModel invoiceModel;
     private List<InvoiceModel> invoiceModelList;
     // UI
@@ -117,9 +114,4 @@ public class InvoiceActivity extends AppCompatActivity {
         Log.d(TAG, "printTimeSheet: \n" + builder.toString());
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
 }

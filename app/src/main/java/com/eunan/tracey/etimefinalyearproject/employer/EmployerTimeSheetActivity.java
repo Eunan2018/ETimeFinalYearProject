@@ -28,6 +28,7 @@ import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
 import com.eunan.tracey.etimefinalyearproject.payment.Payment;
 import com.eunan.tracey.etimefinalyearproject.project.ProjectActivity;
 import com.eunan.tracey.etimefinalyearproject.salary.SalaryCalculator;
+import com.eunan.tracey.etimefinalyearproject.timesheet.Weekday;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -145,6 +146,17 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                     for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                         for (DataSnapshot postChildSnap : childSnapshot.getChildren()) {
                             String day = postChildSnap.getKey();
+                            if (day.equals("A")) {
+                                day = "Mon";
+                            } else if (day.equals("B")) {
+                                day = "Tue" ;
+                            } else if (day.equals("C")) {
+                                day = "Wed";
+                            } else if (day.equals("D")) {
+                                day = "Thu";
+                            } else {
+                                day = "Fri";
+                            }
                             String hours = postChildSnap.child("hours").getValue().toString();
                             String project = postChildSnap.child("project").getValue().toString();
                             Log.d(TAG, "onDataChange: Day: " + day + " Hours: " + " " + hours + " Project: " + project);

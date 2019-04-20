@@ -34,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     // Create Login Button
     private Button register;
 
-    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +50,6 @@ public class RegisterActivity extends AppCompatActivity {
         rdoGroup = findViewById(R.id.radio_group_reg);
         // Initialise Register Button
         register = findViewById(R.id.button_sign_up);
-
-        // Initialise FirebaseAuth
-        progressDialog = new ProgressDialog(this);
 
         // Trigger Register button when clicked
         register.setOnClickListener(new View.OnClickListener() {
@@ -82,10 +79,6 @@ public class RegisterActivity extends AppCompatActivity {
                     } else if (!validatePassword(password)) {
                         RegisterActivity.this.password.setError("Not a valid password!");
                     } else {
-                        progressDialog.setTitle("Register User");
-                        progressDialog.setMessage("Please wait while we register your account !");
-                        progressDialog.setCanceledOnTouchOutside(false);
-                        progressDialog.show();
                         registerUser(userName, email, password,title);
                     }
                 }
@@ -105,18 +98,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser(final String displayName, final String email, String password,String title) {
         Log.d(TAG, "registerUser: starts");
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.hide();
-            }
-        },1000);
+
         String userRef = "Users";
         String tokenRef = "Token";
         DBHandler dbHandler = new DBHandler(RegisterActivity.this,userRef,tokenRef);
         dbHandler.registerUser(displayName,email,password,title);
-       // progressDialog.cancel();
     }
 
     // Check length of password

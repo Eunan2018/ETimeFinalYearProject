@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Upload"
+        android:background="@drawable/shape"
         app:layout_constraintStart_toStartOf="@+id/image_view_ts"
         app:layout_constraintTop_toBottomOf="@+id/image_view_ts" />
 
@@ -32,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Show Uploads"
+        android:background="@drawable/shape"
         app:layout_constraintEnd_toEndOf="@+id/image_view_ts"
         app:layout_constraintTop_toBottomOf="@+id/image_view_ts" />
 
@@ -41,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="CHOOSE FILE"
+        android:background="@drawable/shape"
         app:layout_constraintStart_toStartOf="@+id/image_view_ts"
         app:layout_constraintTop_toTopOf="parent" />
 

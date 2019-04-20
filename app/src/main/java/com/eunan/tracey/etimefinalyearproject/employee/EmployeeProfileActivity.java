@@ -70,6 +70,20 @@ public class EmployeeProfileActivity extends AppCompatActivity {
         return true;
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (viewPager.getCurrentItem() == 0) {
+            // If the user is currently looking at the first page, allow android to handle the
+            // Back button. This exits the app because you are on the first fragment.
+            super.onBackPressed();
+        } else {
+            // Otherwise, select the fragment in the viewPager
+            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+        }
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(TAG, "onOptionsItemSelected: starts");
@@ -79,6 +93,7 @@ public class EmployeeProfileActivity extends AppCompatActivity {
             case R.id.logout_button_app_bar :
                 FirebaseAuth.getInstance().signOut();
                 Intent mainIntent = new Intent(EmployeeProfileActivity.this, MainActivity.class);
+                mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(mainIntent);
                 finish();
                 break;

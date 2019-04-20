@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements EmailValidator {
     private EditText edtEmail;
     private EditText edtPassword;
     private Button btnLogin;
-    private ProgressDialog progressDialog;
+   // private ProgressDialog progressDialog;
 
 
     @Override
@@ -39,12 +39,12 @@ public class MainActivity extends AppCompatActivity implements EmailValidator {
         Twitter.initialize(this);
         setContentView(R.layout.activity_main);
 
-        // Initialise dialog
-        progressDialog = new ProgressDialog(MainActivity.this);
-        progressDialog.setMessage("Loading...");
-        progressDialog.setTitle("Login");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setCancelable(false);
+//        // Initialise dialog
+//        progressDialog = new ProgressDialog(MainActivity.this);
+//        progressDialog.setMessage("Loading...");
+//        progressDialog.setTitle("Login");
+//        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//        progressDialog.setCancelable(false);
         // Initialise Login Button
         btnLogin = findViewById(R.id.button_login);
         // Initialise Email and Password EditTexts
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements EmailValidator {
                 } else if (!validatePassword(password)) {
                     MainActivity.this.edtPassword.setError("Not a valid edtPassword!");
                 } else {
-                    progressDialog.show();
+                   // progressDialog.show();
                     btnLogin.setEnabled(false);
                     loginUser(email, password);
                 }
@@ -86,15 +86,8 @@ public class MainActivity extends AppCompatActivity implements EmailValidator {
     }
 
 
-    private void loginUser(final String email,final String password) {
+    public void loginUser(final String email,final String password) {
         Log.d(TAG, "loginUser: starts");
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.hide();
-            }
-        },1000);
         String userRef = "Users";
         String tokenRef = "Token";
         DBHandler dbHandler = new DBHandler(MainActivity.this,userRef,tokenRef);
@@ -123,11 +116,11 @@ public class MainActivity extends AppCompatActivity implements EmailValidator {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        if ( progressDialog!=null && progressDialog.isShowing() ){
-            progressDialog.cancel();
-        }
-    }
+//    @Override
+//    public void onDestroy(){
+//        super.onDestroy();
+//        if ( progressDialog!=null && progressDialog.isShowing() ){
+//            progressDialog.cancel();
+//        }
+//    }
 }

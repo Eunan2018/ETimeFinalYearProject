@@ -1,8 +1,11 @@
 package com.eunan.tracey.etimefinalyearproject.project;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +24,7 @@ import com.eunan.tracey.etimefinalyearproject.AssignedEmployess;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProjectModel;
+import com.eunan.tracey.etimefinalyearproject.employer.EmployerProfileActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,7 +37,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -43,24 +46,21 @@ public class ProjectActivity extends AppCompatActivity {
     // Layout
     private EditText projectName;
     private EditText projectLocation;
-    private Button addProject;
+    private Button createProject;
     private RecyclerView recyclerView;
-
-
     // Database
     private DatabaseReference projectRef;
     private DatabaseReference userRef;
     private DatabaseReference employeeRef;
     private DatabaseReference assignedRef;
     private FirebaseUser currentUser;
-
     // Variables
     private String currentUserId;
     private Map<String, AssignedEmployess> employeesMap;
     private Map<String, AssignedEmployess> assignedEmployessMap;
     EmployeeProjectModel employeeProjectModel;
     AssignedEmployess assignedEmployess;
-
+    private ProgressDialog progressDialog;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: starts");
@@ -68,9 +68,12 @@ public class ProjectActivity extends AppCompatActivity {
 
         initialiseViews();
 
-
+        progressDialog = new ProgressDialog(ProjectActivity.this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
         // Onclick
-        addProject.setOnClickListener(new View.OnClickListener() {
+        createProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addProject();
@@ -91,7 +94,7 @@ public class ProjectActivity extends AppCompatActivity {
         employeeRef = FirebaseDatabase.getInstance().getReference().child("Employer");
 
         // Layout
-        addProject = findViewById(R.id.button_add_project);
+        createProject = findViewById(R.id.button_add_project);
         projectName = findViewById(R.id.edit_text_project_name);
         projectLocation = findViewById(R.id.edit_text_project_location);
         recyclerView = findViewById(R.id.project_employee_recyclerview);
@@ -100,6 +103,7 @@ public class ProjectActivity extends AppCompatActivity {
     }
 
     public boolean addProject(){
+        progressDialog.show();
         String name = projectName.getText().toString().trim();
         String location = projectLocation.getText().toString().trim();
 
@@ -119,12 +123,23 @@ public class ProjectActivity extends AppCompatActivity {
                 assignedRef.child(entry.getKey()).child(assigned_push).setValue(employeeProjectModel);
             }
 
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(ProjectActivity.this, "Project Added", Toast.LENGTH_SHORT).show();
+                    // clear all and reset focus
+                    projectName.setText("");
+                    projectLocation.setText("");
+                    projectName.requestFocus();
+                    progressDialog.cancel();
+                    startActivity(new Intent(ProjectActivity.this, EmployerProfileActivity.class));
+                    finish();
+                }
+            }, 1000);
+
             Log.d(TAG, "onClick: + " + project);
-            Toast.makeText(ProjectActivity.this, "Project Added", Toast.LENGTH_SHORT).show();
-            // clear all and reset focus
-            projectName.setText("");
-            projectLocation.setText("");
-            projectName.requestFocus();
+
 
         }
         return true;
@@ -179,7 +194,6 @@ public class ProjectActivity extends AppCompatActivity {
                         Log.d(TAG, "onCancelled: " + error);
                     }
                 });
-                //TODO SET LONG CLICKLISTENER TO REMOVE FROM LIST AND CHAnGE COLOUR BACK
                 employeeViewHolder.setDate(employee.getDate());
                 employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -197,7 +211,7 @@ public class ProjectActivity extends AppCompatActivity {
                     public boolean onLongClick(View v) {
                         Log.d(TAG, "onLongClick: EmployeesMap size: " + employeesMap.size());
                         Log.d(TAG, "onLongClick: assignedEmployeesMap size: " + assignedEmployessMap.size());
-                        removeEmployeeFromProject(employeeViewHolder);
+                        removeEmployeeFromMap(employeeViewHolder);
                         Log.d(TAG, "onLongClick: EmployeesMap size: " + employeesMap.size());
                         Log.d(TAG, "onLongClick: assignedEmployeesMap size: " + assignedEmployessMap.size());
                         return true;
@@ -211,7 +225,6 @@ public class ProjectActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-
     public void addEmployeeToProject(EmployeeViewHolder employeeViewHolder){
         AssignedEmployess assignedEmployess = new AssignedEmployess(employeeViewHolder.getName(), employeeViewHolder.getKey());
         String key = employeeViewHolder.getKey();
@@ -223,7 +236,7 @@ public class ProjectActivity extends AppCompatActivity {
         Log.d(TAG, "addEmployeeToProject: assignedEmployeesMap size: " + assignedEmployessMap.size());
     }
 
-    private void removeEmployeeFromProject(EmployeeViewHolder employeeViewHolder) {
+    private void removeEmployeeFromMap(EmployeeViewHolder employeeViewHolder) {
         String key = employeeViewHolder.getKey();
         Log.d(TAG, "removeEmployeeFromProject: " + key);
         employeeViewHolder.view.setBackgroundColor(Color.TRANSPARENT);

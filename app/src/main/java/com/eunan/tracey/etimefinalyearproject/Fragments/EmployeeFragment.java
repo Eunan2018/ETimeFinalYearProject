@@ -63,7 +63,6 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
         Log.d(TAG, "onCreateView: starts");
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_employee, container, false);
-
         recyclerView = view.findViewById(R.id.recycler_view_employees);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -84,6 +83,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
 
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
@@ -102,6 +102,8 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                         .inflate(R.layout.users_layout, parent, false);
                 return new EmployeeViewHolder(view);
             }
+
+
 
 
             @Override
@@ -144,7 +146,6 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                             case 0:
                                 Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
                                 profileIntent.putExtra("id", userId);
-
                                 startActivity(profileIntent);
                                 break;
                             case 1:
@@ -178,6 +179,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
         adapter.startListening();
         recyclerView.setAdapter(adapter);
     }
+
 
     public static class EmployeeViewHolder extends RecyclerView.ViewHolder {
         private final static String TAG = "EmployeeViewHolder";

@@ -1,7 +1,10 @@
 package com.eunan.tracey.etimefinalyearproject.project;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,13 +16,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.AssignedEmployess;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
+import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProjectModel;
+import com.eunan.tracey.etimefinalyearproject.employer.EmployerProfileActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,18 +40,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AddEmployeeActivity extends AppCompatActivity {
     private final String TAG = "AddEmployeeActivity";
-    // Layout
-
-    private Button addEmployee;
+    // UI
+    private Button updateProject;
     private RecyclerView recyclerView;
-    private RecyclerView recyclerView_mp;
 
-    // Database
-    private DatabaseReference projectRef;
-    private DatabaseReference userRef;
-    private DatabaseReference employeeRef;
+    // Firebase
+    private DatabaseReference projectRef,userRef, employerRef,employeeRef;
     private FirebaseUser currentUser;
-
+    private ProgressDialog progressDialog;
     // Variables
     private String currentUserId;
     private int timestamp;
@@ -60,16 +61,22 @@ public class AddEmployeeActivity extends AppCompatActivity {
 
         assignedEmployessList = new HashMap();
         assignedEmployess = new AssignedEmployess();
+        // Initialise dialog
+        progressDialog = new ProgressDialog(AddEmployeeActivity.this);
+        progressDialog.setMessage("Uploading...");
+        progressDialog.setTitle("Update Project");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
 
         // Firebase
         projectRef = FirebaseDatabase.getInstance().getReference("Projects");
         userRef = FirebaseDatabase.getInstance().getReference("Users");
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
-        employeeRef = FirebaseDatabase.getInstance().getReference().child("Employer");
-        addEmployee = findViewById(R.id.button_update_add_employee);
+        employerRef = FirebaseDatabase.getInstance().getReference().child("Employer");
+        employeeRef = FirebaseDatabase.getInstance().getReference().child("EmployeeProjects");
+        updateProject = findViewById(R.id.button_update_add_employee);
         recyclerView = findViewById(R.id.recycler_view_add_employee);
-        recyclerView_mp = findViewById(R.id.recycler_view_mp);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(AddEmployeeActivity.this));
     }
@@ -81,7 +88,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
         timestamp = getIntent().getIntExtra("time", 0);
         FirebaseRecyclerOptions<EmployeeModel> options =
                 new FirebaseRecyclerOptions.Builder<EmployeeModel>()
-                        .setQuery(employeeRef.child(currentUserId), EmployeeModel.class)
+                        .setQuery(employerRef.child(currentUserId), EmployeeModel.class)
                         .build();
 
         final FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<EmployeeModel, AddEmployeeActivity.AddEmployeeViewHolder>(options) {
@@ -111,10 +118,9 @@ public class AddEmployeeActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        Toast.makeText(AddEmployeeActivity.this, "Unable to add employee. Try again later.", Toast.LENGTH_SHORT).show();
                     }
                 });
-                //TODO SET LONGCLICKLISTENER TO REOVE FROM LIST AND CHAnGE COLOUR BACK
                 employeeViewHolder.setDate(employee.getDate());
                 employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -122,33 +128,59 @@ public class AddEmployeeActivity extends AppCompatActivity {
 
                         AssignedEmployess assignedEmployess = new AssignedEmployess(employeeViewHolder.getName(), employeeViewHolder.getKey());
                         employeeViewHolder.view.setBackgroundColor(Color.GRAY);
+                        Log.d(TAG, "removeEmployeeFromProject: assignedList size: size: " + assignedEmployessList.size());
                         assignedEmployessList.put(employeeViewHolder.getKey(), assignedEmployess);
-
+                        Log.d(TAG, "removeEmployeeFromProject: assignedList size: size: " + assignedEmployessList.size());
                     }
 
                 });
 
-                addEmployee.setOnClickListener(new View.OnClickListener() {
+                employeeViewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        String key = employeeViewHolder.getKey();
+                        Log.d(TAG, "removeEmployeeFromProject: " + key);
+                        Log.d(TAG, "removeEmployeeFromProject: assignedList size: size: " + assignedEmployessList.size());
+                        employeeViewHolder.view.setBackgroundColor(Color.TRANSPARENT);
+                        assignedEmployessList.remove(key);
+                        Log.d(TAG, "removeEmployeeFromProject: assignedList size: " + assignedEmployessList.size());
+                        return true;
+                    }
+                });
+                updateProject.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        progressDialog.show();
                         projectRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                     String key = ds.getKey();
                                     String time = ds.child("projectTimestamp").getValue().toString();
+                                    final String project = ds.child("projectName").getValue().toString();
                                     if (time.equals(String.valueOf(timestamp))) {
                                         projectRef.child(currentUserId).child(key).child("assignedEmployessList").updateChildren(assignedEmployessList);
-
+                                        EmployeeProjectModel employeeProjectModel =
+                                                new EmployeeProjectModel(userId,project);
+                                        String id = employeeRef.push().getKey();
+                                        employeeRef.child(userId).child(id).setValue(employeeProjectModel);
+                                        assignedEmployessList.clear();
+                                        Handler handler = new Handler();
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                progressDialog.cancel();
+                                                startActivity(new Intent(AddEmployeeActivity.this, EmployerProfileActivity.class));
+                                                finish();
+                                            }
+                                        }, 1000);
                                     }
-
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                Log.d(TAG, "onCancelled: " + String.valueOf(databaseError));
                             }
                         });
                     }

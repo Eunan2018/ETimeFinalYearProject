@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 
-
 public class TimeSheetBuilder extends AppCompatActivity {
 
     private static final String TAG = "TimeSheetBuilder";
@@ -76,7 +75,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
         // hours = findViewById(R.id.edit_text_ts_hrs);
 
         btnDone = findViewById(R.id.button_done_ts);
-      //  txtMonday = findViewById(R.id.text_view_monday_day);
+        //  txtMonday = findViewById(R.id.text_view_monday_day);
         recyclerView = findViewById(R.id.recycler_view_ts_builder);
         spinnerHours = findViewById(R.id.spinner_hours);
         spinnerMinutes = findViewById(R.id.spinner_minutes);
@@ -91,13 +90,24 @@ public class TimeSheetBuilder extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 day = getIntent().getStringExtra("day");
+                if (day.equals(String.valueOf(Weekday.MONDAY))) {
+                    day = "A";
+                } else if (day.equals(String.valueOf(Weekday.TUESDAY))) {
+                    day = "B";
+                } else if (day.equals(String.valueOf(Weekday.WEDNESDAY))) {
+                    day = "C";
+                } else if (day.equals(String.valueOf(Weekday.THURSDAY))) {
+                    day = "D";
+                } else {
+                    day = "E";
+                }
 
                 timesheet = new TimeSheetModel(projectName, hours, minutes);
                 if (TextUtils.isEmpty(projectName)) {
                     Toast.makeText(TimeSheetBuilder.this, "Please select a project!!", Toast.LENGTH_SHORT).show();
                 } else if (TextUtils.equals(hours, "0")) {
                     Toast.makeText(TimeSheetBuilder.this, "Please enter hours!!", Toast.LENGTH_SHORT).show();
-               }else {
+                } else {
                     timesheetMap.put(day, timesheet);
                     finish();
                 }
@@ -185,7 +195,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
                 selectionList.add(0, 0);
                 final String userId = getRef(position).getKey();
 
-                if(userId != null){
+                if (userId != null) {
                     assignedRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -193,7 +203,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
                             for (DataSnapshot postChildSnap : dataSnapshot.getChildren()) {
                                 String name = String.valueOf(postChildSnap.getValue());
                                 employeeViewHolder.setName(name);
-                                Log.d(TAG, "onDataChange: Winner " +postChildSnap.getValue());
+                                Log.d(TAG, "onDataChange: Winner " + postChildSnap.getValue());
                             }
                         }
 
@@ -203,7 +213,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
                             Toast.makeText(TimeSheetBuilder.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
                         }
                     });
-                }else{
+                } else {
                     Toast.makeText(TimeSheetBuilder.this, "Error userId is empty", Toast.LENGTH_SHORT).show();
                 }
 

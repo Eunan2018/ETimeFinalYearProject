@@ -7,12 +7,14 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <supports-screens
-        android:smallScreens="true"
-        android:normalScreens="true"
+        android:anyDensity="true"
         android:largeScreens="true"
-        android:xlargeScreens="true"
-        android:anyDensity="true" />
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
     <application
         android:name=".ETime"
         android:allowBackup="true"
@@ -21,7 +23,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".employer.EmpImage"></activity>
+        <activity android:name=".History.HistoryInvoice"></activity>
+        <activity android:name=".invoice.InvoiceActivity" />
+        <activity android:name=".employer.EmpImage" />
         <activity android:name=".upload.UploadActivity" />
 
         <service android:name=".project.ProjectMessagingService">
@@ -36,12 +40,11 @@
         </service>
 
         <activity
-            android:name=".welcome.WelcomeActivity"
+            android:name=".main.MainActivity"
             android:icon="@drawable/timesheet"
             android:label="ETime">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -51,7 +54,6 @@
         <activity
             android:name=".user.UserProfileActivity"
             android:label="@string/register_title" />
-        <activity android:name="com.twitter.sdk.android.core.identity.OAuthActivity" />
         <activity
             android:name=".employee.EmployeeProfileActivity"
             android:parentActivityName=".user.UserProfileActivity" />
@@ -64,8 +66,8 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity
-            android:name=".user.UsersActivity" />
+        <activity android:name=".user.UsersActivity" />
+
         <activity android:name=".profile.ProfileActivity">
             <intent-filter>
                 <action android:name="com.eunan.tracey.etimefinalyearproject_TARGET_NOTIFICATION" />
@@ -73,31 +75,29 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".main.MainActivity" />
+
         <activity
             android:name=".employer.EmployerTimeSheetActivity"
             android:parentActivityName=".employee.EmployeeProfileActivity">
             <intent-filter>
                 <action android:name="com.eunan.tracey.etimefinalyearproject_TIMESHEET_TARGET_NOTIFICATION" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-
             android:value="@string/ts_notification_channel_id" />
         <meta-data
-        android:name="com.google.firebase.messaging.default_notification_channel_id"
-        android:value="@string/ts_notification_channel_id" />
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/ts_notification_channel_id" />
 
         <activity android:name=".salary.SalaryActivity" />
         <activity android:name=".timesheet.TimeSheetBuilder" />
         <activity android:name=".project.MaintainProject" />
         <activity android:name=".project.AddEmployeeActivity" />
-        <activity android:name=".timesheet.History" />
-        <activity android:name=".timesheet.HistoryCSV" />
+        <activity android:name=".History.HistoryTimesheet" />
+        <activity android:name=".History.HistoryCSV" />
     </application>
 
 </manifest>

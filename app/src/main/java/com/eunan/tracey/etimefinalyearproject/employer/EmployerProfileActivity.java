@@ -18,6 +18,7 @@ import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProfileActivity;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.settings.SettingsActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class EmployerProfileActivity extends AppCompatActivity {
@@ -58,6 +59,18 @@ public class EmployerProfileActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (viewPager.getCurrentItem() == 0) {
+            // If the user is currently looking at the first page, allow android to handle the
+            // Back button. This exits the app because you are on the first fragment.
+            super.onBackPressed();
+        } else {
+            // Otherwise, select the fragment in the viewPager
+            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG, "onCreateOptionsMenu: starts");
         super.onCreateOptionsMenu(menu);
@@ -72,9 +85,11 @@ public class EmployerProfileActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.logout_button_app_bar :
-                // FirebaseAuth.getInstance().signOut();
+                FirebaseAuth.getInstance().signOut();
                 Intent mainIntent = new Intent(EmployerProfileActivity.this, MainActivity.class);
+                mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(mainIntent);
+                finish();
                 break;
 
             case R.id.user_settings_button :
@@ -93,4 +108,5 @@ public class EmployerProfileActivity extends AppCompatActivity {
         Log.d(TAG, "onOptionsItemSelected: ends");
         return true;
     }
+
 }

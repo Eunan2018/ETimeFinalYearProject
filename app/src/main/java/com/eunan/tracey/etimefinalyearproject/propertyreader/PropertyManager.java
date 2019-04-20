@@ -28,7 +28,7 @@ public class PropertyManager {
             AssetManager am = context.getAssets();
             //opening the file
             InputStream inputStream = am.open(file);
-            //loading of the properties
+            //loading of the prop.properties
             properties.load(inputStream);
         } catch (IOException e) {
             Log.e("PropertiesReader", e.toString());

@@ -1,19 +1,19 @@
 package com.eunan.tracey.etimefinalyearproject.bdhandler;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.eunan.tracey.etimefinalyearproject.Title;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProfileActivity;
 import com.eunan.tracey.etimefinalyearproject.employer.EmployerProfileActivity;
-import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
-import com.eunan.tracey.etimefinalyearproject.register.RegisterActivity;
 import com.eunan.tracey.etimefinalyearproject.token.Token;
 import com.eunan.tracey.etimefinalyearproject.user.UserModel;
-import com.eunan.tracey.etimefinalyearproject.user.UserProfileActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -28,15 +28,17 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 public class DBHandler {
+    private final String TAG = "DBHandler";
+    private DatabaseReference ref1;
+    private DatabaseReference ref2;
+    private FirebaseAuth auth;
+    private Context context;
+    private String token;
 
-    DatabaseReference ref1;
-    DatabaseReference ref2;
-    FirebaseAuth firebaseAuth;
-    Context context;
-    String token;
+    private ProgressDialog progressDialog;
 
     public DBHandler(Context context, String ref1, String ref2) {
-        firebaseAuth = FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
         this.ref1 = FirebaseDatabase.getInstance().getReference().child(ref1);
         this.ref2 = FirebaseDatabase.getInstance().getReference().child(ref2);
         this.context = context;
@@ -47,6 +49,12 @@ public class DBHandler {
                 token = instanceIdResult.getToken();
             }
         });
+
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 
     // Overloaded Constructer
@@ -55,46 +63,59 @@ public class DBHandler {
         this.ref1 = ref1;
     }
 
+    public DBHandler(String ref1) {
+        this.ref1 = FirebaseDatabase.getInstance().getReference().child(ref1);
+    }
+
     public void login(String email, String password) {
-        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.cancel();
+                        }
+                    }, 1000);
                     updateToken();
-                    openActivity();
+                    checkUserCredentials();
                 } else {
+                    progressDialog.cancel();
                     Toast.makeText(context, "Error, login failed", Toast.LENGTH_LONG).show();
                 }
             }
 
 
         });
-
-
     }
 
-    private void openActivity() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String id = currentUser.getUid();
-        ref1.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+    private void checkUserCredentials() {
+        final String uid = getUserId();
+        ref1.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String title = dataSnapshot.child("title").getValue().toString();
-                    if (title.equals("Employee"))
-                        context.startActivity(new Intent(context, EmployeeProfileActivity.class));
-                    else
-                        context.startActivity(new Intent(context, EmployerProfileActivity.class));
-                }
+                String title = dataSnapshot.child("title").getValue().toString();
+                openActivity(title);
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled: " + String.valueOf(databaseError));
             }
         });
+    }
 
+    private void openActivity(String title) {
+        if (Title.EMPLOYEE.getTitle().equals(title))
+            context.startActivity(new Intent(context, EmployeeProfileActivity.class));
+        else
+            context.startActivity(new Intent(context, EmployerProfileActivity.class));
     }
 
     private void updateToken() {
-        final String currentUserId = firebaseAuth.getCurrentUser().getUid();
+        final String currentUserId = getUserId();
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
             @Override
             public void onSuccess(InstanceIdResult instanceIdResult) {
@@ -107,12 +128,20 @@ public class DBHandler {
     }
 
     public void registerUser(final String displayName, final String email, String password, final String title) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    createTokenObject(displayName,email,title);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.cancel();
+                        }
+                    }, 1000);
+                    createTokenObject(displayName, email, title);
                 } else {
+                    progressDialog.cancel();
                     Toast.makeText(context, "Error, could not create user", Toast.LENGTH_LONG).show();
                 }
             }
@@ -120,8 +149,7 @@ public class DBHandler {
     }
 
     private void createTokenObject(final String displayName, final String email, final String title) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        final String uid = currentUser.getUid();
+      final String uid = getUserId();
         Token tokenModel = new Token(token, uid);
         ref2.child(uid).setValue(tokenModel).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -132,10 +160,7 @@ public class DBHandler {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                if (title.equals("Employee"))
-                                    context.startActivity(new Intent(context, EmployeeProfileActivity.class));
-                                else
-                                    context.startActivity(new Intent(context, EmployerProfileActivity.class));
+                                openActivity(title);
                                 Toast.makeText(context, "Successfully Registered, ", Toast.LENGTH_LONG).show();
                             }
                         }
@@ -143,7 +168,11 @@ public class DBHandler {
                 }
             }
         });
-        // ((RegisterActivity)context).finish();
+    }
+
+    private String getUserId(){
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        return currentUser.getUid();
     }
 
 }

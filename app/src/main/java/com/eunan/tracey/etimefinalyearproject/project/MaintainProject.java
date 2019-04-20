@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eunan.tracey.etimefinalyearproject.AssignedEmployess;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -30,25 +31,20 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.Map;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MaintainProject extends AppCompatActivity {
 
     private final static String TAG = "MaintainProject";
 
-
     interface CallBack {
         void onCallBack(String pushId);
     }
 
-    private TextView txtProjectName;
-    private TextView txtProjectLocation;
-    private Button btnAddEmployee;
-    private String names;
-    private String location;
     private int timestamp;
 
-    private FirebaseAuth firebaseAuth;
     private String currentUserId;
     // Firebase
     private RecyclerView recycler_view_mp;
@@ -60,25 +56,23 @@ public class MaintainProject extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintain_project);
 
-        location = getIntent().getStringExtra("location");
-        names = getIntent().getStringExtra("title");
+        String location = getIntent().getStringExtra("location");
+        String names = getIntent().getStringExtra("title");
         timestamp = getIntent().getIntExtra("timestamp", 0);
 
-        txtProjectLocation = findViewById(R.id.text_view_proj_loc_mp);
-        txtProjectName = findViewById(R.id.text_view_project_name_mp);
-        btnAddEmployee = findViewById(R.id.button_add_emplyee_mp);
+        TextView txtProjectLocation = findViewById(R.id.text_view_proj_loc_mp);
+        TextView txtProjectName = findViewById(R.id.text_view_project_name_mp);
+        Button btnAddEmployee = findViewById(R.id.button_add_emplyee_mp);
         recycler_view_mp = findViewById(R.id.recycler_view_mp);
-
-
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUserId = firebaseAuth.getCurrentUser().getUid();
-
+        FirebaseAuth firebaseAuth;
         txtProjectLocation.setText(location);
         txtProjectName.setText(names);
         firebaseAuth = FirebaseAuth.getInstance();
         currentUserId = firebaseAuth.getCurrentUser().getUid();
         projectRef = FirebaseDatabase.getInstance().getReference().child("Projects");
-        employeeRef = FirebaseDatabase.getInstance().getReference().child("Employer").child(currentUserId);
+        DatabaseReference employerRef = FirebaseDatabase.getInstance().getReference().child("Employer").child(currentUserId);
+        employerRef.keepSynced(true);
+        employeeRef = FirebaseDatabase.getInstance().getReference().child("EmployeeProjects");
         employeeRef.keepSynced(true);
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         usersRef.keepSynced(true);
@@ -95,9 +89,7 @@ public class MaintainProject extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
-
 
     private void getPushId(final CallBack callBack) {
 
@@ -106,7 +98,7 @@ public class MaintainProject extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot childSnapShot : dataSnapshot.getChildren()) {
                     String key = childSnapShot.getKey();
-                    String time = childSnapShot.child("projectTimestamp").getValue().toString();
+                    String time = String.valueOf(childSnapShot.child("projectTimestamp").getValue());
                     Log.d(TAG, "onDataChange: time" + time);
                     Log.d(TAG, "onDataChange: pushId" + key);
                     if (key != null && String.valueOf(timestamp).equals(time)) {
@@ -149,39 +141,55 @@ public class MaintainProject extends AppCompatActivity {
                     }
 
                     @Override
-                    protected void onBindViewHolder(final EmployeeViewHolder employeeViewHolder, final int position, @NonNull EmployeeModel employee) {
+                    protected void onBindViewHolder(@NonNull final EmployeeViewHolder employeeViewHolder, final int position, @NonNull EmployeeModel employee) {
                         Log.d(TAG, "onBindViewHolder: starts");
                         final String userId = getRef(position).getKey();
-
-                        Log.d(TAG, "onBindViewHolder: key " + userId);
-                        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String name = dataSnapshot.child("name").getValue().toString();
-                                String image = dataSnapshot.child("thumbImage").getValue().toString();
-                                employeeViewHolder.setName(name);
-                                employeeViewHolder.setImage(MaintainProject.this, image);
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                String error = databaseError.toString();
-                                Log.d(TAG, "onCancelled: " + error);
-                            }
-                        });
-
+                        if(userId != null) {
+                            Log.d(TAG, "onBindViewHolder: key " + userId);
+                            usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String name = String.valueOf(dataSnapshot.child("name").getValue());
+                                    String image = String.valueOf( dataSnapshot.child("thumbImage").getValue());                                    employeeViewHolder.setName(name);
+                                    employeeViewHolder.setImage(MaintainProject.this, image);
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    String error = databaseError.toString();
+                                    Log.d(TAG, "onCancelled: " + error);
+                                }
+                            });
+                        }
+                        else{
+                            Toast.makeText(MaintainProject.this, "Unable to retrieve employee", Toast.LENGTH_SHORT).show();
+                        }
                         employeeViewHolder.setDate(employee.getDate());
 
                         employeeViewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
-                                removeEmployeeFromProject(pushId,"assignedEmployessList",userId);
+                                projectRef.child(currentUserId).child(pushId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                       final String project = String.valueOf( dataSnapshot.child("projectName").getValue());
+                                        removeEmployeeFromProject(pushId,"assignedEmployessList",userId,project);
+                                        Map<String,AssignedEmployess> assignedEmployessList = (Map<String,AssignedEmployess>) dataSnapshot.child("assignedEmployessList")
+                                                .getValue();
+                                        if(assignedEmployessList.size() <= 1){
+                                            projectRef.child(currentUserId).child(pushId).removeValue();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        Toast.makeText(MaintainProject.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
                                 return false;
                             }
                         });
                     }
-
-
                 };
                 adapter.startListening();
                 recycler_view_mp.setAdapter(adapter);
@@ -192,11 +200,31 @@ public class MaintainProject extends AppCompatActivity {
 
     }
 
-    public boolean removeEmployeeFromProject(String pushId,String employee,final String userId){
+    public boolean removeEmployeeFromProject(final String pushId,String employee,final String userId,final String projectName){
         projectRef.child(currentUserId).child(pushId).child(employee).child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(MaintainProject.this, "Deleted" + userId, Toast.LENGTH_SHORT).show();
+
+                employeeRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot childSnapshot: dataSnapshot.getChildren()){
+                            String project = String.valueOf( childSnapshot.child("project").getValue());
+                            if(project.equals(projectName)){
+                                    String key = childSnapshot.getKey();
+                                    if(key != null) {
+                                    employeeRef.child(userId).child(key).setValue(null);
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(MaintainProject.this,String.valueOf(databaseError),Toast.LENGTH_SHORT).show();
+                    }
+                });
+                Toast.makeText(MaintainProject.this, "Deleted " + projectName, Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -206,6 +234,7 @@ public class MaintainProject extends AppCompatActivity {
         });
         return true;
     }
+
 
     public static class EmployeeViewHolder extends RecyclerView.ViewHolder {
         private final static String TAG = "EmployeeViewHolder";

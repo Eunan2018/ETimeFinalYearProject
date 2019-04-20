@@ -10,8 +10,9 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"></FrameLayout>
 
     <Spinner
         android:id="@+id/spinner_minutes"
@@ -40,7 +41,7 @@
         android:layout_width="320dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
-        android:background="@color/tw__composer_red"
+        android:background="@drawable/round_button"
         android:text="CANCEL"
 
         android:textColor="@color/tw__composer_white"

@@ -80,7 +80,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.projectLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                deleteProject(itemList);
+             //   deleteProject(itemList);
                 return true;
             }
         });
@@ -89,49 +89,49 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
-    public boolean deleteProject(final ProjectModel projectModel) {
-        Log.d(TAG, "deleteProject: starts");
-        if (!projectModel.getProjectLocation().isEmpty()) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
-            alert.setTitle("Remove Project");
-
-            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                    Query projectQuery = ref.child("Projects").child(currentUserId).
-                            orderByChild("projectLocation").equalTo(projectModel.getProjectLocation());
-                    projectQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                ds.getRef().removeValue();
-                            }
-                            Toast.makeText(context, projectModel.getProjectName() + " deleted", Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            String error = databaseError.toString();
-                            Log.d(TAG, "onCancelled: " + error);
-                        }
-                    });
-                }
-            });
-
-            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    // what ever you want to do with No option.
-                }
-            });
-
-            alert.show();
-            return true;
-
-        }else{
-            return false;
-        }
-
-    }
+//    public boolean deleteProject(final ProjectModel projectModel) {
+//        Log.d(TAG, "deleteProject: starts");
+//        if (!projectModel.getProjectLocation().isEmpty()) {
+//            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+//            alert.setTitle("Remove Project");
+//
+//            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int whichButton) {
+//                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+//                    Query projectQuery = ref.child("Projects").child(currentUserId).
+//                            orderByChild("projectLocation").equalTo(projectModel.getProjectLocation());
+//                    projectQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//                                ds.getRef().removeValue();
+//                            }
+//                            Toast.makeText(context, projectModel.getProjectName() + " deleted", Toast.LENGTH_LONG).show();
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//                            String error = databaseError.toString();
+//                            Log.d(TAG, "onCancelled: " + error);
+//                        }
+//                    });
+//                }
+//            });
+//
+//            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int whichButton) {
+//                    // what ever you want to do with No option.
+//                }
+//            });
+//
+//            alert.show();
+//            return true;
+//
+//        }else{
+//            return false;
+//        }
+//
+//    }
 
 
     @Override

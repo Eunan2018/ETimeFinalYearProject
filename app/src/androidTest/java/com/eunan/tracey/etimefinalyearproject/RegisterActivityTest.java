@@ -3,6 +3,7 @@ package com.eunan.tracey.etimefinalyearproject;
 import android.support.test.rule.ActivityTestRule;
 import android.view.View;
 
+import com.eunan.tracey.etimefinalyearproject.bdhandler.DBHandler;
 import com.eunan.tracey.etimefinalyearproject.register.RegisterActivity;
 
 import org.junit.After;
@@ -17,12 +18,13 @@ public class RegisterActivityTest {
     @Rule
     public ActivityTestRule<RegisterActivity> mRegisterActivityTestRule = new ActivityTestRule<>(RegisterActivity.class);
 
+
     // Create RegisterActivity reference
     private RegisterActivity mRegisterActivity = null;
 
     // Initialise RegisterActivity
     @Before
-    public void setUp(){
+    public void setUp() {
         mRegisterActivity = mRegisterActivityTestRule.getActivity();
     }
 

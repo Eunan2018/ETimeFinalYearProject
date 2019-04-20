@@ -1,6 +1,7 @@
 package com.eunan.tracey.etimefinalyearproject.Fragments;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -47,7 +48,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
     private TextView txtMondayDate, txtMondayDay, txtMondayHours, txtTuesdayDate, txtTuesdayDay, txtTuesdayHours, txtWednesdayDate,
             txtWednesdayDay, txtWednesdayHours, txtThursdayDate, txtThursdayDay, txtThursdayHours, txtFridayDate, txtFridayDay, txtFridayHours;
 
-
+    private ProgressDialog progressDialog;
     @SuppressLint("SimpleDateFormat")
     private DateFormat dayDateFormat, displayDateFormat;
 
@@ -82,7 +83,10 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
             }
         });
         textClock = new TextClock(getContext());
-
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Uploading...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
         employerRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -145,8 +149,6 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         btnSubmit = view.findViewById(R.id.button_submit);
         btnCancel = view.findViewById(R.id.button_cancel_ts);
 
-
-        // textClock.setFormat24Hour("HH:mm:ss");
         textClock.setText(textClock.getText().toString());
     }
 
@@ -167,12 +169,15 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 if (TimeSheetBuilder.getTimeMap().size() < 5) {
+                    progressDialog.cancel();
                     Toast.makeText(getContext(), "Please fill in all days.", Toast.LENGTH_SHORT).show();
                 } else {
                     String pushId = timesheetRef.push().getKey();
                     resetButtonColour();
                     timesheetRef.child(currentUserId).child(employerKey).child(pushId).setValue(TimeSheetBuilder.getTimeMap());
+                    progressDialog.cancel();
                 }
             }
         });
