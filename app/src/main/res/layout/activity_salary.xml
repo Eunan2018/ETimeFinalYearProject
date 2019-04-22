@@ -11,83 +11,63 @@
         android:id="@+id/text_view_salary_details"
         android:layout_width="299dp"
         android:layout_height="43dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Set employee details"
         android:textAlignment="textStart"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/text_view_tax_rate"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/text_view_salary_name"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textAlignment="textStart"
-        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/radio_group_reg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.41"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_tax_rate" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/edit_text_salary_hr_rate2"
-        android:layout_width="300dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Hourly Rate"
-        android:inputType="textPersonName|numberDecimal"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_salary_name" />
+        app:layout_constraintTop_toBottomOf="@+id/radio_group_tax" />
 
-    <EditText
-        android:id="@+id/edit_text_salary_tax_code"
-        android:layout_width="300dp"
+    <Button
+        android:id="@+id/button_salary_details"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="Tax Code"
-        android:inputType="number"
+        android:background="@drawable/round_button"
+        android:text="save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_salary_hr_rate2" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/round_button"
-        android:text="UPDATE"
-        app:layout_constraintStart_toStartOf="@+id/edit_text_salary_tax_code"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_salary_tax_code" />
+    <RadioGroup
+        android:id="@+id/radio_group_tax"
+        android:layout_width="108dp"
+        android:layout_height="77dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="@+id/edit_text_salary_hr_rate2"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_salary_details">
 
-    <Button
-        android:id="@+id/button_salary_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/round_button"
-        android:text="save"
-        app:layout_constraintEnd_toEndOf="@+id/edit_text_salary_tax_code"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_salary_tax_code" />
+        <RadioButton
+            android:id="@+id/radio_button_tax1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tax code 1" />
 
-    <TextView
-        android:id="@+id/text_view_tax_rate"
-        android:layout_width="300dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="8dp"
-        android:text="Code 1 tax set a 20%\nCode 2 tax set at 27%"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_salary_details" />
+        <RadioButton
+            android:id="@+id/radio_button_tax2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tax code 2" />
+    </RadioGroup>
 
 </android.support.constraint.ConstraintLayout>

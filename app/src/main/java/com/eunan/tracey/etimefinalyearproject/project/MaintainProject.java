@@ -2,11 +2,17 @@ package com.eunan.tracey.etimefinalyearproject.project;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +50,8 @@ public class MaintainProject extends AppCompatActivity {
     }
 
     private int timestamp;
-
+    // Layout
+    private Toolbar toolbar;
     private String currentUserId;
     // Firebase
     private RecyclerView recycler_view_mp;
@@ -55,7 +62,15 @@ public class MaintainProject extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintain_project);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        // Set the action bar with name and logo
+        toolbar = findViewById(R.id.time_sheet_app_bar);
+        setSupportActionBar(toolbar);
+        Drawable dr = ContextCompat.getDrawable(this, R.drawable.timesheet);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
+        getSupportActionBar().setLogo(d);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String location = getIntent().getStringExtra("location");
         String names = getIntent().getStringExtra("title");
         timestamp = getIntent().getIntExtra("timestamp", 0);
@@ -249,6 +264,7 @@ public class MaintainProject extends AppCompatActivity {
 
         public void setDate(String date) {
             TextView empDate = view.findViewById(R.id.user_single_status);
+            empDate.setTextSize(8.f);
             empDate.setText(date);
         }
 

@@ -1,12 +1,17 @@
 package com.eunan.tracey.etimefinalyearproject.History;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +44,8 @@ public class HistoryTimesheet extends AppCompatActivity {
     private DatabaseReference historyRef;
     private RecyclerView recyclerView;
     private String userId;
+    // Layout
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +56,14 @@ public class HistoryTimesheet extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(HistoryTimesheet.this));
         historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryTimesheet");
-
+        // Set the action bar with name and logo
+        toolbar = findViewById(R.id.time_sheet_app_bar);
+        setSupportActionBar(toolbar);
+        Drawable dr = ContextCompat.getDrawable(this, R.drawable.timesheet);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
+        getSupportActionBar().setLogo(d);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Log.d(TAG, "onCreate: ends");

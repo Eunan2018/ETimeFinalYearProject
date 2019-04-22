@@ -14,12 +14,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eunan.tracey.etimefinalyearproject.MessageModel;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.bdhandler.DBHandler;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
@@ -45,14 +47,15 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
     private Button btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSubmit, btnCancel;
 
-    private TextView txtMondayDate, txtMondayDay, txtMondayHours, txtTuesdayDate, txtTuesdayDay, txtTuesdayHours, txtWednesdayDate,
-            txtWednesdayDay, txtWednesdayHours, txtThursdayDate, txtThursdayDay, txtThursdayHours, txtFridayDate, txtFridayDay, txtFridayHours;
+    private TextView txtMondayDate, txtMondayDay,  txtTuesdayDate, txtTuesdayDay,  txtWednesdayDate,
+            txtWednesdayDay,  txtThursdayDate, txtThursdayDay, txtFridayDate, txtFridayDay;
 
+    private EditText edtComments;
     private ProgressDialog progressDialog;
     @SuppressLint("SimpleDateFormat")
     private DateFormat dayDateFormat, displayDateFormat;
 
-    private DatabaseReference timesheetRef;
+    private DatabaseReference timesheetRef,commentsRef;
     private ImageView imageView;
     private String currentUserId, employerKey;
 
@@ -113,6 +116,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
         // Firebase
         timesheetRef = FirebaseDatabase.getInstance().getReference("TimeSheet");
+        commentsRef = FirebaseDatabase.getInstance().getReference("Comments");
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         Log.d(TAG, "onCreateView: " + currentUserId);
@@ -124,27 +128,28 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         btnMonday = view.findViewById(R.id.btn_monday);
         txtMondayDate = view.findViewById(R.id.text_view_monday_date);
         txtMondayDay = view.findViewById(R.id.text_view_monday_day);
-        txtMondayHours = view.findViewById(R.id.text_view_moday_hours);
+
 
         btnTuesday = view.findViewById(R.id.button_tuesday);
         txtTuesdayDate = view.findViewById(R.id.text_view_tuesday_date);
         txtTuesdayDay = view.findViewById(R.id.text_view_tuesday_day);
-        txtTuesdayHours = view.findViewById(R.id.text_view_tuesday_hours);
+
 
         btnWednesday = view.findViewById(R.id.button_wednesday);
         txtWednesdayDate = view.findViewById(R.id.text_view_wednesday_date);
         txtWednesdayDay = view.findViewById(R.id.text_view_wednesday_day);
-        txtWednesdayHours = view.findViewById(R.id.text_view_wednesday_hrs);
 
         btnThursday = view.findViewById(R.id.button_thursday);
         txtThursdayDate = view.findViewById(R.id.text_view_thursday_date);
         txtThursdayDay = view.findViewById(R.id.text_view_thursday_day);
-        txtThursdayHours = view.findViewById(R.id.text_view_thursday_hrs);
+
 
         btnFriday = view.findViewById(R.id.button_friday);
         txtFridayDate = view.findViewById(R.id.text_view_friday_date);
         txtFridayDay = view.findViewById(R.id.text_view_friday_day);
-        txtFridayHours = view.findViewById(R.id.text_view_friday_hrs);
+
+
+        edtComments = view.findViewById(R.id.edit_text_comments_ts);
 
         btnSubmit = view.findViewById(R.id.button_submit);
         btnCancel = view.findViewById(R.id.button_cancel_ts);
@@ -170,14 +175,24 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 progressDialog.show();
-                if (TimeSheetBuilder.getTimeMap().size() < 5) {
+                if (TimeSheetBuilder.getTimeMap().size() < 1) {
                     progressDialog.cancel();
                     Toast.makeText(getContext(), "Please fill in all days.", Toast.LENGTH_SHORT).show();
                 } else {
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.cancel();
+                        }
+                    }, 1000);
                     String pushId = timesheetRef.push().getKey();
                     resetButtonColour();
                     timesheetRef.child(currentUserId).child(employerKey).child(pushId).setValue(TimeSheetBuilder.getTimeMap());
-                    progressDialog.cancel();
+                    MessageModel messageModel = new MessageModel(edtComments.getText().toString(),"");
+                    commentsRef.child(currentUserId).child(employerKey).child(pushId).setValue(messageModel);
+
                 }
             }
         });
@@ -208,7 +223,6 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         monday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
         btnMonday.setText(dayDateFormat.format(monday.getTime()));
-        txtMondayHours.setText("0");
         txtMondayDay.setText(String.valueOf(Weekday.MONDAY));
         txtMondayDate.setText(displayDateFormat.format(monday.getTime()));
 
@@ -236,7 +250,6 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         tuesday.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
 
         btnTuesday.setText(dayDateFormat.format(tuesday.getTime()));
-        txtTuesdayHours.setText("0");
         txtTuesdayDay.setText(String.valueOf(Weekday.TUESDAY));
         txtTuesdayDate.setText(displayDateFormat.format(tuesday.getTime()));
 
@@ -263,7 +276,6 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         wednesday.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
 
         btnWednesday.setText(dayDateFormat.format(wednesday.getTime()));
-        txtWednesdayHours.setText("0");
         txtWednesdayDay.setText(String.valueOf(Weekday.WEDNESDAY));
         txtWednesdayDate.setText(displayDateFormat.format(wednesday.getTime()));
 
@@ -290,7 +302,6 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         thursday.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
 
         btnThursday.setText(dayDateFormat.format(thursday.getTime()));
-        txtThursdayHours.setText("0");
         txtThursdayDay.setText(String.valueOf(Weekday.THURSDAY));
         txtThursdayDate.setText(displayDateFormat.format(thursday.getTime()));
 
@@ -316,7 +327,6 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         friday.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
 
         btnFriday.setText(dayDateFormat.format(friday.getTime()));
-        txtFridayHours.setText("0");
         txtFridayDay.setText(String.valueOf(Weekday.FRIDAY));
         txtFridayDate.setText(displayDateFormat.format(friday.getTime()));
 

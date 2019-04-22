@@ -1,9 +1,15 @@
 package com.eunan.tracey.etimefinalyearproject.History;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,23 +36,32 @@ public class HistoryCSV extends AppCompatActivity {
     // Firebase
     private DatabaseReference historyRef;
     private String currentUserId;
-
+    // Layout
+    private Toolbar toolbar;
     // Layout
     private TextView txtTotal;
     private Map<String,EmployerWeek> employerWeekMap;
     private List<EmployerWeek> employerWeekList;
     private EmployerWeek employerWeek;
-
+    private TextView txtMon, txtMonProj, txtTues, txtTuesProj, txtWed, txtWedProj,
+            txtThurs, txtThursProj, txtFri, txtFriProj;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: starts");
         setContentView(R.layout.activity_history_csv);
+        // Set the action bar with name and logo
+        toolbar = findViewById(R.id.time_sheet_app_bar);
+        setSupportActionBar(toolbar);
+        Drawable dr = ContextCompat.getDrawable(this, R.drawable.timesheet);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
+        getSupportActionBar().setLogo(d);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final String date = getIntent().getStringExtra("date");
         employerWeekMap = new HashMap<>();
         employerWeekList = new ArrayList<>();
-        txtTotal = findViewById(R.id.text_view_total_hs_csv);
-
+        initialiseViews();
         historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryTimesheet");
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         historyRef.child(currentUserId).orderByKey(). addListenerForSingleValueEvent(new ValueEventListener() {
@@ -80,23 +95,44 @@ public class HistoryCSV extends AppCompatActivity {
         Log.d(TAG, "onDataChange: employerWeekList: " + employerWeekList);
         Log.d(TAG, "onDataChange: size: " + employerWeekList.size());
     }
-
+    private void initialiseViews() {
+        txtMon = findViewById(R.id.text_view_mon);
+        txtMonProj = findViewById(R.id.text_view_proj_mon);
+        txtTues = findViewById(R.id.text_view_tues);
+        txtTuesProj = findViewById(R.id.text_view_tues_proj);
+        txtWed = findViewById(R.id.text_view_wed);
+        txtWedProj = findViewById(R.id.text_view_wed_proj);
+        txtThurs = findViewById(R.id.text_view_thurs);
+        txtThursProj = findViewById(R.id.text_view_thurs_proj);
+        txtFri = findViewById(R.id.text_view_fri);
+        txtFriProj = findViewById(R.id.text_view_fri_proj);
+    }
 
     private void printTimeSheet(List<EmployerWeek> employerWeekList) {
-        int total = 0;
-
         StringBuilder builder = new StringBuilder();
         builder.append("\n");
         for (EmployerWeek week : employerWeekList) {
-            builder.append(" ").append(week.getDay()).append("\t\t").append(week.getHours()).append("hrs").append("\t\t").append(week.getProjectt()).append("\n");
-            total = total + Integer.valueOf(week.getHours());
+            if (week.getDay().equals("Mon")) {
+                txtMon.setText(week.getHours());
+                txtMonProj.setText(week.getProjectt());
+            } else if (week.getDay().equals("Tue")) {
+                txtTues.setText(week.getHours());
+                txtTuesProj.setText(week.getProjectt());
+            } else if (week.getDay().equals("Wed")) {
+                txtWed.setText(week.getHours());
+                txtWedProj.setText(week.getProjectt());
+            } else if (week.getDay().equals("Thu")) {
+                txtThurs.setText(week.getHours());
+                txtThursProj.setText(week.getProjectt());
+            } else {
+                txtFri.setText(week.getHours());
+                txtFriProj.setText(week.getProjectt());
+            }
+
+
         }
-        builder.append("\n");
-        builder.append(" ").append("Total Hours: ").append(total).append("hrs");
-
         Log.d(TAG, "printTimeSheet: \n" + builder.toString());
-        txtTotal.setText(builder.toString());
-
+        //   txtTotal.setText(builder.toString());
 
     }
 

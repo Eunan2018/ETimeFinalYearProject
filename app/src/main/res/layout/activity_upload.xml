@@ -6,24 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".upload.UploadActivity">
 
+    <include
+        android:id="@+id/time_sheet_app_bar"
+        layout="@layout/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></include>
+
     <ImageView
         android:id="@+id/image_view_ts"
         android:layout_width="344dp"
         android:layout_height="251dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_choose_file"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/timesheet"
+        tools:srcCompat="@drawable/timesheet" />
 
     <Button
         android:id="@+id/button_upload"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/round_button"
         android:text="Upload"
-        android:background="@drawable/shape"
         app:layout_constraintStart_toStartOf="@+id/image_view_ts"
         app:layout_constraintTop_toBottomOf="@+id/image_view_ts" />
 
@@ -31,9 +42,9 @@
         android:id="@+id/button_show_uploads"
         android:layout_width="134dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/round_button"
         android:text="Show Uploads"
-        android:background="@drawable/shape"
         app:layout_constraintEnd_toEndOf="@+id/image_view_ts"
         app:layout_constraintTop_toBottomOf="@+id/image_view_ts" />
 
@@ -41,20 +52,24 @@
         android:id="@+id/button_choose_file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="72dp"
+        android:background="@drawable/round_button"
         android:text="CHOOSE FILE"
-        android:background="@drawable/shape"
         app:layout_constraintStart_toStartOf="@+id/image_view_ts"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/edit_text_image_name"
-        android:layout_width="205dp"
+        android:layout_width="239dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="72dp"
         android:ems="10"
+        android:hint="File Name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="@+id/image_view_ts"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/button_choose_file"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Barrier

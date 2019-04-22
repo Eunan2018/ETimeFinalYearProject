@@ -43,8 +43,9 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
     private final String TAG = "EmployeeFragment";
     // Firebase
     private RecyclerView recyclerView;
-    private DatabaseReference employeeDatabase;
-    private DatabaseReference usersDatabaseReference;
+    private DatabaseReference employerRef;
+    private DatabaseReference userRef;
+    private DatabaseReference salaryRef;
     private FirebaseUser currentUser;
     private String currentUserId;
 
@@ -70,10 +71,12 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
             currentUserId = currentUser.getUid();
         }
 
-        employeeDatabase = FirebaseDatabase.getInstance().getReference().child("Employer").child(currentUserId);
-        employeeDatabase.keepSynced(true);
-        usersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
-        usersDatabaseReference.keepSynced(true);
+        employerRef = FirebaseDatabase.getInstance().getReference().child("Employer").child(currentUserId);
+        employerRef.keepSynced(true);
+        userRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        userRef.keepSynced(true);
+        salaryRef = FirebaseDatabase.getInstance().getReference().child("Salary");
+        salaryRef.keepSynced(true);
 
 
         recyclerView.setHasFixedSize(true);
@@ -90,7 +93,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
         Log.d(TAG, "onStart: starts");
         FirebaseRecyclerOptions<EmployeeModel> options =
                 new FirebaseRecyclerOptions.Builder<EmployeeModel>()
-                        .setQuery(employeeDatabase, EmployeeModel.class)
+                        .setQuery(employerRef, EmployeeModel.class)
                         .build();
 
         final FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<EmployeeModel, EmployeeViewHolder>(options) {
@@ -103,16 +106,13 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                 return new EmployeeViewHolder(view);
             }
 
-
-
-
             @Override
             protected void onBindViewHolder(@NonNull final EmployeeViewHolder employeeViewHolder, final int position, @NonNull EmployeeModel employee) {
                 Log.d(TAG, "onBindViewHolder: starts");
                 final String userId = getRef(position).getKey();
 
                 if(userId != null) {
-                    usersDatabaseReference.child(userId).addValueEventListener(new ValueEventListener() {
+                    userRef.child(userId).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             String name = String.valueOf(dataSnapshot.child("name").getValue());
@@ -149,15 +149,48 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                                 startActivity(profileIntent);
                                 break;
                             case 1:
-                                Intent timeSheetIntent = new Intent(getContext(), EmployerTimeSheetActivity.class);
-                                timeSheetIntent.putExtra("id", userId);
-                                startActivity(timeSheetIntent);
+                                salaryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.hasChild(currentUserId)) {
+                                            Intent timeSheetIntent = new Intent(getContext(), EmployerTimeSheetActivity.class);
+                                            timeSheetIntent.putExtra("id", userId);
+                                            startActivity(timeSheetIntent);
+                                        }
+                                        else{
+                                            Toast.makeText(getContext(), "Please set Salary for " +  employeeViewHolder.getName(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
                                 break;
                             case 2:
-                                Intent invoiceIntent = new Intent(getContext(), InvoiceActivity.class);
-                                invoiceIntent.putExtra("name", employeeViewHolder.getName());
-                                invoiceIntent.putExtra("id", userId);
-                                startActivity(invoiceIntent);
+
+                                salaryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.hasChild(currentUserId)) {
+                                            Intent invoiceIntent = new Intent(getContext(), InvoiceActivity.class);
+                                            invoiceIntent.putExtra("name", employeeViewHolder.getName());
+                                            invoiceIntent.putExtra("id", userId);
+                                            startActivity(invoiceIntent);
+                                        }
+                                        else{
+                                            Toast.makeText(getContext(), "Please set Salary for " +  employeeViewHolder.getName(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
                                 break;
                             case 3:
                                 Intent salaryIntent = new Intent(getContext(), SalaryActivity.class);
@@ -194,6 +227,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
 
         public void setDate(String date) {
             TextView empDate = view.findViewById(R.id.user_single_status);
+            empDate.setTextSize(12.f);
             empDate.setText(date);
         }
 

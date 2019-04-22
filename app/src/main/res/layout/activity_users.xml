@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".user.UsersActivity">
 
-    <include layout="@layout/app_bar_layout" android:id="@+id/users_app_bar"/>
+    <include layout="@layout/app_bar_layout"
+        android:id="@+id/users_app_bar"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_users"

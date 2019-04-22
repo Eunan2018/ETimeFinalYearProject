@@ -3,13 +3,18 @@ package com.eunan.tracey.etimefinalyearproject.project;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +66,9 @@ public class ProjectActivity extends AppCompatActivity {
     EmployeeProjectModel employeeProjectModel;
     AssignedEmployess assignedEmployess;
     private ProgressDialog progressDialog;
+
+    private Toolbar toolbar;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: starts");
@@ -100,26 +108,38 @@ public class ProjectActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.project_employee_recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(ProjectActivity.this));
+
+        toolbar = findViewById(R.id.time_sheet_app_bar);
+        setSupportActionBar(toolbar);
+        Drawable dr = ContextCompat.getDrawable(this, R.drawable.timesheet);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
+        getSupportActionBar().setLogo(d);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    public boolean addProject(){
-        progressDialog.show();
+    public boolean addProject() {
         String name = projectName.getText().toString().trim();
         String location = projectLocation.getText().toString().trim();
 
         if (!validate(name)) {
             Toast.makeText(ProjectActivity.this, "Project Cannot Be Empty", Toast.LENGTH_LONG).show();
+            projectName.findFocus();
         } else if (!validate(location)) {
             Toast.makeText(ProjectActivity.this, "Location Cannot Be Empty", Toast.LENGTH_LONG).show();
-        }  else {
+            projectLocation.findFocus();
+        } else if (employeesMap.size() < 1) {
+            Toast.makeText(this, "Please select an employee.", Toast.LENGTH_SHORT).show();
+        } else {
+            progressDialog.show();
             // Create unique key for each project
             String id = projectRef.push().getKey();
             String assigned_push = assignedRef.push().getKey();
-            ProjectModel project = new ProjectModel(name, location,(int) System.currentTimeMillis(), employeesMap);
+            ProjectModel project = new ProjectModel(name, location, (int) System.currentTimeMillis(), employeesMap);
 
             projectRef.child(currentUserId).child(id).setValue(project);
             for (Map.Entry<String, AssignedEmployess> entry : assignedEmployessMap.entrySet()) {
-                employeeProjectModel = new EmployeeProjectModel(entry.getKey(),name);
+                employeeProjectModel = new EmployeeProjectModel(entry.getKey(), name);
                 assignedRef.child(entry.getKey()).child(assigned_push).setValue(employeeProjectModel);
             }
 
@@ -225,13 +245,13 @@ public class ProjectActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    public void addEmployeeToProject(EmployeeViewHolder employeeViewHolder){
+    public void addEmployeeToProject(EmployeeViewHolder employeeViewHolder) {
         AssignedEmployess assignedEmployess = new AssignedEmployess(employeeViewHolder.getName(), employeeViewHolder.getKey());
         String key = employeeViewHolder.getKey();
         Log.d(TAG, "addEmployeeToProject: " + key);
         employeeViewHolder.view.setBackgroundColor(Color.GRAY);
         employeesMap.put(key, assignedEmployess);
-        assignedEmployessMap.put(key,assignedEmployess);
+        assignedEmployessMap.put(key, assignedEmployess);
         Log.d(TAG, "addEmployeeToProject: EmployeesMap size: " + employeesMap.size());
         Log.d(TAG, "addEmployeeToProject: assignedEmployeesMap size: " + assignedEmployessMap.size());
     }
@@ -262,6 +282,7 @@ public class ProjectActivity extends AppCompatActivity {
 
         public void setDate(String date) {
             TextView empDate = view.findViewById(R.id.user_single_status);
+            empDate.setTextSize(8.f);
             empDate.setText(date);
         }
 

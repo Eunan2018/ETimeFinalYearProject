@@ -6,16 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".project.MaintainProject">
 
+    <include
+        android:id="@+id/time_sheet_app_bar"
+        layout="@layout/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></include>
+
     <TextView
         android:id="@+id/text_view_project_name_mp"
         android:layout_width="320dp"
         android:layout_height="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_sheet_app_bar"
         tools:text="Project" />
 
     <TextView
@@ -24,6 +34,7 @@
         android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +44,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_mp"
         android:layout_width="320dp"
-        android:layout_height="456dp"
+        android:layout_height="353dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -42,11 +53,11 @@
 
     <Button
         android:id="@+id/button_add_emplyee_mp"
-        android:layout_width="63dp"
-        android:layout_height="53dp"
+        android:layout_width="61dp"
+        android:layout_height="45dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/round_button"
-        android:text="@string/add_emp"
+        android:text="+"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/recycler_view_mp"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view_mp" />

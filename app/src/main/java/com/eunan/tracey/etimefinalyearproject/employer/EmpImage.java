@@ -47,6 +47,7 @@ public class EmpImage extends AppCompatActivity {
         uploadList = new ArrayList<>();
 
         imageRef = FirebaseDatabase.getInstance().getReference("Images").child(key1).child(key2);
+        imageRef.keepSynced(true);
 
         imageRef.addValueEventListener(new ValueEventListener() {
             @Override

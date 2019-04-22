@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,9 +26,11 @@ import com.eunan.tracey.etimefinalyearproject.Fragments.EmployeeFragment;
 import com.eunan.tracey.etimefinalyearproject.MessageModel;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.WriteExcel;
+import com.eunan.tracey.etimefinalyearproject.employee.Employee;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
 import com.eunan.tracey.etimefinalyearproject.payment.Payment;
 import com.eunan.tracey.etimefinalyearproject.project.ProjectActivity;
+import com.eunan.tracey.etimefinalyearproject.salary.SalaryActivity;
 import com.eunan.tracey.etimefinalyearproject.salary.SalaryCalculator;
 import com.eunan.tracey.etimefinalyearproject.timesheet.Weekday;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,20 +55,22 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
 
 
     // Firebase
-    // firebase
     private DatabaseReference salaryRef;
     private DatabaseReference timesheetRef;
     private DatabaseReference historyRef;
     private DatabaseReference declineRef;
     private DatabaseReference paymentRef;
-    private Button btnAttach,btnAccept,btnDecline;
-    private double rate;
-    private int code;
+    private DatabaseReference commentsRef;
+    private Button btnAttach, btnAccept, btnDecline;
+    private TextView txtMon, txtMonProj, txtTues, txtTuesProj, txtWed, txtWedProj,
+            txtThurs, txtThursProj, txtFri, txtFriProj,txtComments;
+    private double rate = 0.0;
+    private int code = 1;
 
     // Variables
     private String currentUser;
     private MessageModel messageModel;
-    private int total = 0;
+    private double total;
     // Layout
     private Toolbar toolbar;
     private TextView txtTotal;
@@ -79,7 +85,8 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_sheet_employer);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        initialiseViews();
         employerWeekMap = new HashMap<>();
         employerWeekList = new ArrayList<>();
         btnAttach = findViewById(R.id.button_attach);
@@ -99,22 +106,25 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setCancelable(false);
 
-        txtTotal = findViewById(R.id.text_view_ts_total);
+        //  txtTotal = findViewById(R.id.text_view_ts_total);
         btnAccept = findViewById(R.id.button_ts_accept);
         btnDecline = findViewById(R.id.textview_ts_decline);
 
         // Firebase
         currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-
+        total = SalaryCalculator.calculateSalary(total, rate, code);
         final String employeeId = getIntent().getStringExtra("id");
         timesheetRef = FirebaseDatabase.getInstance().getReference().child("TimeSheet");
         timesheetRef.keepSynced(true);
+        commentsRef = FirebaseDatabase.getInstance().getReference().child("Comments");
+        commentsRef.keepSynced(true);
         declineRef = FirebaseDatabase.getInstance().getReference().child("Decline");
         historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryTimesheet");
         paymentRef = FirebaseDatabase.getInstance().getReference().child("Payment");
-        if(employeeId != null) {
+        if (employeeId != null) {
             salaryRef = FirebaseDatabase.getInstance().getReference().child("Salary").child(currentUser).child(employeeId);
+
             btnAttach.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -126,19 +136,6 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
             });
             // firebase
 
-            salaryRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    rate = Double.parseDouble(dataSnapshot.child("hourlyRate").getValue().toString());
-                    code = Integer.parseInt(dataSnapshot.child("taxCode").getValue().toString());
-                    Log.d(TAG, "onDataChange: Rate: " + rate + " Code: " + code);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(EmployerTimeSheetActivity.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
-                }
-            });
 
             timesheetRef.child(employeeId).child(currentUser).orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -149,7 +146,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                             if (day.equals("A")) {
                                 day = "Mon";
                             } else if (day.equals("B")) {
-                                day = "Tue" ;
+                                day = "Tue";
                             } else if (day.equals("C")) {
                                 day = "Wed";
                             } else if (day.equals("D")) {
@@ -166,6 +163,22 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                         }
                     }
                     printTimeSheet(employerWeekList);
+                    commentsRef.child(employeeId).child(currentUser).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                String comments = ds.child("message").getValue().toString();
+                                txtComments.setText(comments);
+                            }
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     Log.d(TAG, "onDataChange: employerWeekList: " + employerWeekList);
                     Log.d(TAG, "onDataChange: size: " + employerWeekList.size());
                 }
@@ -183,11 +196,25 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
 
                 @Override
                 public void onClick(View v) {
+                    salaryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                            rate = Double.parseDouble(dataSnapshot.child("hourlyRate").getValue().toString());
+                            code = 1;// Integer.parseInt(dataSnapshot.child("taxCode").getValue().toString());
+                            Log.d(TAG, "onDataChange: Rate: " + rate + " Code: " + code);
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(EmployerTimeSheetActivity.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     AlertDialog.Builder alert = new AlertDialog.Builder(EmployerTimeSheetActivity.this);
-                    final EditText edittext = new EditText(getApplicationContext());
+
                     alert.setTitle("Information");
-                    alert.setMessage(String.valueOf("Total pay: £ " + SalaryCalculator.calculateSalary(total, rate, code)));
+                    alert.setMessage(String.valueOf("Total pay: £ " + String.valueOf(total)));
                     //  alert.setView(edittext);
 
                     alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -200,13 +227,6 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                                     progressDialog.cancel();
                                 }
                             }, 1000);
-
-                            String message = edittext.getText().toString();
-                            messageModel = new MessageModel(message, "default");
-                            declineRef.child(employeeId).setValue(messageModel);
-                            txtTotal.setText("");
-                            Log.d(TAG, "onClick: text: " + message);
-
                             Calendar c = Calendar.getInstance();
                             c.setFirstDayOfWeek(Calendar.MONDAY);
                             c.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
@@ -218,7 +238,8 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                             Log.d(TAG, "onClick: friday: " + dateFormat.format(c.getTime()));
                             historyRef.child(employeeId).child(date).setValue(employerWeekMap);
                             payment = new Payment(date, String.valueOf("Total pay: £ " + SalaryCalculator.calculateSalary(total, rate, code)));
-                            paymentRef.child(employeeId).setValue(payment);
+                            String pushId = paymentRef.push().getKey();
+                            paymentRef.child(employeeId).child(pushId).setValue(payment);
                         }
                     });
 
@@ -251,7 +272,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                             String message = edittext.getText().toString();
                             messageModel = new MessageModel(message, "default");
                             declineRef.child(employeeId).setValue(messageModel);
-                            txtTotal.setText("");
+                          //  txtTotal.setText("");
                             Log.d(TAG, "onClick: text: " + message);
                         }
                     });
@@ -266,8 +287,8 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                 }
             });
 
-           // android.os.Process.killProcess(android.os.Process.myPid());
-        }else{
+            // android.os.Process.killProcess(android.os.Process.myPid());
+        } else {
             Intent intent = new Intent(this, EmployerProfileActivity.class);
             startActivity(intent);
         }
@@ -276,11 +297,45 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
 
     }
 
+    private void initialiseViews() {
+        txtMon = findViewById(R.id.text_view_mon);
+        txtMonProj = findViewById(R.id.text_view_proj_mon);
+        txtTues = findViewById(R.id.text_view_tues);
+        txtTuesProj = findViewById(R.id.text_view_tues_proj);
+        txtWed = findViewById(R.id.text_view_wed);
+        txtWedProj = findViewById(R.id.text_view_wed_proj);
+        txtThurs = findViewById(R.id.text_view_thurs);
+        txtThursProj = findViewById(R.id.text_view_thurs_proj);
+        txtFri = findViewById(R.id.text_view_fri);
+        txtFriProj = findViewById(R.id.text_view_fri_proj);
+        txtTotal = findViewById(R.id.text_view_total);
+        txtComments = findViewById(R.id.text_view_ts_comments);
+        txtComments.setMovementMethod(new ScrollingMovementMethod());
+    }
+
 
     private void printTimeSheet(List<EmployerWeek> employerWeekList) {
         StringBuilder builder = new StringBuilder();
         builder.append("\n");
         for (EmployerWeek week : employerWeekList) {
+            if (week.getDay().equals("Mon")) {
+                txtMon.setText(week.getHours());
+                txtMonProj.setText(week.getProjectt());
+            } else if (week.getDay().equals("Tue")) {
+                txtTues.setText(week.getHours());
+                txtTuesProj.setText(week.getProjectt());
+            } else if (week.getDay().equals("Wed")) {
+                txtWed.setText(week.getHours());
+                txtWedProj.setText(week.getProjectt());
+            } else if (week.getDay().equals("Thu")) {
+                txtThurs.setText(week.getHours());
+                txtThursProj.setText(week.getProjectt());
+            } else {
+                txtFri.setText(week.getHours());
+                txtFriProj.setText(week.getProjectt());
+            }
+
+
             builder.append(" ").append(week.getDay()).append("\t\t").append(week.getHours()).append("hrs").append("\t\t").append(week.getProjectt()).append("\n");
             total = total + Integer.valueOf(week.getHours());
         }
@@ -289,14 +344,13 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
         Log.d(TAG, "printTimeSheet: Rate: " + rate + " Code: " + code);
 
         Log.d(TAG, "printTimeSheet: \n" + builder.toString());
-        txtTotal.setText(builder.toString());
+        //   txtTotal.setText(builder.toString());
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
 
 
     }

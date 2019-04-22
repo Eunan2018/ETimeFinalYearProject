@@ -3,29 +3,31 @@ package com.eunan.tracey.etimefinalyearproject.upload;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.employer.EmpImage;
-import com.eunan.tracey.etimefinalyearproject.employer.EmployerTimeSheetActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
@@ -43,7 +45,7 @@ public class UploadActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private String employeeKey;
     private String employerKey;
-
+    private Toolbar toolbar;
     public static  final int PICK_IMAGE_REQUEST = 1;
     private ImageView imageView;
 
@@ -60,6 +62,16 @@ public class UploadActivity extends AppCompatActivity {
         imageRef = FirebaseDatabase.getInstance().getReference("Images");
         imageView = findViewById(R.id.image_view_ts);
         edtImageName = findViewById(R.id.edit_text_image_name);
+
+        toolbar = findViewById(R.id.time_sheet_app_bar);
+        setSupportActionBar(toolbar);
+        Drawable dr = ContextCompat.getDrawable(this, R.drawable.timesheet);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
+        getSupportActionBar().setLogo(d);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         // Initialise dialog
         progressDialog = new ProgressDialog(UploadActivity.this);
         progressDialog.setMessage("Loading...");
@@ -80,8 +92,12 @@ public class UploadActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(uploadTask != null && uploadTask.isInProgress()) {
                     Toast.makeText(UploadActivity.this, " Upload in progress", Toast.LENGTH_SHORT).show();
+                }else if (edtImageName.getText().toString().isEmpty()){
+                    Toast.makeText(UploadActivity.this, "Need to set a file name.", Toast.LENGTH_SHORT).show();
+                    edtImageName.findFocus();
                 }else{
                     uploadFile();
+
                 }
             }
         });

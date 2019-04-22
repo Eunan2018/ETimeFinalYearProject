@@ -4,9 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tw__composer_light_gray"
-    android:padding="16dp"
+
+    android:background="@color/tw__composer_white"
     tools:layout_editor_absoluteY="25dp">
+
+    <include
+        android:id="@+id/time_sheet_app_bar"
+        layout="@layout/app_bar_layout"
+        android:layout_width="379dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/edit_text_project_name"
@@ -14,14 +25,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/project"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <EditText
         android:id="@+id/edit_text_project_location"
@@ -29,13 +40,11 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/edit_text_project_name"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/location"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/edit_text_project_name"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_project_name" />
 
     <Button
@@ -46,9 +55,7 @@
         android:background="@drawable/round_button"
         android:text="@string/create"
         android:textColor="@color/tw__composer_white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/project_employee_recyclerview"
         app:layout_constraintTop_toBottomOf="@+id/project_employee_recyclerview" />
 
     <android.support.v7.widget.RecyclerView
@@ -61,5 +68,15 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_project_location" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="245dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="23dp"
+        android:text="Create a project"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/edit_text_project_name"
+        app:layout_constraintTop_toBottomOf="@+id/time_sheet_app_bar" />
 
 </android.support.constraint.ConstraintLayout>
