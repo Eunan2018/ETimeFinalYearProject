@@ -27,11 +27,11 @@ import static org.hamcrest.core.AllOf.allOf;
 @RunWith(AndroidJUnit4.class)
 public class TimesheetTest {
 
-    public final ActivityTestRule<EmployeeProfileActivity> myActivityTestRule = new ActivityTestRule<>(EmployeeProfileActivity.class, false, false);
+    public final ActivityTestRule<EmployeeProfileActivity> rule = new ActivityTestRule<>(EmployeeProfileActivity.class, false, false);
 
     @Before
     public void setUp() {
-        myActivityTestRule.launchActivity(new Intent());
+        rule.launchActivity(new Intent());
     }
 
     @Test
@@ -69,7 +69,6 @@ public class TimesheetTest {
         Thread.sleep(2000);
         onView(withId(R.id.button_submit)).perform(click());
     }
-
 
     public void selectProject() {
         onView(withId(R.id.spinner_hours)).perform(click());

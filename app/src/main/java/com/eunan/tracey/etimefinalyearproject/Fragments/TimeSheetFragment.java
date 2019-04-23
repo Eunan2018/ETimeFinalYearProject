@@ -181,7 +181,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
                 } else {
 
                     Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
+                    handler.postDelayed( new Runnable() {
                         @Override
                         public void run() {
                             progressDialog.cancel();

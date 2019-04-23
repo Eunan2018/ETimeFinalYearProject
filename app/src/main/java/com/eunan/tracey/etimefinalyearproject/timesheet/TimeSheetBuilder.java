@@ -1,5 +1,6 @@
 package com.eunan.tracey.etimefinalyearproject.timesheet;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,45 +41,39 @@ public class TimeSheetBuilder extends AppCompatActivity {
     private static final String TAG = "TimeSheetBuilder";
 
 
-    private Button btnDone;
+    private Button btnDone, btnAbsent;
     private RecyclerView recyclerView;
     private Spinner spinnerMinutes;
     private Spinner spinnerHours;
     private String hours;
-    private String minutes;
+    private boolean flag = false;
     //  private TextView txtMonday;
     private boolean inispinner;
     // Firebase
     private DatabaseReference assignedRef;
     private FirebaseUser currentUser;
-    private String userId;
     public static LinkedHashMap<String, TimeSheetModel> timesheetMap = new LinkedHashMap<>();
     private final ArrayList<Integer> selectionList = new ArrayList<>();
     private TimeSheetModel timesheet;
-    private String projectName;
-
-    private String day;
+    private String projectName,day,userId;
 
     //Hour Spinner Values
     private String[] hoursArray = {"0", "1", "2", "3", "4", "5", "6",
             "7", "8", "9", "10", "11", "12"};
-
-    //Minutes Spinner Values
-    private String[] minutesArray = {"0", "15", "30", "45"};
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_sheet_builder);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // hours = findViewById(R.id.edit_text_ts_hrs);
 
         btnDone = findViewById(R.id.button_done_ts);
+        btnAbsent = findViewById(R.id.button_absent);
         //  txtMonday = findViewById(R.id.text_view_monday_day);
         recyclerView = findViewById(R.id.recycler_view_ts_builder);
         spinnerHours = findViewById(R.id.spinner_hours);
-        spinnerMinutes = findViewById(R.id.spinner_minutes);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Firebase
@@ -86,9 +81,22 @@ public class TimeSheetBuilder extends AppCompatActivity {
         userId = currentUser.getUid();
         assignedRef = FirebaseDatabase.getInstance().getReference("EmployeeProjects");
 
+        btnAbsent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flag = true;
+            }
+        });
+
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(flag){
+                    hours = String.valueOf(0);
+                    projectName = btnAbsent.getText().toString();
+                    Log.d(TAG, "onClick: " + " Hours: " + hours + " " + "ProjectName: " + projectName);
+                    flag = false;
+                }
                 day = getIntent().getStringExtra("day");
                 if (day.equals(String.valueOf(Weekday.MONDAY))) {
                     day = "A";
@@ -102,10 +110,10 @@ public class TimeSheetBuilder extends AppCompatActivity {
                     day = "E";
                 }
 
-                timesheet = new TimeSheetModel(projectName, hours, minutes);
+                timesheet = new TimeSheetModel(projectName, hours);
                 if (TextUtils.isEmpty(projectName)) {
                     Toast.makeText(TimeSheetBuilder.this, "Please select a project!!", Toast.LENGTH_SHORT).show();
-                } else if (TextUtils.equals(hours, "0")) {
+                } else if (TextUtils.isEmpty(hours)) {
                     Toast.makeText(TimeSheetBuilder.this, "Please enter hours!!", Toast.LENGTH_SHORT).show();
                 } else {
                     timesheetMap.put(day, timesheet);
@@ -130,30 +138,6 @@ public class TimeSheetBuilder extends AppCompatActivity {
                     return;
                 }
                 hours = spinnerHours.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        ArrayAdapter<String> minutesAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, minutesArray);
-
-
-        minutesAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
-
-        spinnerMinutes.setAdapter(minutesAdapter);
-
-        spinnerMinutes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!inispinner) {
-                    inispinner = true;
-                    return;
-                }
-                minutes = spinnerMinutes.getSelectedItem().toString();
             }
 
             @Override

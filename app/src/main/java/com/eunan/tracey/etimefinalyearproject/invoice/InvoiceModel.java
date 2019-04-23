@@ -2,17 +2,13 @@ package com.eunan.tracey.etimefinalyearproject.invoice;
 
 public class InvoiceModel {
 
-    private String name;
-    private String date;
     private String project;
     private String hrs;
     private String rate;
     private String total;
 
 
-    public InvoiceModel(String name, String date, String project, String hrs, String rate, String total) {
-        this.name = name;
-        this.date = date;
+    public InvoiceModel( String project, String hrs, String rate, String total) {
         this.project = project;
         this.hrs = hrs;
         this.rate = rate;
@@ -22,21 +18,6 @@ public class InvoiceModel {
     public InvoiceModel() {
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 
     public String getProject() {
         return project;
@@ -73,8 +54,6 @@ public class InvoiceModel {
     @Override
     public String toString() {
         return "InvoiceModel{" +
-                "name='" + name + '\'' +
-                ", date='" + date + '\'' +
                 ", project='" + project + '\'' +
                 ", hrs='" + hrs + '\'' +
                 ", rate='" + rate + '\'' +

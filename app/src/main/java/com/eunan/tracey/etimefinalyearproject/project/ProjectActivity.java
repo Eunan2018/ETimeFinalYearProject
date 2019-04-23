@@ -48,34 +48,26 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProjectActivity extends AppCompatActivity {
     private final String TAG = "ProjectModel Activity";
-    // Layout
-    private EditText projectName;
-    private EditText projectLocation;
+    // UI
+    private EditText projectName,projectLocation;
     private Button createProject;
     private RecyclerView recyclerView;
-    // Database
-    private DatabaseReference projectRef;
-    private DatabaseReference userRef;
-    private DatabaseReference employeeRef;
-    private DatabaseReference assignedRef;
-    private FirebaseUser currentUser;
-    // Variables
+    private Toolbar toolbar;
+    // Firebase
+    private DatabaseReference projectRef, userRef, employeeRef,assignedRef;
+    // Class
     private String currentUserId;
     private Map<String, AssignedEmployess> employeesMap;
     private Map<String, AssignedEmployess> assignedEmployessMap;
-    EmployeeProjectModel employeeProjectModel;
-    AssignedEmployess assignedEmployess;
     private ProgressDialog progressDialog;
 
-    private Toolbar toolbar;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: starts");
         setContentView(R.layout.activity_project);
-
         initialiseViews();
-
         progressDialog = new ProgressDialog(ProjectActivity.this);
         progressDialog.setMessage("Loading...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -92,12 +84,11 @@ public class ProjectActivity extends AppCompatActivity {
     private void initialiseViews() {
         employeesMap = new HashMap<>();
         assignedEmployessMap = new HashMap<>();
-        assignedEmployess = new AssignedEmployess();
         // Firebase
         projectRef = FirebaseDatabase.getInstance().getReference("Projects");
         userRef = FirebaseDatabase.getInstance().getReference("Users");
         assignedRef = FirebaseDatabase.getInstance().getReference("EmployeeProjects");
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
         employeeRef = FirebaseDatabase.getInstance().getReference().child("Employer");
 
@@ -118,7 +109,7 @@ public class ProjectActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    public boolean addProject() {
+    public void addProject() {
         String name = projectName.getText().toString().trim();
         String location = projectLocation.getText().toString().trim();
 
@@ -136,13 +127,11 @@ public class ProjectActivity extends AppCompatActivity {
             String id = projectRef.push().getKey();
             String assigned_push = assignedRef.push().getKey();
             ProjectModel project = new ProjectModel(name, location, (int) System.currentTimeMillis(), employeesMap);
-
             projectRef.child(currentUserId).child(id).setValue(project);
             for (Map.Entry<String, AssignedEmployess> entry : assignedEmployessMap.entrySet()) {
-                employeeProjectModel = new EmployeeProjectModel(entry.getKey(), name);
+                EmployeeProjectModel employeeProjectModel = new EmployeeProjectModel(entry.getKey(), name);
                 assignedRef.child(entry.getKey()).child(assigned_push).setValue(employeeProjectModel);
             }
-
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -159,10 +148,7 @@ public class ProjectActivity extends AppCompatActivity {
             }, 1000);
 
             Log.d(TAG, "onClick: + " + project);
-
-
         }
-        return true;
     }
 
     public boolean validate(String data) {
@@ -223,7 +209,6 @@ public class ProjectActivity extends AppCompatActivity {
                         addEmployeeToProject(employeeViewHolder);
                         Log.d(TAG, "onClick: EmployeesMap size: " + employeesMap.size());
                         Log.d(TAG, "onClick: assignedEmployeesMap size: " + assignedEmployessMap.size());
-                        //return true;
                     }
                 });
                 employeeViewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {

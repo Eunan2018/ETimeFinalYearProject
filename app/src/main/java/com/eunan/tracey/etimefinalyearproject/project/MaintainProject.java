@@ -1,11 +1,16 @@
 package com.eunan.tracey.etimefinalyearproject.project;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +42,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.collections.map.HashedMap;
+
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -49,15 +56,16 @@ public class MaintainProject extends AppCompatActivity {
         void onCallBack(String pushId);
     }
 
+    // Class
     private int timestamp;
-    // Layout
-    private Toolbar toolbar;
     private String currentUserId;
-    // Firebase
+    // UI
+    private Toolbar toolbar;
     private RecyclerView recycler_view_mp;
-    private DatabaseReference employeeRef;
-    private DatabaseReference usersRef;
-    private DatabaseReference projectRef;
+    private ProgressDialog progressDialog;
+    // Firebase
+    private DatabaseReference employeeRef, usersRef, projectRef;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +83,16 @@ public class MaintainProject extends AppCompatActivity {
         String names = getIntent().getStringExtra("title");
         timestamp = getIntent().getIntExtra("timestamp", 0);
 
+        progressDialog = new ProgressDialog(MaintainProject.this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+
         TextView txtProjectLocation = findViewById(R.id.text_view_proj_loc_mp);
         TextView txtProjectName = findViewById(R.id.text_view_project_name_mp);
         Button btnAddEmployee = findViewById(R.id.button_add_emplyee_mp);
         recycler_view_mp = findViewById(R.id.recycler_view_mp);
+
         FirebaseAuth firebaseAuth;
         txtProjectLocation.setText(location);
         txtProjectName.setText(names);
@@ -100,7 +114,7 @@ public class MaintainProject extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MaintainProject.this, AddEmployeeActivity.class);
-                intent.putExtra("time",timestamp);
+                intent.putExtra("time", timestamp);
                 startActivity(intent);
             }
         });
@@ -139,7 +153,7 @@ public class MaintainProject extends AppCompatActivity {
             @Override
             public void onCallBack(final String pushId) {
                 Query query = FirebaseDatabase.getInstance().getReference().child("Projects")
-                        .child(currentUserId).child(pushId).child("assignedEmployessList").orderByChild("name");
+                        .child(currentUserId).child(pushId).child("employeeMap").orderByChild("name");
                 FirebaseRecyclerOptions<EmployeeModel> options =
                         new FirebaseRecyclerOptions.Builder<EmployeeModel>()
                                 .setQuery(query, EmployeeModel.class)
@@ -159,63 +173,89 @@ public class MaintainProject extends AppCompatActivity {
                     protected void onBindViewHolder(@NonNull final EmployeeViewHolder employeeViewHolder, final int position, @NonNull EmployeeModel employee) {
                         Log.d(TAG, "onBindViewHolder: starts");
                         final String userId = getRef(position).getKey();
-                        if(userId != null) {
+                        if (userId != null) {
                             Log.d(TAG, "onBindViewHolder: key " + userId);
                             usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     String name = String.valueOf(dataSnapshot.child("name").getValue());
-                                    String image = String.valueOf( dataSnapshot.child("thumbImage").getValue());                                    employeeViewHolder.setName(name);
+                                    String image = String.valueOf(dataSnapshot.child("thumbImage").getValue());
+                                    employeeViewHolder.setName(name);
                                     employeeViewHolder.setImage(MaintainProject.this, image);
                                 }
+
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                     String error = databaseError.toString();
                                     Log.d(TAG, "onCancelled: " + error);
                                 }
                             });
-                        }
-                        else{
+                        } else {
                             Toast.makeText(MaintainProject.this, "Unable to retrieve employee", Toast.LENGTH_SHORT).show();
                         }
                         employeeViewHolder.setDate(employee.getDate());
 
-                        employeeViewHolder.view.setOnLongClickListener(new View.OnLongClickListener() {
+                        employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public boolean onLongClick(View v) {
-                                projectRef.child(currentUserId).child(pushId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                       final String project = String.valueOf( dataSnapshot.child("projectName").getValue());
-                                        removeEmployeeFromProject(pushId,"assignedEmployessList",userId,project);
-                                        Map<String,AssignedEmployess> assignedEmployessList = (Map<String,AssignedEmployess>) dataSnapshot.child("assignedEmployessList")
-                                                .getValue();
-                                        if(assignedEmployessList.size() <= 1){
-                                            projectRef.child(currentUserId).child(pushId).removeValue();
-                                        }
-                                    }
+                            public void onClick(View v) {
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        Toast.makeText(MaintainProject.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
+                                AlertDialog.Builder alert = new AlertDialog.Builder(MaintainProject.this);
+
+                                alert.setTitle("Remove " + employeeViewHolder.getName() + "?");
+
+                                alert.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        progressDialog.show();
+                                        Handler handler = new Handler();
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                progressDialog.cancel();
+                                            }
+                                        }, 1000);
+
+                                        projectRef.child(currentUserId).child(pushId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                final String project = String.valueOf(dataSnapshot.child("projectName").getValue());
+
+                                                removeEmployeeFromProject(pushId, "employeeMap", userId, project);
+                                                // Cast result to map
+                                                Map<String, AssignedEmployess> employeeMap = (Map<String,AssignedEmployess>)
+                                                        dataSnapshot.child("employeeMap").getValue();
+
+                                                if (employeeMap.size() <= 1) {
+                                                    projectRef.child(currentUserId).child(pushId).removeValue();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                Toast.makeText(MaintainProject.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     }
                                 });
 
-                                return false;
+                                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        // leaving empty
+                                    }
+                                });
+
+                                alert.show();
                             }
                         });
                     }
                 };
                 adapter.startListening();
                 recycler_view_mp.setAdapter(adapter);
-
             }
         });
-
-
     }
 
-    public boolean removeEmployeeFromProject(final String pushId,String employee,final String userId,final String projectName){
+    public boolean removeEmployeeFromProject(final String pushId, final String employee, final String userId, final String projectName) {
         projectRef.child(currentUserId).child(pushId).child(employee).child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -223,11 +263,11 @@ public class MaintainProject extends AppCompatActivity {
                 employeeRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for(DataSnapshot childSnapshot: dataSnapshot.getChildren()){
-                            String project = String.valueOf( childSnapshot.child("project").getValue());
-                            if(project.equals(projectName)){
-                                    String key = childSnapshot.getKey();
-                                    if(key != null) {
+                        for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                            String project = String.valueOf(childSnapshot.child("project").getValue());
+                            if (project.equals(projectName)) {
+                                String key = childSnapshot.getKey();
+                                if (key != null) {
                                     employeeRef.child(userId).child(key).setValue(null);
                                 }
                             }
@@ -236,15 +276,14 @@ public class MaintainProject extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(MaintainProject.this,String.valueOf(databaseError),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MaintainProject.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
                     }
                 });
-                Toast.makeText(MaintainProject.this, "Deleted " + projectName, Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MaintainProject.this, "Unable to delete employee " +  e.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MaintainProject.this, "Unable to delete employee " + e.toString(), Toast.LENGTH_SHORT).show();
             }
         });
         return true;

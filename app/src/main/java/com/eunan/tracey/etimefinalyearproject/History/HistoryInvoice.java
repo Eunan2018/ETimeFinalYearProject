@@ -1,12 +1,17 @@
 package com.eunan.tracey.etimefinalyearproject.History;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,12 +35,19 @@ public class HistoryInvoice extends AppCompatActivity {
     private DatabaseReference historyRef;
     private RecyclerView recyclerView;
     private String userId;
-
+    // Layout
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_invoice);
-
+        toolbar = findViewById(R.id.time_sheet_app_bar);
+        setSupportActionBar(toolbar);
+        Drawable dr = ContextCompat.getDrawable(this, R.drawable.timesheet);
+        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
+        getSupportActionBar().setLogo(d);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         recyclerView = findViewById(R.id.recycler_invoice_history);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(HistoryInvoice.this));
@@ -88,6 +100,7 @@ public class HistoryInvoice extends AppCompatActivity {
                     Toast.makeText(HistoryInvoice.this, "Error loading time-sheet. Try again later.", Toast.LENGTH_SHORT).show();
                 }
 
+                // TODO SAME AS HISTORY CSV
                 holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -98,7 +111,7 @@ public class HistoryInvoice extends AppCompatActivity {
                         Log.d(TAG, "onClick: date: " + date);
                     }
                 });
-                holder.setDate(history.getDate());
+
             }
         };
         adapter.startListening();

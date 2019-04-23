@@ -23,10 +23,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".History.HistoryInvoice"></activity>
-        <activity android:name=".invoice.InvoiceActivity"
+
+
+        <activity android:name=".History.HistoryInvoice"
+            android:parentActivityName=".employee.EmployeeProfileActivity"
+            ></activity>
+
+        <activity android:name=".invoice.EmployerInvoiceActivity"
            android:parentActivityName=".employee.EmployeeProfileActivity"/>
+
         <activity android:name=".employer.EmpImage" />
+
         <activity android:name=".upload.UploadActivity"
             android:parentActivityName=".employee.EmployeeProfileActivity"/>
 
@@ -45,6 +52,7 @@
             android:name=".main.MainActivity"
             android:icon="@drawable/timesheet"
             android:label="ETime">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -58,6 +66,7 @@
             android:label="@string/register_title" />
         <activity
             android:name=".employee.EmployeeProfileActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
             />
 
         <activity android:name=".employer.EmployerProfileActivity" />
@@ -69,6 +78,7 @@
         <activity
             android:name=".status.StatusActivity"
             android:parentActivityName=".settings.SettingsActivity" />
+
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
@@ -87,6 +97,7 @@
         <activity
             android:name=".employer.EmployerTimeSheetActivity"
             android:parentActivityName=".employee.EmployeeProfileActivity">
+
             <intent-filter>
                 <action android:name="com.eunan.tracey.etimefinalyearproject_TIMESHEET_TARGET_NOTIFICATION" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -101,15 +112,22 @@
             android:value="@string/ts_notification_channel_id" />
 
         <activity android:name=".salary.SalaryActivity" />
+
         <activity android:name=".timesheet.TimeSheetBuilder" />
+
         <activity android:name=".project.MaintainProject"
             android:parentActivityName=".employer.EmployerProfileActivity"/>
+
         <activity android:name=".project.AddEmployeeActivity"
             android:parentActivityName=".employer.EmployerProfileActivity"/>
+
         <activity android:name=".History.HistoryTimesheet"
             android:parentActivityName=".employee.EmployeeProfileActivity"/>
+
         <activity android:name=".History.HistoryCSV"
             android:parentActivityName=".employer.EmployerProfileActivity"/>
+
+
     </application>
 
 </manifest>

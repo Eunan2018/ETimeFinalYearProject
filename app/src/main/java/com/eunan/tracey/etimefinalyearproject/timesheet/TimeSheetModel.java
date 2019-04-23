@@ -5,12 +5,10 @@ public class TimeSheetModel {
    // private ProjectModel project;
     private String project;
     private String hours;
-    private String minutes;
 
-    public TimeSheetModel(String project, String hours, String minutes) {
+    public TimeSheetModel(String project, String hours) {
         this.project = project;
         this.hours = hours;
-        this.minutes = minutes;
 
     }
 
@@ -33,20 +31,12 @@ public class TimeSheetModel {
         this.hours = hours;
     }
 
-    public String getMinutes() {
-        return minutes;
-    }
-
-    public void setMinutes(String minutes) {
-        this.minutes = minutes;
-    }
 
     @Override
     public String toString() {
         return "TimeSheetModel{" +
                 "project='" + project + '\'' +
                 ", hours='" + hours + '\'' +
-                ", minutes='" + minutes + '\'' +
                 '}';
     }
 }

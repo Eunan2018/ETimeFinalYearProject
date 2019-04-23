@@ -12,23 +12,20 @@ public class ProjectModel {
     private String projectName;
     private String projectLocation;
     private int projectTimestamp;
-    private Map<String,AssignedEmployess> assignedEmployessList;
+    private Map<String,AssignedEmployess> employeeMap;
 
-    public ProjectModel(String projectName, String projectLocation,int projectTimestamp, Map<String,AssignedEmployess> assignedEmployessList) {
-
+    public ProjectModel(String projectName, String projectLocation, int projectTimestamp, Map<String, AssignedEmployess> employeeMap) {
         this.projectName = projectName;
         this.projectLocation = projectLocation;
-        this.assignedEmployessList = assignedEmployessList;
         this.projectTimestamp = projectTimestamp;
-    }
-
-
-    public ProjectModel() {
-
+        this.employeeMap = employeeMap;
     }
 
     public String getProjectName() {
         return projectName;
+    }
+
+    public ProjectModel() {
     }
 
     public void setProjectName(String projectName) {
@@ -43,7 +40,6 @@ public class ProjectModel {
         this.projectLocation = projectLocation;
     }
 
-
     public int getProjectTimestamp() {
         return projectTimestamp;
     }
@@ -52,12 +48,12 @@ public class ProjectModel {
         this.projectTimestamp = projectTimestamp;
     }
 
-    public Map<String, AssignedEmployess> getAssignedEmployessList() {
-        return assignedEmployessList;
+    public Map<String, AssignedEmployess> getEmployeeMap() {
+        return employeeMap;
     }
 
-    public void setAssignedEmployessList(Map<String, AssignedEmployess> assignedEmployessList) {
-        this.assignedEmployessList = assignedEmployessList;
+    public void setEmployeeMap(Map<String, AssignedEmployess> employeeMap) {
+        this.employeeMap = employeeMap;
     }
 
     @Override
@@ -66,9 +62,7 @@ public class ProjectModel {
                 "projectName='" + projectName + '\'' +
                 ", projectLocation='" + projectLocation + '\'' +
                 ", projectTimestamp=" + projectTimestamp +
-                ", assignedEmployessList=" + assignedEmployessList +
+                ", employeeMap=" + employeeMap +
                 '}';
     }
-
-
 }

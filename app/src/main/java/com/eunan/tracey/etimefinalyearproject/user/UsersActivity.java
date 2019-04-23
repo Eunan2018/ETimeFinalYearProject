@@ -91,13 +91,12 @@ public class UsersActivity extends AppCompatActivity {
 
             }
         });
-       // finish();
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-       final String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseRecyclerOptions<UserModel> options =
                 new FirebaseRecyclerOptions.Builder<UserModel>()
                         .setQuery(userRef, UserModel.class)

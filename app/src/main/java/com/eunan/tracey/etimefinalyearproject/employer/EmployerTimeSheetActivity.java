@@ -66,6 +66,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
             txtThurs, txtThursProj, txtFri, txtFriProj,txtComments;
     private double rate = 0.0;
     private int code = 1;
+    private int totalHrs;
 
     // Variables
     private String currentUser;
@@ -80,6 +81,27 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
     private List<EmployerWeek> employerWeekList;
     private EmployerWeek employerWeek;
     private Payment payment;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        salaryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                rate = Double.parseDouble(dataSnapshot.child("hourlyRate").getValue().toString());
+                code = 1;// Integer.parseInt(dataSnapshot.child("taxCode").getValue().toString());
+                Log.d(TAG, "onDataChange: Rate: " + rate + " Code: " + code);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(EmployerTimeSheetActivity.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
+            }
+        });
+        total = SalaryCalculator.calculateSalary(totalHrs, rate, code);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +135,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
         // Firebase
         currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        total = SalaryCalculator.calculateSalary(total, rate, code);
+
         final String employeeId = getIntent().getStringExtra("id");
         timesheetRef = FirebaseDatabase.getInstance().getReference().child("TimeSheet");
         timesheetRef.keepSynced(true);
@@ -158,6 +180,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                             String project = postChildSnap.child("project").getValue().toString();
                             Log.d(TAG, "onDataChange: Day: " + day + " Hours: " + " " + hours + " Project: " + project);
                             employerWeek = new EmployerWeek(day, hours, project);
+                            totalHrs += Integer.valueOf(hours);
                             employerWeekList.add(employerWeek);
                             employerWeekMap.put(day, employerWeek);
                         }
@@ -196,26 +219,12 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
 
                 @Override
                 public void onClick(View v) {
-                    salaryRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            rate = Double.parseDouble(dataSnapshot.child("hourlyRate").getValue().toString());
-                            code = 1;// Integer.parseInt(dataSnapshot.child("taxCode").getValue().toString());
-                            Log.d(TAG, "onDataChange: Rate: " + rate + " Code: " + code);
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Toast.makeText(EmployerTimeSheetActivity.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
-                        }
-                    });
                     AlertDialog.Builder alert = new AlertDialog.Builder(EmployerTimeSheetActivity.this);
 
-                    alert.setTitle("Information");
-                    alert.setMessage(String.valueOf("Total pay: £ " + String.valueOf(total)));
-                    //  alert.setView(edittext);
+                    alert.setTitle("Payment");
+                    alert.setMessage(String.valueOf("Total pay: £ " + String.valueOf(SalaryCalculator.calculateSalary(totalHrs, rate, code))));
+
 
                     alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
@@ -237,7 +246,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                             Log.d(TAG, "onClick: friday: " + c.getTime());
                             Log.d(TAG, "onClick: friday: " + dateFormat.format(c.getTime()));
                             historyRef.child(employeeId).child(date).setValue(employerWeekMap);
-                            payment = new Payment(date, String.valueOf("Total pay: £ " + SalaryCalculator.calculateSalary(total, rate, code)));
+                            payment = new Payment(date, String.valueOf("Total pay: £ " + SalaryCalculator.calculateSalary(totalHrs, rate, code)));
                             String pushId = paymentRef.push().getKey();
                             paymentRef.child(employeeId).child(pushId).setValue(payment);
                         }

@@ -40,6 +40,4 @@ public class RegisterActivityTest {
     public void tearDown() {
         mRegisterActivity = null;
     }
-
-
 }

@@ -4,51 +4,152 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".invoice.InvoiceActivity">
+    tools:context=".invoice.EmployerInvoiceActivity">
 
     <TextView
-        android:id="@+id/text_view_display_inv"
-        android:layout_width="320dp"
-        android:layout_height="248dp"
+        android:id="@+id/text_view_emp_total_inv"
+        android:layout_width="175dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_proj_inv_emp"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_proj_inv_emp" />
+
+    <TextView
+        android:id="@+id/text_view_proj_inv_emp"
+        android:layout_width="175dp"
+        android:layout_height="62dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:background="@drawable/shape"
-        android:text="TextView"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_sheet_app_bar" />
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/text_view_emp_inv_hr"
+        app:layout_constraintTop_toBottomOf="@+id/button11" />
+
+    <TextView
+        android:id="@+id/text_view_emp_inv_hr"
+        android:layout_width="76dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/text_view_emp_inv_hrs"
+        app:layout_constraintTop_toBottomOf="@+id/button10" />
 
     <Button
         android:id="@+id/button_accept_inv"
-        android:layout_width="320dp"
+        android:layout_width="343dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/shape"
+        android:background="@color/tw__composer_blue"
         android:text="ACCEPT"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_display_inv" />
-
-    <Button
-        android:id="@+id/button_decline_inv"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/shape"
-        android:text="DECLINE"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_accept_inv" />
+        app:layout_constraintStart_toStartOf="@+id/text_view_emp_inv_hrs"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_emp_total_inv" />
 
     <include
         android:id="@+id/time_sheet_app_bar"
         layout="@layout/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="55dp"></include>
+        android:layout_height="55dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.55"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></include>
+    <Button
+        android:id="@+id/button_decline_inv"
+        android:layout_width="339dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@color/tw__composer_blue"
+        android:text="DECLINE"
+        app:layout_constraintEnd_toEndOf="@+id/button_accept_inv"
+        app:layout_constraintStart_toStartOf="@+id/button_accept_inv"
+        app:layout_constraintTop_toBottomOf="@+id/button_accept_inv" />
+
+
+    <TextClock
+        android:id="@+id/text_clock"
+        android:layout_width="340dp"
+        android:layout_height="64dp"
+        android:layout_margin="40dp"
+
+        android:layout_marginTop="8dp"
+        android:background="@color/tw__composer_blue_text"
+        android:format12Hour="hh:mm:ss a"
+        android:gravity="center_vertical"
+        android:textAlignment="center"
+        android:textColor="@color/tw__composer_white"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/button9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.54"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_sheet_app_bar"
+        app:layout_constraintVertical_bias="1.0"
+        tools:text="Time" />
+
+    <Button
+        android:id="@+id/button9"
+        android:layout_width="77dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/tw__composer_blue"
+        android:enabled="false"
+        android:text="Hrs"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/text_clock"
+        app:layout_constraintTop_toBottomOf="@+id/text_clock" />
+
+    <Button
+        android:id="@+id/button10"
+        android:layout_width="77dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/tw__composer_blue"
+        android:enabled="false"
+        android:text="Rate"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/button11"
+        app:layout_constraintStart_toEndOf="@+id/button9"
+        app:layout_constraintTop_toBottomOf="@+id/text_clock" />
+
+    <Button
+        android:id="@+id/button11"
+        android:layout_width="175dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/tw__composer_blue"
+        android:enabled="false"
+        android:text="Project"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/text_clock"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/button10"
+        app:layout_constraintTop_toBottomOf="@+id/text_clock" />
+
+    <TextView
+        android:id="@+id/text_view_emp_inv_hrs"
+        android:layout_width="76dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/button9"
+        app:layout_constraintTop_toBottomOf="@+id/button9" />
 </android.support.constraint.ConstraintLayout>

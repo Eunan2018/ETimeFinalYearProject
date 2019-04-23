@@ -1,9 +1,13 @@
 package com.eunan.tracey.etimefinalyearproject.invoice;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +15,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.FridayDate;
 import com.eunan.tracey.etimefinalyearproject.R;
+import com.eunan.tracey.etimefinalyearproject.employer.EmployerProfileActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,26 +34,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class used to display invoice data th the employer
+ * Class used to display invoice data to the employer
  */
 
-public class InvoiceActivity extends AppCompatActivity {
-    private static final String TAG = "InvoiceActivity";
+public class EmployerInvoiceActivity extends AppCompatActivity {
+    private static final String TAG = "EmployerInvoiceActivity";
     // Firebase
-    private DatabaseReference invoiceRef,historyRef;
-
+    private DatabaseReference invoiceRef, historyRef;
+    private TextClock textClock;
     // Class
-    private String employeeId,currentUserId;
+    private String employeeId, currentUserId;
     private InvoiceModel invoiceModel;
     private List<InvoiceModel> invoiceModelList;
     // UI
-    private TextView txtInvoice;
+    private TextView txtHrRate, txtTotal, txtHrs, txtProject;
     private Toolbar toolbar;
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         toolbar = findViewById(R.id.time_sheet_app_bar);
         setSupportActionBar(toolbar);
         Drawable dr = ContextCompat.getDrawable(this, R.drawable.timesheet);
@@ -55,6 +64,15 @@ public class InvoiceActivity extends AppCompatActivity {
         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
         getSupportActionBar().setLogo(d);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        progressDialog = new ProgressDialog(EmployerInvoiceActivity.this);
+        progressDialog.setMessage("Uploading...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+        textClock = new TextClock(this);
+        txtHrRate = findViewById(R.id.text_view_emp_inv_hr);
+        txtHrs = findViewById(R.id.text_view_emp_inv_hrs);
+        txtTotal = findViewById(R.id.text_view_emp_total_inv);
+        txtProject = findViewById(R.id.text_view_proj_inv_emp);
         // Firebase
         invoiceRef = FirebaseDatabase.getInstance().getReference().child("Invoice");
         historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryInvoice");
@@ -67,22 +85,33 @@ public class InvoiceActivity extends AppCompatActivity {
         invoiceModelList = new ArrayList<>();
         readInvoiceData();
         // UI
-        txtInvoice = findViewById(R.id.text_view_display_inv);
         Button btnAccept = findViewById(R.id.button_accept_inv);
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.show();
                 uploadInvoice();
             }
         });
+
+        textClock.setText(textClock.getText().toString());
     }
 
     /**
      * Method used to upload invoice data to firebase
      */
     private void uploadInvoice() {
-            historyRef.child(employeeId).child(FridayDate.fridayDate()).setValue(invoiceModel);
-            Toast.makeText(InvoiceActivity.this, "Invoice uploaded", Toast.LENGTH_SHORT).show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.cancel();
+                historyRef.child(employeeId).child(FridayDate.fridayDate()).setValue(invoiceModel);
+                Toast.makeText(EmployerInvoiceActivity.this, "Invoice uploaded", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(EmployerInvoiceActivity.this, EmployerProfileActivity.class));
+            }
+        }, 1000);
+
     }
 
     /**
@@ -90,23 +119,23 @@ public class InvoiceActivity extends AppCompatActivity {
      */
     private void readInvoiceData() {
 
-         invoiceRef.child(employeeId).child(currentUserId).addValueEventListener(new ValueEventListener() {
+        invoiceRef.child(employeeId).child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String date = String.valueOf(dataSnapshot.child("date").getValue());
-                String hrs = String.valueOf(dataSnapshot.child("hrs").getValue());
-                String name = String.valueOf(dataSnapshot.child("name").getValue());
-                String project = String.valueOf(dataSnapshot.child("project").getValue());
-                String rate = String.valueOf(dataSnapshot.child("rate").getValue());
-                String total = String.valueOf(dataSnapshot.child("total").getValue());
-                invoiceModel = new InvoiceModel(name, date, project, hrs, rate, total);
-                invoiceModelList.add(invoiceModel);
-                printTimeSheet(invoiceModelList);
+                    String hrs = String.valueOf(dataSnapshot.child("hrs").getValue());
+                    if(!hrs.equals("null")){
+                    String project = String.valueOf(dataSnapshot.child("project").getValue());
+                    String rate = String.valueOf(dataSnapshot.child("rate").getValue());
+                    String total = String.valueOf(dataSnapshot.child("total").getValue());
+                    invoiceModel = new InvoiceModel(project, hrs, rate, total);
+                        invoiceModelList.add(invoiceModel);
+                        printInvoice(invoiceModelList);
+                    }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(InvoiceActivity.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
+                Toast.makeText(EmployerInvoiceActivity.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -114,15 +143,15 @@ public class InvoiceActivity extends AppCompatActivity {
     /**
      * @param invoiceModelList used to display invoice data to the UI
      */
-    private void printTimeSheet(@NonNull List<InvoiceModel> invoiceModelList) {
-        StringBuilder builder = new StringBuilder();
+    private void printInvoice(@NonNull List<InvoiceModel> invoiceModelList) {
+        Log.d(TAG, "printTimeSheet: " + invoiceModelList.size());
         for (InvoiceModel invoice : invoiceModelList) {
-            builder.append("").append(invoice.getName()).append("\n").append("Hours: " + invoice.getHrs()).append("hrs").append("\n").
-                    append("Project: " + invoice.getProject()).append("\n").append("Hourly Rate: " + invoice.getRate()).append("\n")
-                    .append("Total: " + invoice.getTotal());
+            txtProject.setText(invoice.getProject());
+            txtTotal.setText("£"+ invoice.getTotal());
+            txtHrs.setText(invoice.getHrs());
+            txtHrRate.setText("£"+invoice.getRate());
         }
-        txtInvoice.setText(builder.toString());
-        Log.d(TAG, "printTimeSheet: \n" + builder.toString());
+
     }
 
 }

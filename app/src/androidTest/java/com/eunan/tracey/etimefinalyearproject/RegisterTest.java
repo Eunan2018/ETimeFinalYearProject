@@ -48,9 +48,9 @@ public class RegisterTest {
     @Test
     public void registerTesting() throws InterruptedException {
         Thread.sleep(2000);
-        onView(withId(R.id.edit_text_reg_email)).perform(typeText("winnerofcoding@hotmail.com"), closeSoftKeyboard());
-        onView(withId(R.id.edit_text_reg_user_name)).perform(typeText("Winteris"), closeSoftKeyboard());
-        onView(withId(R.id.edit_text_reg_password)).perform(typeText("123456"), closeSoftKeyboard());
+        onView(withId(R.id.edit_text_reg_email)).perform(typeText("jadams@hotmail.com"), closeSoftKeyboard());
+        onView(withId(R.id.edit_text_reg_user_name)).perform(typeText("Jay"), closeSoftKeyboard());
+        onView(withId(R.id.edit_text_reg_password)).perform(typeText("wdx12hy1"), closeSoftKeyboard());
         onView(withId(R.id.radio_button_employer)).perform(click());
         onView(withId(R.id.button_sign_up)).perform(click());
         Thread.sleep(2000);

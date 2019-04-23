@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
 import com.eunan.tracey.etimefinalyearproject.employer.EmployerTimeSheetActivity;
-import com.eunan.tracey.etimefinalyearproject.invoice.InvoiceActivity;
+import com.eunan.tracey.etimefinalyearproject.invoice.EmployerInvoiceActivity;
 import com.eunan.tracey.etimefinalyearproject.profile.ProfileActivity;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.salary.SalaryActivity;
@@ -175,7 +175,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         if(dataSnapshot.hasChild(currentUserId)) {
-                                            Intent invoiceIntent = new Intent(getContext(), InvoiceActivity.class);
+                                            Intent invoiceIntent = new Intent(getContext(), EmployerInvoiceActivity.class);
                                             invoiceIntent.putExtra("name", employeeViewHolder.getName());
                                             invoiceIntent.putExtra("id", userId);
                                             startActivity(invoiceIntent);

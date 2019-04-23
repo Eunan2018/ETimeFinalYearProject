@@ -87,10 +87,10 @@ public class ProfileActivity extends AppCompatActivity {
             notificationDatabase.keepSynced(true);
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-            profileImage = (ImageView) findViewById(R.id.image_view_profile);
-            profileName = (TextView) findViewById(R.id.text_view_profile_display_name);
-            send = (Button) findViewById(R.id.button_profile_project_request);
-            decline = (Button) findViewById(R.id.button_profile_decline_request);
+            profileImage = findViewById(R.id.image_view_profile);
+            profileName =  findViewById(R.id.text_view_profile_display_name);
+            send =  findViewById(R.id.button_profile_project_request);
+            decline =  findViewById(R.id.button_profile_decline_request);
 
 
             currentState = Status.NOT_EMPLOYED;
@@ -107,11 +107,11 @@ public class ProfileActivity extends AppCompatActivity {
 
             userDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    display_name = dataSnapshot.child("name").getValue().toString();
-                    title = dataSnapshot.child("title").getValue().toString();
-                    String image = dataSnapshot.child("image").getValue().toString();
+                    display_name = String.valueOf(dataSnapshot.child("name").getValue());
+                    title =  String.valueOf(dataSnapshot.child("title").getValue());
+                    String image = String.valueOf(dataSnapshot.child("image").getValue());
 
                     profileName.setText(display_name);
 
@@ -224,9 +224,9 @@ public class ProfileActivity extends AppCompatActivity {
                                 } else {
 
                                     if (title.equals("Employee")) {
-                                        startActivity(new Intent(ProfileActivity.this, EmployerProfileActivity.class));
+                                        startActivity(new Intent(ProfileActivity.this, UsersActivity.class));
                                     } else {
-                                        startActivity(new Intent(ProfileActivity.this, EmployeeProfileActivity.class));
+                                        startActivity(new Intent(ProfileActivity.this, UsersActivity.class));
                                     }
                                     currentState = Status.RECEIVED;
                                     send.setText("Remove From Project");
@@ -261,9 +261,9 @@ public class ProfileActivity extends AppCompatActivity {
                                         decline.setEnabled(false);
 
                                         if (title.equals("Employee")) {
-                                            startActivity(new Intent(ProfileActivity.this, EmployerProfileActivity.class));
+                                            startActivity(new Intent(ProfileActivity.this, UsersActivity.class));
                                         } else {
-                                            startActivity(new Intent(ProfileActivity.this, EmployeeProfileActivity.class));
+                                            startActivity(new Intent(ProfileActivity.this, UsersActivity.class));
                                         }
                                     }
                                 });

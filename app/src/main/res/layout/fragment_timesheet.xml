@@ -262,11 +262,12 @@
         android:id="@+id/edit_text_comments_ts"
         android:layout_width="270dp"
         android:layout_height="55dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/shape"
         android:ems="10"
         android:hint="Comments"
-        android:inputType="textMultiLine|textPersonName"
+        android:inputType="textAutoCorrect|text"
+        android:textColorLink="@color/colorReset"
         app:layout_constraintStart_toStartOf="@+id/button_friday"
         app:layout_constraintTop_toBottomOf="@+id/text_view_friday_day" />
 

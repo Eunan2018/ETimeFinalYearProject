@@ -12,7 +12,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_invoice"
-        android:layout_width="297dp"
+        android:layout_width="340dp"
         android:layout_height="161dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,22 +22,25 @@
 
     <Button
         android:id="@+id/button_send_invoice"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_width="340dp"
+        android:layout_height="35dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/round_button"
         android:text="SUBMIT"
+        android:textColor="@color/tw__composer_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_total" />
+        app:layout_constraintTop_toBottomOf="@+id/button_calculate_inv" />
 
     <Button
         android:id="@+id/button_cancel_invoice"
-        android:layout_width="290dp"
-        android:layout_height="37dp"
+        android:layout_width="340dp"
+        android:layout_height="35dp"
         android:layout_marginTop="8dp"
-        android:background="@android:color/holo_red_light"
+        android:background="@drawable/round_button"
         android:text="CANCEL"
+        android:textColor="@color/tw__composer_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,111 +48,98 @@
 
     <TextView
         android:id="@+id/text_view_select_project"
-        android:layout_width="300dp"
+        android:layout_width="340dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:text="Project"
+        android:text="Select Project"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_date_inv" />
-
-    <TextView
-        android:id="@+id/text_view_date_inv"
-        android:layout_width="300dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="8dp"
-        android:gravity="left|center"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_name_inv"
-        tools:text="Date" />
-
-    <TextView
-        android:id="@+id/text_view_name_inv"
-        android:layout_width="300dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="28dp"
-        android:gravity="left|center"
-        android:text="Company Name"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/text_clock_inv" />
 
     <EditText
         android:id="@+id/edit_text_hrs_inv"
-        android:layout_width="65dp"
+        android:layout_width="110dp"
         android:layout_height="35dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="48dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:gravity="left|center"
         android:hint="Hours"
-        android:inputType="numberSigned"
+        android:inputType="numberDecimal"
         android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/edit_text_rate_inv"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/recycler_view_invoice"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view_invoice" />
 
     <EditText
         android:id="@+id/edit_text_rate_inv"
-        android:layout_width="68dp"
+        android:layout_width="110dp"
         android:layout_height="35dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Rate"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/text_view_tax"
-        app:layout_constraintHorizontal_bias="0.995"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edit_text_hrs_inv"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view_invoice" />
 
     <Button
         android:id="@+id/button_calculate_inv"
-        android:layout_width="109dp"
-        android:layout_height="wrap_content"
+        android:layout_width="340dp"
+        android:layout_height="35dp"
+
         android:layout_marginTop="8dp"
+        android:background="@drawable/round_button"
         android:text="CALCULATE"
+        android:textColor="@color/tw__composer_white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.88"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_rate_inv" />
+        app:layout_constraintTop_toBottomOf="@+id/text_view_total" />
 
     <TextView
         android:id="@+id/text_view_total"
-        android:layout_width="105dp"
-        android:layout_height="39dp"
+        android:layout_width="101dp"
+        android:layout_height="34dp"
         android:layout_marginTop="8dp"
         android:gravity="left|center"
         android:text="Total"
-        app:layout_constraintEnd_toEndOf="@+id/button_calculate_inv"
-        app:layout_constraintTop_toBottomOf="@+id/button_calculate_inv" />
+        app:layout_constraintEnd_toEndOf="@+id/text_view_tax"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_tax" />
 
     <TextView
         android:id="@+id/text_view_tax"
-        android:layout_width="68dp"
+        android:layout_width="104dp"
         android:layout_height="35dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="Tax @ 20%"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/recycler_view_invoice"
+        app:layout_constraintStart_toEndOf="@+id/edit_text_rate_inv"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view_invoice" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="31dp" />
+    <TextClock
+        android:id="@+id/text_clock_inv"
+        android:layout_width="340dp"
+        android:layout_height="63dp"
+        android:layout_margin="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/tw__composer_blue_text"
+        android:format12Hour="hh:mm:ss a"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/tw__composer_spacing_small"
+        android:textAlignment="center"
+        android:textColor="@color/tw__composer_white"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/text_view_select_project"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Time" />
 
 </android.support.constraint.ConstraintLayout>

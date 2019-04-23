@@ -1,16 +1,12 @@
 
 package com.eunan.tracey.etimefinalyearproject.salary;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class SalaryCalculatorTest {
-
-
     @Test
     public void calculateSalary(){
         double hours = 12;
@@ -20,9 +16,6 @@ public class SalaryCalculatorTest {
         double resultFail = 150.0;
         assertTrue(Math.abs(SalaryCalculator.calculateSalary(hours,rate,taxCode)-resultPass) == 0);
         assertFalse(Math.abs(SalaryCalculator.calculateSalary(hours,rate,taxCode)-resultFail) == 0);
-
-
-       // assertNotSame(SalaryCalculator.calculateSalary(hours,rate,taxCode),String.valueOf( resultFail));
     }
     
 }

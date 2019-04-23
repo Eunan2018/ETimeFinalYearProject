@@ -21,10 +21,10 @@ public class WriteExcel {
             myFirstWbook = Workbook.createWorkbook(new File(EXCEL_FILE_LOCATION));
 
             // create an Excel sheet
-            WritableSheet excelSheet = myFirstWbook.createSheet("InvoiceActivity", 0);
+            WritableSheet excelSheet = myFirstWbook.createSheet("EmployerInvoiceActivity", 0);
 
             // add something into the Excel sheet
-            Label label = new Label(0, 0, "InvoiceActivity");
+            Label label = new Label(0, 0, "EmployerInvoiceActivity");
             excelSheet.addCell(label);
 
             Number number = new Number(0, 1, 1);

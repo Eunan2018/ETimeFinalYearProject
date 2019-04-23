@@ -31,6 +31,7 @@ import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProjectModel;
 import com.eunan.tracey.etimefinalyearproject.employer.EmployerProfileActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -57,8 +59,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
     // Variables
     private String currentUserId;
     private int timestamp;
-    private HashMap<String, Object> assignedEmployessList;
-    AssignedEmployess assignedEmployess;
+    private HashMap<String, Object> employeeMap;
     private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +73,8 @@ public class AddEmployeeActivity extends AppCompatActivity {
         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
         getSupportActionBar().setLogo(d);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        assignedEmployessList = new HashMap<>();
-        assignedEmployess = new AssignedEmployess();
+        employeeMap = new HashMap<>();
+        AssignedEmployess assignedEmployess = new AssignedEmployess();
         // Initialise dialog
         progressDialog = new ProgressDialog(AddEmployeeActivity.this);
         progressDialog.setMessage("Uploading...");
@@ -141,9 +142,9 @@ public class AddEmployeeActivity extends AppCompatActivity {
 
                         AssignedEmployess assignedEmployess = new AssignedEmployess(employeeViewHolder.getName(), employeeViewHolder.getKey());
                         employeeViewHolder.view.setBackgroundColor(Color.GRAY);
-                        Log.d(TAG, "removeEmployeeFromProject: assignedList size: size: " + assignedEmployessList.size());
-                        assignedEmployessList.put(employeeViewHolder.getKey(), assignedEmployess);
-                        Log.d(TAG, "removeEmployeeFromProject: assignedList size: size: " + assignedEmployessList.size());
+                        Log.d(TAG, "removeEmployeeFromProject: employeeMap size: size: " + employeeMap.size());
+                        employeeMap.put(employeeViewHolder.getKey(), assignedEmployess);
+                        Log.d(TAG, "removeEmployeeFromProject: employeeMap size: size: " + employeeMap.size());
                     }
 
                 });
@@ -153,10 +154,10 @@ public class AddEmployeeActivity extends AppCompatActivity {
                     public boolean onLongClick(View v) {
                         String key = employeeViewHolder.getKey();
                         Log.d(TAG, "removeEmployeeFromProject: " + key);
-                        Log.d(TAG, "removeEmployeeFromProject: assignedList size: size: " + assignedEmployessList.size());
+                        Log.d(TAG, "removeEmployeeFromProject: employeeMap size: size: " + employeeMap.size());
                         employeeViewHolder.view.setBackgroundColor(Color.TRANSPARENT);
-                        assignedEmployessList.remove(key);
-                        Log.d(TAG, "removeEmployeeFromProject: assignedList size: " + assignedEmployessList.size());
+                        employeeMap.remove(key);
+                        Log.d(TAG, "removeEmployeeFromProject: employeeMap size: " + employeeMap.size());
                         return true;
                     }
                 });
@@ -165,7 +166,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
                     updateProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (assignedEmployessList.size() >= 1) {
+                            if (employeeMap.size() >= 1) {
                                 progressDialog.show();
                                 projectRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -175,21 +176,27 @@ public class AddEmployeeActivity extends AppCompatActivity {
                                             String time = ds.child("projectTimestamp").getValue().toString();
                                             final String project = ds.child("projectName").getValue().toString();
                                             if (time.equals(String.valueOf(timestamp))) {
-                                                projectRef.child(currentUserId).child(key).child("assignedEmployessList").updateChildren(assignedEmployessList);
-                                                EmployeeProjectModel employeeProjectModel =
-                                                        new EmployeeProjectModel(userId, project);
-                                                String id = employeeRef.push().getKey();
-                                                employeeRef.child(userId).child(id).setValue(employeeProjectModel);
-                                                assignedEmployessList.clear();
-                                                Handler handler = new Handler();
-                                                handler.postDelayed(new Runnable() {
+                                                projectRef.child(currentUserId).child(key).child("employeeMap").
+                                                        updateChildren(employeeMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
-                                                    public void run() {
-                                                        progressDialog.cancel();
-                                                        startActivity(new Intent(AddEmployeeActivity.this, EmployerProfileActivity.class));
-                                                        finish();
+                                                    public void onSuccess(Void aVoid) {
+                                                        String id = employeeRef.push().getKey();
+
+                                                        Map.Entry<String,Object> entry = employeeMap.entrySet().iterator().next();
+                                                        String key = entry.getKey();
+                                                        employeeRef.child(key).child(id). setValue(new EmployeeProjectModel(employeeViewHolder.getKey(), project));
+                                                        Handler handler = new Handler();
+                                                        handler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                progressDialog.cancel();
+                                                                startActivity(new Intent(AddEmployeeActivity.this, EmployerProfileActivity.class));
+                                                                finish();
+                                                            }
+                                                        }, 1000);
                                                     }
-                                                }, 1000);
+                                                });
+
                                             }
                                         }
                                     }
