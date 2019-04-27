@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -57,7 +58,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private ProgressDialog progressDialog;
     // Variables
-    private String currentUserId;
+    private String currentUserId,projectName;
     private int timestamp;
     private HashMap<String, Object> employeeMap;
     private Toolbar toolbar;
@@ -100,6 +101,7 @@ public class AddEmployeeActivity extends AppCompatActivity {
         Log.d(TAG, "onStart: starts ");
         super.onStart();
         timestamp = getIntent().getIntExtra("time", 0);
+        projectName = getIntent().getStringExtra("projectName");
         FirebaseRecyclerOptions<EmployeeModel> options =
                 new FirebaseRecyclerOptions.Builder<EmployeeModel>()
                         .setQuery(employerRef.child(currentUserId), EmployeeModel.class)
@@ -139,12 +141,41 @@ public class AddEmployeeActivity extends AppCompatActivity {
                 employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        projectRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                    if(ds.child("projectName").getValue().equals(projectName)){
+                                        // Cast result to map
+                                        Map<String, AssignedEmployess> empMap = (Map<String, AssignedEmployess>)
+                                                ds.child("employeeMap").getValue();
+                                        if (!empMap.containsKey( employeeViewHolder.getKey())) {
+                                            AssignedEmployess assignedEmployess = new AssignedEmployess(employeeViewHolder.getName(), employeeViewHolder.getKey());
+                                            employeeViewHolder.view.setBackgroundColor(Color.GRAY);
+                                            Log.d(TAG, "removeEmployeeFromProject: employeeMap size: size: " + employeeMap.size());
+                                            employeeMap.put(employeeViewHolder.getKey(), assignedEmployess);
+                                            Log.d(TAG, "removeEmployeeFromProject: employeeMap size: size: " + employeeMap.size());
 
-                        AssignedEmployess assignedEmployess = new AssignedEmployess(employeeViewHolder.getName(), employeeViewHolder.getKey());
-                        employeeViewHolder.view.setBackgroundColor(Color.GRAY);
-                        Log.d(TAG, "removeEmployeeFromProject: employeeMap size: size: " + employeeMap.size());
-                        employeeMap.put(employeeViewHolder.getKey(), assignedEmployess);
-                        Log.d(TAG, "removeEmployeeFromProject: employeeMap size: size: " + employeeMap.size());
+                                        }
+                                        else{
+                                            Toast.makeText(AddEmployeeActivity.this, employeeViewHolder.getName() +" already assigned to" +
+                                                    ds.child("projectName").getValue().toString(), Toast.LENGTH_SHORT).show();
+
+                                            break;
+                                        }
+
+                                    }
+                                }
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
+
+
                     }
 
                 });

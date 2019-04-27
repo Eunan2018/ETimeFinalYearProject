@@ -78,6 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
                         RegisterActivity.this.password.setError("Not a valid password!");
                     } else {
                         registerUser(userName, email, password,title);
+                        finish();
                     }
                 }
 
@@ -90,6 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent loginIntent = new Intent(RegisterActivity.this, MainActivity.class);
                 startActivity(loginIntent);
+                finish();
             }
         });
     }

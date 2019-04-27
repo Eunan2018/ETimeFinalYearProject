@@ -2,8 +2,10 @@ package com.eunan.tracey.etimefinalyearproject.Fragments;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,10 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eunan.tracey.etimefinalyearproject.MessageModel;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProjectModel;
 import com.eunan.tracey.etimefinalyearproject.invoice.InvoiceModel;
@@ -26,9 +30,11 @@ import com.eunan.tracey.etimefinalyearproject.salary.SalaryCalculator;
 import com.eunan.tracey.etimefinalyearproject.timesheet.TimeSheetBuilder;
 import com.eunan.tracey.etimefinalyearproject.timesheet.TimeSheetModel;
 import com.eunan.tracey.etimefinalyearproject.timesheet.Weekday;
+import com.eunan.tracey.etimefinalyearproject.upload.UploadActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.exoplayer.C;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,34 +46,31 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 
 public class InvoiceFragment extends android.support.v4.app.Fragment {
     private static final String TAG = "InvoiceFragment";
     private RecyclerView recyclerView;
     // Firebase
-    private DatabaseReference assignedRef;
-    private DatabaseReference userRef;
-    private DatabaseReference invoiceRef;
+    private DatabaseReference assignedRef, invoiceRef, commentsRef;
     private ProgressDialog progressDialog;
-    private String userId;
-    private String projectName;
-    private String employerKey;
-    private String hrs;
-    private String rate;
-
+    private String userId, projectName, employerKey;
+    private String hrs = "";
+    private String rate = "";
+    private Pattern pos = Pattern.compile("^\\d*\\.?\\d+$");
     public static LinkedHashMap<String, InvoiceModel> invoiceMap = new LinkedHashMap<>();
     private final ArrayList<Integer> selectionList = new ArrayList<>();
-
+    private ImageView imageView;
     private TextView txtTotal;
-
-    private EditText edtHrs, edtRate;
+    private EditText edtHrs, edtRate,edtComments;
     double total;
     @SuppressLint("SimpleDateFormat")
     private DateFormat displayDateFormat;
@@ -122,32 +125,66 @@ public class InvoiceFragment extends android.support.v4.app.Fragment {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         userId = currentUser.getUid();
         assignedRef = FirebaseDatabase.getInstance().getReference("EmployeeProjects");
+        commentsRef = FirebaseDatabase.getInstance().getReference("Comments");
         txtTotal = v.findViewById(R.id.text_view_total);
         edtHrs = v.findViewById(R.id.edit_text_hrs_inv);
         edtRate = v.findViewById(R.id.edit_text_rate_inv);
+        edtComments = v.findViewById(R.id.edit_text_inv_comments);
         textClock.setText(textClock.getText().toString());
         Button btnCalculate = v.findViewById(R.id.button_calculate_inv);
-        Button btnSubmit = v.findViewById(R.id.button_send_invoice);
+        final Button btnSubmit = v.findViewById(R.id.button_send_invoice);
         Button btnCancel = v.findViewById(R.id.button_cancel_invoice);
 
         Calendar friday = Calendar.getInstance();
         friday.setTime(new Date());
         friday.set(Calendar.DAY_OF_MONTH, friday.get(Calendar.DAY_OF_MONTH));
-        userRef = FirebaseDatabase.getInstance().getReference().child("Users");
         invoiceRef = FirebaseDatabase.getInstance().getReference().child("Invoice");
+        imageView = v.findViewById(R.id.image_view_inv);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), UploadActivity.class);
+                intent.putExtra("key2", userId);
+                intent.putExtra("key1", employerKey);
+                startActivity(intent);
 
+            }
+        });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                      progressDialog.cancel();
-                      uploadInvoice();
-                    }
-                },1000);
+                Log.d(TAG, "onClick: submit " + selectionList.size());
+                Log.d(TAG, "onClick: submit " + selectionList.toString());
+                if (selectionList.get(0).equals(1) && !hrs.isEmpty() && !rate.isEmpty() && total != 0) {
+                    Log.d(TAG, "onClick: " + String.valueOf(total).isEmpty() + " " + total);
+                    Log.d(TAG, "onClick: " + String.valueOf(total).isEmpty());
+                    progressDialog.show();
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            btnSubmit.setEnabled(false);
+                            btnSubmit.setBackground(getResources().getDrawable(R.drawable.round_button_gray));
+                            Toast.makeText(getContext(), "Cannot send another invoice for 20 minutes", Toast.LENGTH_SHORT).show();
+                            new CountDownTimer(20000, 10) { //Set Timer for 20 seconds
+                                public void onTick(long millisUntilFinished) {
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                    Toast.makeText(getContext(), "Send again ", Toast.LENGTH_SHORT).show();
+                                    btnSubmit.setEnabled(true);
+                                    btnSubmit.setBackground(getResources().getDrawable(R.drawable.round_button));
+                                }
+                            }.start();
+
+                            progressDialog.cancel();
+                            uploadInvoice();
+                        }
+                    }, 1000);
+                } else {
+                    Toast.makeText(getContext(), "Must complete all fields", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -161,11 +198,14 @@ public class InvoiceFragment extends android.support.v4.app.Fragment {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectionList.set(0, 0);
+                invoiceMap.clear();
+                total = 0;
                 projectName = "";
                 edtHrs.setText("");
                 edtRate.setText("");
+                txtTotal.setText("Total");
                 edtHrs.setFocusable(true);
+                selectionList.set(0, 0);
             }
         });
         return v;
@@ -176,24 +216,38 @@ public class InvoiceFragment extends android.support.v4.app.Fragment {
         friday.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
         InvoiceModel invoiceModel = new InvoiceModel(projectName, hrs, rate, String.valueOf(total));
         invoiceMap.put(displayDateFormat.format(friday.getTime()), invoiceModel);
-        invoiceRef.child(userId).child(employerKey).setValue(invoiceModel);
+        MessageModel messageModel = new MessageModel(edtComments.getText().toString(), "");
+        String pushId = commentsRef.push().getKey();
+        commentsRef.child(userId).child(employerKey).child(pushId).setValue(messageModel);
+        invoiceRef.child(userId).child(employerKey).setValue(invoiceMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                total = 0;
+                projectName = "";
+                edtHrs.setText("");
+                edtRate.setText("");
+                txtTotal.setText("Total");
+                selectionList.add(0, 0);
+            }
+        });
+
     }
 
     private void calculateInvoice() {
+        Log.d(TAG, "calculateInvoice: " + selectionList.size());
+        Log.d(TAG, "calculateInvoice: " + selectionList.toString());
         hrs = edtHrs.getText().toString();
         rate = edtRate.getText().toString();
-        if(hrs.isEmpty()){
+        if (hrs.isEmpty() || !pos.matcher(hrs).matches()) {
             Toast.makeText(getContext(), "Hours cannot be empty.", Toast.LENGTH_SHORT).show();
             edtHrs.setFocusable(true);
-        }
-        else if(rate.isEmpty()){
+        } else if (rate.isEmpty() || !pos.matcher(rate).matches()) {
             Toast.makeText(getContext(), "Rate cannot be empty.", Toast.LENGTH_SHORT).show();
             edtRate.setFocusable(true);
-        }else{
+        } else {
             total = SalaryCalculator.calculateSalary(Double.parseDouble(hrs), Double.parseDouble(rate), 1);
-            txtTotal.setText(String.valueOf(total));
+            txtTotal.setText("£" + String.valueOf((total)));
         }
-
     }
 
     @Override
@@ -220,6 +274,7 @@ public class InvoiceFragment extends android.support.v4.app.Fragment {
             protected void onBindViewHolder(@NonNull final EmployeeViewHolder employeeViewHolder, final int position, @NonNull final EmployeeProjectModel employee) {
                 Log.d(TAG, "onBindViewHolder: starts");
                 selectionList.add(0, 0);
+                Log.d(TAG, "onBindViewHolder: " + selectionList.size());
                 final String userId = getRef(position).getKey();
                 if (userId != null) {
                     assignedRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -249,12 +304,14 @@ public class InvoiceFragment extends android.support.v4.app.Fragment {
                     @Override
                     public void onClick(View v) {
                         if (selectionList.get(0).equals(0)) {
+                            Log.d(TAG, "onClick: viewHolder" + selectionList.size());
                             employeeViewHolder.view.setBackgroundColor(Color.GRAY);
                             projectName = employeeViewHolder.getName();
                             selectionList.set(0, 1);
+                            Log.d(TAG, "onClick: viewHolder" + selectionList.size());
                         } else {
                             Toast.makeText(getContext(), projectName + " already " +
-                                    "selected. Select " + projectName + " again to cancel", Toast.LENGTH_SHORT).show();
+                                    "selected.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -262,6 +319,7 @@ public class InvoiceFragment extends android.support.v4.app.Fragment {
                     @Override
                     public boolean onLongClick(View v) {
                         selectionList.set(0, 0);
+                        Log.d(TAG, "onLongClick: viewHolder" + selectionList.size());
                         employeeViewHolder.view.setBackgroundColor(Color.TRANSPARENT);
                         projectName = "";
                         return true;

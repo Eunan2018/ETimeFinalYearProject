@@ -1,9 +1,13 @@
 package com.eunan.tracey.etimefinalyearproject.timesheet;
 
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,8 +23,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eunan.tracey.etimefinalyearproject.Fragments.TimeSheetFragment;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProjectModel;
+import com.eunan.tracey.etimefinalyearproject.payment.Payment;
+import com.eunan.tracey.etimefinalyearproject.salary.SalaryCalculator;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,9 +38,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.collection.LLRBNode;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 
 
 public class TimeSheetBuilder extends AppCompatActivity {
@@ -41,9 +52,8 @@ public class TimeSheetBuilder extends AppCompatActivity {
     private static final String TAG = "TimeSheetBuilder";
 
 
-    private Button btnDone, btnAbsent;
+    private Button btnDone, btnAbsent, btnCancel;
     private RecyclerView recyclerView;
-    private Spinner spinnerMinutes;
     private Spinner spinnerHours;
     private String hours;
     private boolean flag = false;
@@ -55,7 +65,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
     public static LinkedHashMap<String, TimeSheetModel> timesheetMap = new LinkedHashMap<>();
     private final ArrayList<Integer> selectionList = new ArrayList<>();
     private TimeSheetModel timesheet;
-    private String projectName,day,userId;
+    private String projectName, day, userId;
 
     //Hour Spinner Values
     private String[] hoursArray = {"0", "1", "2", "3", "4", "5", "6",
@@ -71,6 +81,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
 
         btnDone = findViewById(R.id.button_done_ts);
         btnAbsent = findViewById(R.id.button_absent);
+        btnCancel = findViewById(R.id.button_cancel_ts);
         //  txtMonday = findViewById(R.id.text_view_monday_day);
         recyclerView = findViewById(R.id.recycler_view_ts_builder);
         spinnerHours = findViewById(R.id.spinner_hours);
@@ -84,14 +95,30 @@ public class TimeSheetBuilder extends AppCompatActivity {
         btnAbsent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flag = true;
+                if (spinnerHours.getSelectedItem().toString().equals("0") && selectionList.get(0).equals(0)) {
+                    btnAbsent.setBackground(getResources().getDrawable(R.drawable.round_button_gray));
+                    flag = true;
+                } else {
+                    spinnerHours.setSelection(0);
+                    Toast.makeText(TimeSheetBuilder.this, "Either absent or working.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                spinnerHours.setSelection(0);
+                //btnAbsent.setBackgroundColor(.getColor(R.color.tw__composer_blue_text));
+                btnAbsent.setBackground(getResources().getDrawable(R.drawable.round_button));
+                flag = false;
             }
         });
 
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(flag){
+                if (flag) {
                     hours = String.valueOf(0);
                     projectName = btnAbsent.getText().toString();
                     Log.d(TAG, "onClick: " + " Hours: " + hours + " " + "ProjectName: " + projectName);
@@ -119,7 +146,6 @@ public class TimeSheetBuilder extends AppCompatActivity {
                     timesheetMap.put(day, timesheet);
                     finish();
                 }
-
             }
         });
 
@@ -133,11 +159,21 @@ public class TimeSheetBuilder extends AppCompatActivity {
         spinnerHours.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!inispinner) {
-                    inispinner = true;
-                    return;
+                if (!flag) {
+                    if (!inispinner) {
+                        inispinner = true;
+                        return;
+                    }
+                    hours = spinnerHours.getSelectedItem().toString();
+                    Log.d(TAG, "onItemSelected: spinner hours: " + hours);
+//                btnAbsent.setBackgroundColor(getResources().getColor(R.color.tw__composer_blue_text));
+//                flag = false;
+                } else {
+                    spinnerHours.setSelection(0);
+                    Toast.makeText(TimeSheetBuilder.this, "Cannot be both absent and work", Toast.LENGTH_SHORT).show();
                 }
-                hours = spinnerHours.getSelectedItem().toString();
+
+
             }
 
             @Override
@@ -145,6 +181,28 @@ public class TimeSheetBuilder extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!timesheetMap.containsValue(day)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Are you sure you want to exit? Nothing selected.")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
 
     }
 
@@ -179,6 +237,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
                 selectionList.add(0, 0);
                 final String userId = getRef(position).getKey();
 
+
                 if (userId != null) {
                     assignedRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -207,15 +266,19 @@ public class TimeSheetBuilder extends AppCompatActivity {
                 employeeViewHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         if (selectionList.get(0).equals(0)) {
-                            employeeViewHolder.view.setBackgroundColor(Color.GRAY);
-                            projectName = employeeViewHolder.getName();
-                            selectionList.set(0, 1);
-                        } else {
-                            Toast.makeText(TimeSheetBuilder.this, projectName + " already " +
-                                    "selected. Select " + projectName + " again to cancel", Toast.LENGTH_SHORT).show();
-                        }
+                            if (!flag) {
+                                    employeeViewHolder.view.setBackgroundColor(Color.GRAY);
+                                    projectName = employeeViewHolder.getName();
+                                    selectionList.set(0, 1);
+                                } else {
+                                    Toast.makeText(TimeSheetBuilder.this, "Cannot be ", Toast.LENGTH_SHORT).show();
+                                }
+
+                            } else {
+                                Toast.makeText(TimeSheetBuilder.this, projectName + " already selected", Toast.LENGTH_SHORT).show();
+                            }
+
                     }
 
                 });
@@ -233,6 +296,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
         adapter.startListening();
         recyclerView.setAdapter(adapter);
     }
+
 
     public static class EmployeeViewHolder extends RecyclerView.ViewHolder {
         private final static String TAG = "EmployeeViewHolder";
@@ -254,6 +318,7 @@ public class TimeSheetBuilder extends AppCompatActivity {
         public String getName() {
             return pName;
         }
+
     }
 
 }

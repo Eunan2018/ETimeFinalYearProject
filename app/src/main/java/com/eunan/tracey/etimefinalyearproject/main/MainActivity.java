@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
@@ -12,10 +13,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.bdhandler.DBHandler;
+import com.eunan.tracey.etimefinalyearproject.recovery.PasswordRecovery;
 import com.eunan.tracey.etimefinalyearproject.register.RegisterActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.twitter.sdk.android.core.Twitter;
 
 interface EmailValidator {
@@ -28,10 +34,10 @@ public class MainActivity extends AppCompatActivity implements EmailValidator {
     private TextView register;
     private EditText edtEmail;
     private EditText edtPassword;
-    private Button btnLogin;
-   // private ProgressDialog progressDialog;
+    private Button btnLogin, btnReset;
+    // private ProgressDialog progressDialog;
 
-
+    private FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: starts");
@@ -47,8 +53,9 @@ public class MainActivity extends AppCompatActivity implements EmailValidator {
 //        progressDialog.setCancelable(false);
         // Initialise Login Button
         btnLogin = findViewById(R.id.button_login);
+        btnReset = findViewById(R.id.button_reset_password);
         // Initialise Email and Password EditTexts
-
+        auth = FirebaseAuth.getInstance();
         edtEmail = findViewById(R.id.edit_text_login_email);
         edtPassword = findViewById(R.id.edit_text_login_password);
 
@@ -68,10 +75,17 @@ public class MainActivity extends AppCompatActivity implements EmailValidator {
                 } else if (!validatePassword(password)) {
                     MainActivity.this.edtPassword.setError("Not a valid edtPassword!");
                 } else {
-                   // progressDialog.show();
+                    // progressDialog.show();
                     btnLogin.setEnabled(false);
                     loginUser(email, password);
                 }
+            }
+        });
+
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, PasswordRecovery.class));
             }
         });
 
@@ -86,17 +100,16 @@ public class MainActivity extends AppCompatActivity implements EmailValidator {
     }
 
 
-    public void loginUser(final String email,final String password) {
+    public void loginUser(final String email, final String password) {
         Log.d(TAG, "loginUser: starts");
         String userRef = "Users";
         String tokenRef = "Token";
-        DBHandler dbHandler = new DBHandler(MainActivity.this,userRef,tokenRef);
-        dbHandler.login(email,password);
+        DBHandler dbHandler = new DBHandler(MainActivity.this, userRef, tokenRef);
+        dbHandler.login(email, password);
         btnLogin.setEnabled(true);
         edtEmail.setText("");
         edtPassword.setText("");
     }
-
 
 
     // Check length of edtPassword

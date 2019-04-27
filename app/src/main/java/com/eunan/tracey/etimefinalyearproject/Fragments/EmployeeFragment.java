@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eunan.tracey.etimefinalyearproject.History.HistoryEmployerTS;
+import com.eunan.tracey.etimefinalyearproject.History.HistoryInvoice;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeModel;
 import com.eunan.tracey.etimefinalyearproject.employer.EmployerTimeSheetActivity;
 import com.eunan.tracey.etimefinalyearproject.invoice.EmployerInvoiceActivity;
@@ -64,7 +66,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
         Log.d(TAG, "onCreateView: starts");
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_employee, container, false);
-        recyclerView = view.findViewById(R.id.recycler_view_employees);
+        recyclerView = view.findViewById(R.id.recycler_view_employees_emp);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser != null){
@@ -79,7 +81,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
         salaryRef.keepSynced(true);
 
 
-        recyclerView.setHasFixedSize(true);
+         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return view;
@@ -136,7 +138,7 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
                     public void onClick(View v) {
                         Log.d(TAG, "onClick: starts");
                         // Build a dialog box where the user can choose either profile or time-sheet
-                        CharSequence options[] = new CharSequence[]{"Remove Employee", "Time-Sheets","Invoice", "Set Salary"};
+                        CharSequence options[] = new CharSequence[]{"Remove Employee", "Time-Sheets","Invoice", "Set Salary","Time-Sheet History","Invoice History"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Options");
                         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -167,10 +169,8 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
 
                                     }
                                 });
-
                                 break;
                             case 2:
-
                                 salaryRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -190,13 +190,52 @@ public class EmployeeFragment extends android.support.v4.app.Fragment {
 
                                     }
                                 });
-
                                 break;
                             case 3:
                                 Intent salaryIntent = new Intent(getContext(), SalaryActivity.class);
                                 salaryIntent.putExtra("name", employeeViewHolder.getName());
                                 salaryIntent.putExtra("id", userId);
                                 startActivity(salaryIntent);
+                                break;
+                            case 4:
+                                salaryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.hasChild(currentUserId)) {
+                                            Intent timeSheetIntent = new Intent(getContext(), HistoryEmployerTS.class);
+                                            timeSheetIntent.putExtra("id", userId);
+                                            startActivity(timeSheetIntent);
+                                        }
+                                        else{
+                                            Toast.makeText(getContext(), "Please set Salary for " +  employeeViewHolder.getName(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                                break;
+                            case 5:
+                                salaryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.hasChild(currentUserId)) {
+                                            Intent timeSheetIntent = new Intent(getContext(), HistoryInvoice.class);
+                                            timeSheetIntent.putExtra("id", userId);
+                                            startActivity(timeSheetIntent);
+                                        }
+                                        else{
+                                            Toast.makeText(getContext(), "Please set Salary for " +  employeeViewHolder.getName(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
                                 break;
                             default :
                                 break;

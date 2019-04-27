@@ -31,6 +31,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2'
+
+    androidTestImplementation 'com.21buttons:fragment-test-rule:1.0.0'
     androidTestImplementation 'com.android.support:support-annotations:28.0.0'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.android.support:support-v4:28.0.0'
@@ -69,7 +71,7 @@ dependencies {
     implementation 'com.squareup.okhttp:okhttp:2.5.0'
 
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
-// https://mvnrepository.com/artifact/net.sourceforge.jexcelapi/jxl
+    // https://mvnrepository.com/artifact/net.sourceforge.jexcelapi/jxl
     //  implementation files('libs/jxl.jar')
     implementation 'net.sourceforge.jexcelapi:jxl:2.6.12'
     implementation 'com.opencsv:opencsv:4.5'

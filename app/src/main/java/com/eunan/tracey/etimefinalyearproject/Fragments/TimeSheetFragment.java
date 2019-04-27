@@ -1,10 +1,13 @@
 package com.eunan.tracey.etimefinalyearproject.Fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,11 +27,16 @@ import android.widget.Toast;
 import com.eunan.tracey.etimefinalyearproject.MessageModel;
 import com.eunan.tracey.etimefinalyearproject.R;
 import com.eunan.tracey.etimefinalyearproject.bdhandler.DBHandler;
+import com.eunan.tracey.etimefinalyearproject.employer.EmployerTimeSheetActivity;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
+import com.eunan.tracey.etimefinalyearproject.payment.Payment;
+import com.eunan.tracey.etimefinalyearproject.salary.SalaryCalculator;
 import com.eunan.tracey.etimefinalyearproject.timesheet.TimeSheetBuilder;
+import com.eunan.tracey.etimefinalyearproject.timesheet.TimeSheetModel;
 import com.eunan.tracey.etimefinalyearproject.timesheet.Weekday;
 import com.eunan.tracey.etimefinalyearproject.upload.UploadActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,10 +44,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.opencsv.bean.customconverter.ConvertGermanToBoolean;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
@@ -47,15 +60,14 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
 
     private Button btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSubmit, btnCancel;
 
-    private TextView txtMondayDate, txtMondayDay,  txtTuesdayDate, txtTuesdayDay,  txtWednesdayDate,
-            txtWednesdayDay,  txtThursdayDate, txtThursdayDay, txtFridayDate, txtFridayDay;
+    private TextView txtMondayDate, txtMondayDay, txtTuesdayDate, txtTuesdayDay, txtWednesdayDate,
+            txtWednesdayDay, txtThursdayDate, txtThursdayDay, txtFridayDate, txtFridayDay;
 
     private EditText edtComments;
     private ProgressDialog progressDialog;
     @SuppressLint("SimpleDateFormat")
     private DateFormat dayDateFormat, displayDateFormat;
-
-    private DatabaseReference timesheetRef,commentsRef;
+    private DatabaseReference timesheetRef, commentsRef;
     private ImageView imageView;
     private String currentUserId, employerKey;
 
@@ -68,7 +80,6 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
 
         // Inflate the layout for this fragment
         View view;
@@ -165,6 +176,7 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         dayDateFormat = new SimpleDateFormat("dd");
         displayDateFormat = new SimpleDateFormat("EEE, MMM d");
 
+
         mondayBuilder();
         tuesdayBuilder();
         wednesdayBuilder();
@@ -174,25 +186,28 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
+
                 if (TimeSheetBuilder.getTimeMap().size() < 1) {
                     progressDialog.cancel();
                     Toast.makeText(getContext(), "Please fill in all days.", Toast.LENGTH_SHORT).show();
                 } else {
-
-                    Handler handler = new Handler();
-                    handler.postDelayed( new Runnable() {
-                        @Override
-                        public void run() {
-                            progressDialog.cancel();
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                    alert.setTitle("Submit");
+                    String msg = " days";
+                    if(getDaysWorked(TimeSheetBuilder.getTimeMap()) == 1){
+                        msg =" day";
+                    }
+                    alert.setMessage(String.valueOf( getDaysWorked(TimeSheetBuilder.getTimeMap()) + msg));
+                    alert.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            uploadTimesheet();
                         }
-                    }, 1000);
-                    String pushId = timesheetRef.push().getKey();
-                    resetButtonColour();
-                    timesheetRef.child(currentUserId).child(employerKey).child(pushId).setValue(TimeSheetBuilder.getTimeMap());
-                    MessageModel messageModel = new MessageModel(edtComments.getText().toString(),"");
-                    commentsRef.child(currentUserId).child(employerKey).child(pushId).setValue(messageModel);
-
+                    });
+                    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    });
+                    alert.show();
                 }
             }
         });
@@ -206,6 +221,52 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
                 TimeSheetBuilder.getTimeMap().clear();
                 size = TimeSheetBuilder.getTimeMap().size();
                 Log.d(TAG, "onClick: size 2: " + size);
+            }
+        });
+    }
+
+    private int getDaysWorked(LinkedHashMap<String, TimeSheetModel> timeMap) {
+        int days = 0;
+        for (Map.Entry<String, TimeSheetModel> pair : timeMap.entrySet()) {
+            if (!pair.getValue().getProject().equals("ABSENT")) {
+                days += 1;
+            }
+        }
+        return days;
+
+    }
+
+    private void uploadTimesheet() {
+        progressDialog.show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.cancel();
+            }
+        }, 1000);
+        String pushId = timesheetRef.push().getKey();
+        resetButtonColour();
+        timesheetRef.child(currentUserId).child(employerKey).child(pushId).setValue(TimeSheetBuilder.getTimeMap());
+        MessageModel messageModel = new MessageModel(edtComments.getText().toString(), "");
+        commentsRef.child(currentUserId).child(employerKey).child(pushId).setValue(messageModel).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                TimeSheetBuilder.getTimeMap().clear();
+                btnSubmit.setEnabled(false);
+                btnSubmit.setBackground(getResources().getDrawable(R.drawable.round_button_gray));
+                Toast.makeText(getContext(), "Cannot send another time-sheet for 20 minutes", Toast.LENGTH_SHORT).show();
+                new CountDownTimer(20000, 10) { //Set Timer for 20 seconds
+                    public void onTick(long millisUntilFinished) {
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        Toast.makeText(getContext(), "Send again", Toast.LENGTH_SHORT).show();
+                        btnSubmit.setEnabled(true);
+                        btnSubmit.setBackground(getResources().getDrawable(R.drawable.round_button));
+                    }
+                }.start();
             }
         });
     }
@@ -243,7 +304,6 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
             }
         });
     }
-
 
     private void tuesdayBuilder() {
         Calendar tuesday = Calendar.getInstance();
@@ -346,7 +406,6 @@ public class TimeSheetFragment extends android.support.v4.app.Fragment {
             }
         });
     }
-
 
 }
 

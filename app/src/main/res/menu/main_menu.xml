@@ -10,7 +10,11 @@
         android:title="@string/settings" />
 
     <item
-        android:id="@+id/view_employee"
-        android:title="Switch" />
+    android:id="@+id/view_employee"
+    android:title="Switch" />
+
+    <item
+        android:id="@+id/about"
+        android:title="About" />
 
 </menu>

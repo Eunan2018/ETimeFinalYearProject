@@ -58,7 +58,7 @@ public class MaintainProject extends AppCompatActivity {
 
     // Class
     private int timestamp;
-    private String currentUserId;
+    private String currentUserId,projectName;
     // UI
     private Toolbar toolbar;
     private RecyclerView recycler_view_mp;
@@ -66,7 +66,7 @@ public class MaintainProject extends AppCompatActivity {
     // Firebase
     private DatabaseReference employeeRef, usersRef, projectRef;
 
-
+    String location;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintain_project);
@@ -79,8 +79,8 @@ public class MaintainProject extends AppCompatActivity {
         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
         getSupportActionBar().setLogo(d);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        String location = getIntent().getStringExtra("location");
-        String names = getIntent().getStringExtra("title");
+        location = getIntent().getStringExtra("location");
+        final String names = getIntent().getStringExtra("title");
         timestamp = getIntent().getIntExtra("timestamp", 0);
 
         progressDialog = new ProgressDialog(MaintainProject.this);
@@ -115,6 +115,7 @@ public class MaintainProject extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MaintainProject.this, AddEmployeeActivity.class);
                 intent.putExtra("time", timestamp);
+                intent.putExtra("projectName", names);
                 startActivity(intent);
             }
         });
@@ -128,6 +129,7 @@ public class MaintainProject extends AppCompatActivity {
                 for (DataSnapshot childSnapShot : dataSnapshot.getChildren()) {
                     String key = childSnapShot.getKey();
                     String time = String.valueOf(childSnapShot.child("projectTimestamp").getValue());
+
                     Log.d(TAG, "onDataChange: time" + time);
                     Log.d(TAG, "onDataChange: pushId" + key);
                     if (key != null && String.valueOf(timestamp).equals(time)) {

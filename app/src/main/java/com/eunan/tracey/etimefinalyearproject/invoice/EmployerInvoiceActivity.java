@@ -1,6 +1,8 @@
 package com.eunan.tracey.etimefinalyearproject.invoice;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -15,13 +17,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.FridayDate;
+import com.eunan.tracey.etimefinalyearproject.MessageModel;
 import com.eunan.tracey.etimefinalyearproject.R;
+import com.eunan.tracey.etimefinalyearproject.employer.EmpImage;
 import com.eunan.tracey.etimefinalyearproject.employer.EmployerProfileActivity;
+import com.eunan.tracey.etimefinalyearproject.employer.EmployerTimeSheetActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,16 +47,19 @@ import java.util.List;
 public class EmployerInvoiceActivity extends AppCompatActivity {
     private static final String TAG = "EmployerInvoiceActivity";
     // Firebase
-    private DatabaseReference invoiceRef, historyRef;
+    private DatabaseReference invoiceRef, historyRef, declineRef;
     private TextClock textClock;
     // Class
     private String employeeId, currentUserId;
     private InvoiceModel invoiceModel;
     private List<InvoiceModel> invoiceModelList;
+    private MessageModel messageModel;
     // UI
-    private TextView txtHrRate, txtTotal, txtHrs, txtProject;
+    private TextView txtHrRate, txtTotal, txtHrs, txtProject,txtComments;
+    private Button btnAttach;
     private Toolbar toolbar;
     private ProgressDialog progressDialog;
+    private DatabaseReference commentsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +83,15 @@ public class EmployerInvoiceActivity extends AppCompatActivity {
         txtHrs = findViewById(R.id.text_view_emp_inv_hrs);
         txtTotal = findViewById(R.id.text_view_emp_total_inv);
         txtProject = findViewById(R.id.text_view_proj_inv_emp);
+        txtComments = findViewById(R.id.text_view_emp_inv_comments);
+        btnAttach = findViewById(R.id.button_inv_attach);
         // Firebase
         invoiceRef = FirebaseDatabase.getInstance().getReference().child("Invoice");
+        invoiceRef.keepSynced(true);
         historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryInvoice");
+        declineRef = FirebaseDatabase.getInstance().getReference().child("HistoryInvoice");
+        commentsRef = FirebaseDatabase.getInstance().getReference().child("Comments");
+        commentsRef.keepSynced(true);
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             currentUserId = currentUser.getUid();
@@ -86,15 +102,65 @@ public class EmployerInvoiceActivity extends AppCompatActivity {
         readInvoiceData();
         // UI
         Button btnAccept = findViewById(R.id.button_accept_inv);
+        Button btnDecline = findViewById(R.id.button_decline_inv);
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
-                uploadInvoice();
+                AlertDialog.Builder alert = new AlertDialog.Builder(EmployerInvoiceActivity.this);
+                alert.setTitle("Invoice");
+                alert.setMessage("£" +  String.valueOf(invoiceModel.getTotal()));
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        progressDialog.show();
+                        uploadInvoice();
+                    }
+                });
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                    }
+                });
+                alert.show();
+            }
+        });
+
+        btnDecline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(EmployerInvoiceActivity.this);
+                final EditText edittext = new EditText(getApplicationContext());
+                alert.setTitle("Reason");
+                alert.setView(edittext);
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String message = edittext.getText().toString();
+                        messageModel = new MessageModel(message, "default");
+                        declineRef.child(employeeId).setValue(messageModel);
+                        Log.d(TAG, "onClick: text: " + message);
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                    }
+                });
+
+                alert.show();
             }
         });
 
         textClock.setText(textClock.getText().toString());
+
+        btnAttach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EmployerInvoiceActivity.this, EmpImage.class);
+                intent.putExtra("key1", currentUserId);
+                intent.putExtra("key2", employeeId);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -111,7 +177,6 @@ public class EmployerInvoiceActivity extends AppCompatActivity {
                 startActivity(new Intent(EmployerInvoiceActivity.this, EmployerProfileActivity.class));
             }
         }, 1000);
-
     }
 
     /**
@@ -122,15 +187,30 @@ public class EmployerInvoiceActivity extends AppCompatActivity {
         invoiceRef.child(employeeId).child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String hrs = String.valueOf(dataSnapshot.child("hrs").getValue());
-                    if(!hrs.equals("null")){
-                    String project = String.valueOf(dataSnapshot.child("project").getValue());
-                    String rate = String.valueOf(dataSnapshot.child("rate").getValue());
-                    String total = String.valueOf(dataSnapshot.child("total").getValue());
-                    invoiceModel = new InvoiceModel(project, hrs, rate, total);
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    String hrs = String.valueOf(childSnapshot.child("hrs").getValue());
+                    if (!hrs.equals("null")) {
+                        String project = String.valueOf(childSnapshot.child("project").getValue());
+                        String rate = String.valueOf(childSnapshot.child("rate").getValue());
+                        String total = String.valueOf(childSnapshot.child("total").getValue());
+                        invoiceModel = new InvoiceModel(project, hrs, rate, total);
                         invoiceModelList.add(invoiceModel);
                         printInvoice(invoiceModelList);
                     }
+                }
+                commentsRef.child(employeeId).child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot ds : dataSnapshot.getChildren()){
+                            String comments = String.valueOf(ds.child("message").getValue());
+                            txtComments.setText(comments);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -147,9 +227,9 @@ public class EmployerInvoiceActivity extends AppCompatActivity {
         Log.d(TAG, "printTimeSheet: " + invoiceModelList.size());
         for (InvoiceModel invoice : invoiceModelList) {
             txtProject.setText(invoice.getProject());
-            txtTotal.setText("£"+ invoice.getTotal());
+            txtTotal.setText("£" +  invoice.getTotal());
             txtHrs.setText(invoice.getHrs());
-            txtHrRate.setText("£"+invoice.getRate());
+            txtHrRate.setText("£" + invoice.getRate());
         }
 
     }

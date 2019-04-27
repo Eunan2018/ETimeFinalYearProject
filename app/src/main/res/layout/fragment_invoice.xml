@@ -66,7 +66,7 @@
         android:ems="10"
         android:gravity="left|center"
         android:hint="Hours"
-        android:inputType="numberDecimal"
+        android:inputType="numberSigned|numberDecimal"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@+id/recycler_view_invoice"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view_invoice" />
@@ -79,7 +79,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Rate"
-        android:inputType="numberDecimal"
+        android:inputType="numberSigned|numberDecimal"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/edit_text_hrs_inv"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view_invoice" />
@@ -96,15 +96,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_total" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_inv_comments" />
 
     <TextView
         android:id="@+id/text_view_total"
-        android:layout_width="101dp"
+        android:layout_width="104dp"
         android:layout_height="34dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
         android:gravity="left|center"
         android:text="Total"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/text_view_tax"
         app:layout_constraintTop_toBottomOf="@+id/text_view_tax" />
 
@@ -112,13 +115,12 @@
         android:id="@+id/text_view_tax"
         android:layout_width="104dp"
         android:layout_height="35dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="Tax @ 20%"
+        android:text="@20%"
+        android:textAlignment="viewStart"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/recycler_view_invoice"
-        app:layout_constraintStart_toEndOf="@+id/edit_text_rate_inv"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view_invoice" />
 
     <TextClock
@@ -141,5 +143,28 @@
         app:layout_constraintHorizontal_bias="0.521"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Time" />
+
+    <ImageView
+        android:id="@+id/image_view_inv"
+        android:layout_width="104dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:src="@drawable/baseline_attachment_black_24dp"
+        app:layout_constraintEnd_toEndOf="@+id/text_view_total"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_total" />
+
+    <EditText
+        android:id="@+id/edit_text_inv_comments"
+        android:layout_width="340dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/shape"
+        android:ems="10"
+        android:hint="Comments"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/image_view_inv"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_inv"
+        tools:text="Comments" />
 
 </android.support.constraint.ConstraintLayout>

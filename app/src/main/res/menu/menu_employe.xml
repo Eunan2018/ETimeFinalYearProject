@@ -25,4 +25,10 @@
         android:id="@+id/view_employer"
         android:title="Switch" />
 
+    <item
+    android:id="@+id/about"
+    android:title="About" />
+
+
+
 </menu>

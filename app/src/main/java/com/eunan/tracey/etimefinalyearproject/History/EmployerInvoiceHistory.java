@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,39 +20,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eunan.tracey.etimefinalyearproject.R;
+import com.eunan.tracey.etimefinalyearproject.invoice.InvoiceModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * This class is used to read timesheet history from firebase and display it in a recylerview
- * on the employee's UI
- */
-public class HistoryTimesheet extends AppCompatActivity {
-
-    private final static String TAG = "HistoryTimesheet";
-
+public class EmployerInvoiceHistory extends AppCompatActivity {
+    private static final String TAG = "HistoryInvoice";
     private DatabaseReference historyRef;
     private RecyclerView recyclerView;
     private String userId;
     // Layout
     private Toolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: starts");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history);
-        recyclerView = findViewById(R.id.recycler_view_history);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(HistoryTimesheet.this));
-        historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryTimesheet");
-        // Set the action bar with name and logo
+        setContentView(R.layout.activity_history_invoice);
         toolbar = findViewById(R.id.time_sheet_app_bar);
         setSupportActionBar(toolbar);
         Drawable dr = ContextCompat.getDrawable(this, R.drawable.timesheet);
@@ -60,38 +47,41 @@ public class HistoryTimesheet extends AppCompatActivity {
         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 100, 100, true));
         getSupportActionBar().setLogo(d);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        recyclerView = findViewById(R.id.recycler_invoice_history);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(EmployerInvoiceHistory.this));
+        historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryInvoice");
 
-        Log.d(TAG, "onCreate: ends");
+        userId = getIntent().getStringExtra("id");
     }
 
     @Override
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart: starts");
-        FirebaseRecyclerOptions<HistoryModel> options =
-                new FirebaseRecyclerOptions.Builder<HistoryModel>()
-                        .setQuery(historyRef.child(userId), HistoryModel.class)
+        FirebaseRecyclerOptions<InvoiceModel> options =
+                new FirebaseRecyclerOptions.Builder<InvoiceModel>()
+                        .setQuery(historyRef.child(userId), InvoiceModel.class)
                         .build();
 
-        final FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<HistoryModel, HistoryViewHolder>(options) {
+        final FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<InvoiceModel, EmployerInvoiceHistory.HistoryViewHolder>(options) {
 
             @Override
-            public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public EmployerInvoiceHistory.HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 Log.d(TAG, "onCreateViewHolder: starts");
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.history_layout, parent, false);
-                return new HistoryViewHolder(view);
+                return new EmployerInvoiceHistory.HistoryViewHolder(view);
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull final HistoryViewHolder holder, final int position, final HistoryModel history) {
+            protected void onBindViewHolder(@NonNull final EmployerInvoiceHistory.HistoryViewHolder holder, final int position, final InvoiceModel history) {
                 Log.d(TAG, "onBindViewHolder: starts");
                 final String pushId = getRef(position).getKey();
 
                 Log.d(TAG, "onBindViewHolder: key " + userId);
 
-                if(pushId != null) {
+                if (pushId != null) {
                     historyRef.child(pushId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -102,24 +92,22 @@ public class HistoryTimesheet extends AppCompatActivity {
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Toast.makeText(HistoryTimesheet.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EmployerInvoiceHistory.this, String.valueOf(databaseError), Toast.LENGTH_SHORT).show();
                         }
                     });
-                }else{
-                    Toast.makeText(HistoryTimesheet.this, "Error loading time-sheet. Try again later.", Toast.LENGTH_SHORT).show();
-                }
-
+                } else
+                // TODO SAME AS HISTORY CSV
                 holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String date = holder.getDate();
-                        final Intent intent = new Intent(HistoryTimesheet.this, DisplayHistoryEmployee.class);
+                        final Intent intent = new Intent(EmployerInvoiceHistory.this, DisplayHistoryEmployee.class);
                         intent.putExtra("date", date);
                         getApplicationContext().startActivity(intent);
                         Log.d(TAG, "onClick: date: " + date);
                     }
                 });
-                holder.setDate(history.getDay());
+
             }
         };
         adapter.startListening();
@@ -157,5 +145,4 @@ public class HistoryTimesheet extends AppCompatActivity {
         }
 
     }
-
 }

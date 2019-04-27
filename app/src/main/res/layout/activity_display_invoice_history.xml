@@ -44,17 +44,6 @@
         app:layout_constraintStart_toEndOf="@+id/text_view_emp_inv_hrs"
         app:layout_constraintTop_toBottomOf="@+id/button10" />
 
-    <Button
-        android:id="@+id/button_accept_inv"
-        android:layout_width="343dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/round_button"
-        android:text="ACCEPT"
-        android:textColor="@color/tw__composer_white"
-        app:layout_constraintStart_toStartOf="@+id/text_view_emp_inv_hrs"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_emp_inv_comments" />
-
     <include
         android:id="@+id/time_sheet_app_bar"
         layout="@layout/app_bar_layout"
@@ -65,54 +54,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></include>
 
-    <Button
-        android:id="@+id/button_decline_inv"
-        android:layout_width="343dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/round_button"
-        android:text="DECLINE"
-        android:textColor="@color/tw__composer_white"
-        app:layout_constraintEnd_toEndOf="@+id/button_accept_inv"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/button_accept_inv"
-        app:layout_constraintTop_toBottomOf="@+id/button_accept_inv" />
-
-
-    <TextClock
-        android:id="@+id/text_clock"
-        android:layout_width="340dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="40dp"
-
-        android:layout_marginTop="32dp"
-        android:background="@drawable/round_button"
-        android:format12Hour="hh:mm:ss a"
-        android:gravity="center_vertical"
-        android:textAlignment="center"
-        android:textColor="@color/tw__composer_white"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/button9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.54"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_sheet_app_bar"
-        app:layout_constraintVertical_bias="1.0"
-        tools:text="Time" />
 
     <Button
         android:id="@+id/button9"
         android:layout_width="77dp"
         android:layout_height="57dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/round_button"
         android:enabled="false"
         android:text="Hrs"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/text_clock"
-        app:layout_constraintTop_toBottomOf="@+id/text_clock" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_sheet_app_bar" />
 
     <Button
         android:id="@+id/button10"
@@ -127,7 +82,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/button11"
         app:layout_constraintStart_toEndOf="@+id/button9"
-        app:layout_constraintTop_toBottomOf="@+id/text_clock" />
+        app:layout_constraintTop_toBottomOf="@+id/time_sheet_app_bar" />
 
     <Button
         android:id="@+id/button11"
@@ -140,10 +95,8 @@
         android:text="Project"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/text_clock"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/button10"
-        app:layout_constraintTop_toBottomOf="@+id/text_clock" />
+        app:layout_constraintTop_toBottomOf="@+id/time_sheet_app_bar" />
 
     <TextView
         android:id="@+id/text_view_emp_inv_hrs"
@@ -157,25 +110,4 @@
         app:layout_constraintStart_toStartOf="@+id/button9"
         app:layout_constraintTop_toBottomOf="@+id/button9" />
 
-    <TextView
-        android:id="@+id/text_view_emp_inv_comments"
-        android:layout_width="343dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/shape"
-        android:gravity="center|left"
-        android:text="Comments"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_inv_attach" />
-
-    <Button
-        android:id="@+id/button_inv_attach"
-        android:layout_width="64dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/shape"
-        app:layout_constraintEnd_toEndOf="@+id/text_view_emp_total_inv"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_emp_total_inv" />
 </android.support.constraint.ConstraintLayout>

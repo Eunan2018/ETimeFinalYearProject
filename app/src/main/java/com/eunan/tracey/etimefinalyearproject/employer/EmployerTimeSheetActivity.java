@@ -41,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,6 +62,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
     private DatabaseReference declineRef;
     private DatabaseReference paymentRef;
     private DatabaseReference commentsRef;
+    private DatabaseReference historyEmployerRef;
     private Button btnAttach, btnAccept, btnDecline;
     private TextView txtMon, txtMonProj, txtTues, txtTuesProj, txtWed, txtWedProj,
             txtThurs, txtThursProj, txtFri, txtFriProj,txtComments;
@@ -68,11 +70,12 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
     private int code = 1;
     private int totalHrs;
 
-    // Variables
+    // Class
     private String currentUser;
     private MessageModel messageModel;
+
     private double total;
-    // Layout
+    // UI
     private Toolbar toolbar;
     private TextView txtTotal;
 
@@ -143,7 +146,9 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
         commentsRef.keepSynced(true);
         declineRef = FirebaseDatabase.getInstance().getReference().child("Decline");
         historyRef = FirebaseDatabase.getInstance().getReference().child("HistoryTimesheet");
+        historyEmployerRef = FirebaseDatabase.getInstance().getReference().child("HistoryEmployerTimesheet");
         paymentRef = FirebaseDatabase.getInstance().getReference().child("Payment");
+
         if (employeeId != null) {
             salaryRef = FirebaseDatabase.getInstance().getReference().child("Salary").child(currentUser).child(employeeId);
 
@@ -190,7 +195,7 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for(DataSnapshot ds : dataSnapshot.getChildren()){
-                                String comments = ds.child("message").getValue().toString();
+                                String comments = String.valueOf(ds.child("message").getValue());
                                 txtComments.setText(comments);
                             }
 
@@ -246,7 +251,8 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                             Log.d(TAG, "onClick: friday: " + c.getTime());
                             Log.d(TAG, "onClick: friday: " + dateFormat.format(c.getTime()));
                             historyRef.child(employeeId).child(date).setValue(employerWeekMap);
-                            payment = new Payment(date, String.valueOf("Total pay: £ " + SalaryCalculator.calculateSalary(totalHrs, rate, code)));
+                            historyEmployerRef.child(currentUser).child(employeeId).child(date).setValue(employerWeekMap);
+                            payment = new Payment(date, String.valueOf("Total pay: £ " +  SalaryCalculator.calculateSalary(totalHrs, rate, code)));
                             String pushId = paymentRef.push().getKey();
                             paymentRef.child(employeeId).child(pushId).setValue(payment);
                         }
@@ -271,17 +277,13 @@ public class EmployerTimeSheetActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(EmployerTimeSheetActivity.this);
                     final EditText edittext = new EditText(getApplicationContext());
-                    alert.setTitle("Information");
-
+                    alert.setTitle("Reason");
                     alert.setView(edittext);
-
                     alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-
                             String message = edittext.getText().toString();
                             messageModel = new MessageModel(message, "default");
                             declineRef.child(employeeId).setValue(messageModel);
-                          //  txtTotal.setText("");
                             Log.d(TAG, "onClick: text: " + message);
                         }
                     });

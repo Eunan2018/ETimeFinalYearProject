@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.eunan.tracey.etimefinalyearproject.about.About;
 import com.eunan.tracey.etimefinalyearproject.employee.EmployeeProfileActivity;
 import com.eunan.tracey.etimefinalyearproject.main.MainActivity;
 import com.eunan.tracey.etimefinalyearproject.R;
@@ -100,6 +101,10 @@ public class EmployerProfileActivity extends AppCompatActivity {
             case R.id.view_employee :
                 Intent employeeIntent = new Intent(EmployerProfileActivity.this, EmployeeProfileActivity.class);
                 startActivity(employeeIntent);
+                break;
+            case R.id.about :
+                Intent about = new Intent(EmployerProfileActivity.this, About.class);
+                startActivity(about);
                 break;
             default :
                 break;

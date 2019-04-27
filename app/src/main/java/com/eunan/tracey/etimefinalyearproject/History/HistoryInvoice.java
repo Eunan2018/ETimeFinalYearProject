@@ -105,7 +105,7 @@ public class HistoryInvoice extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         String date = holder.getDate();
-                        final Intent intent = new Intent(HistoryInvoice.this, HistoryCSV.class);
+                        final Intent intent = new Intent(HistoryInvoice.this, DisplayInvoiceHistory.class);
                         intent.putExtra("date", date);
                         getApplicationContext().startActivity(intent);
                         Log.d(TAG, "onClick: date: " + date);
